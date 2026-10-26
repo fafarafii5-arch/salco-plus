@@ -1,20 +1,12 @@
-name: SALCO+ Build Check
+name: SALCO Build Check
 
-on:
-push:
-branches:
-- main
-pull_request:
-branches:
-- main
-workflow_dispatch:
+on: [push, workflow_dispatch]
 
 permissions:
 contents: read
 
 jobs:
 build:
-name: Build SALCO+
 runs-on: ubuntu-latest
 
 steps:
@@ -28,17 +20,10 @@ steps:
 
   - name: Check required files
     run: |
-      echo "Checking SALCO+ project files..."
-      test -f package.json || (echo "ERROR: package.json is missing" && exit 1)
-      test -f index.html || (echo "ERROR: index.html is missing" && exit 1)
-      test -f src/main.jsx || (echo "ERROR: src/main.jsx is missing" && exit 1)
-      test -f src/styles.css || (echo "ERROR: src/styles.css is missing" && exit 1)
-      echo "Required files found."
-
-  - name: Check Node and npm versions
-    run: |
-      node --version
-      npm --version
+      test -f package.json
+      test -f index.html
+      test -f src/main.jsx
+      test -f src/styles.css
 
   - name: Install dependencies
     run: npm install --no-audit --no-fund
