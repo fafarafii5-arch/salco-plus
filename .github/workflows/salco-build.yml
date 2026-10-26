@@ -14,7 +14,7 @@ contents: read
 
 jobs:
 build:
-name: Install and build SALCO+
+name: Build SALCO+
 runs-on: ubuntu-latest
 
 steps:
@@ -26,15 +26,22 @@ steps:
     with:
       node-version: 20
 
-  - name: Verify required files
+  - name: Check required files
     run: |
-      test -f package.json
-      test -f index.html
-      test -f src/main.jsx
-      test -f src/styles.css
+      echo "Checking SALCO+ project files..."
+      test -f package.json || (echo "ERROR: package.json is missing" && exit 1)
+      test -f index.html || (echo "ERROR: index.html is missing" && exit 1)
+      test -f src/main.jsx || (echo "ERROR: src/main.jsx is missing" && exit 1)
+      test -f src/styles.css || (echo "ERROR: src/styles.css is missing" && exit 1)
+      echo "Required files found."
+
+  - name: Check Node and npm versions
+    run: |
+      node --version
+      npm --version
 
   - name: Install dependencies
-    run: npm install
+    run: npm install --no-audit --no-fund
 
   - name: Build project
     run: npm run build
