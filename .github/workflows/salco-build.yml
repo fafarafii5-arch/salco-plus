@@ -18,7 +18,7 @@ steps:
     with:
       node-version: 20
 
-  - name: Check required files
+  - name: Verify project files
     run: |
       test -f package.json
       test -f index.html
