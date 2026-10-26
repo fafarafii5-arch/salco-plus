@@ -1,28 +1,40 @@
 name: SALCO+ Build Check
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-  workflow_dispatch:
+push:
+branches:
+- main
+pull_request:
+branches:
+- main
+workflow_dispatch:
+
+permissions:
+contents: read
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+build:
+name: Install and build SALCO+
+runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+steps:
+  - name: Checkout repository
+    uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
+  - name: Setup Node.js
+    uses: actions/setup-node@v4
+    with:
+      node-version: 20
 
-      - name: Install dependencies
-        run: npm install
+  - name: Verify required files
+    run: |
+      test -f package.json
+      test -f index.html
+      test -f src/main.jsx
+      test -f src/styles.css
 
-      - name: Build project
-        run: npm run build
+  - name: Install dependencies
+    run: npm install
+
+  - name: Build project
+    run: npm run build
