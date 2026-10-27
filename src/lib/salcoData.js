@@ -46,6 +46,12 @@ export async function createCustomer(branchId, customer) {
   return { id: data.id, name: data.full_name, phone: data.phone || '', visits: 0, total: 0, notes: data.notes || '' };
 }
 
+export async function listSales(branchId) {
+  const { data, error } = await supabase.from('sales').select('id, invoice_no, discount, total, payment_method, sold_at, sale_items(product_name, quantity, unit_cost), customers(full_name)').eq('branch_id', branchId).eq('status', 'completed').order('sold_at', { ascending: false });
+  if (error) throw error;
+  return (data || []).map(s => ({ id: s.id, date: s.sold_at, product: (s.sale_items || []).map(i => i.product_name).join('، '), qty: (s.sale_items || []).reduce((n, i) => n + Number(i.quantity), 0), customer: s.customers?.full_name || 'مشتری حضوری', total: Number(s.total), cost: (s.sale_items || []).reduce((n, i) => n + Number(i.unit_cost) * Number(i.quantity), 0), discount: Number(s.discount), payment: s.payment_method }));
+}
+
 export async function listCashTransactions(branchId) {
   const { data, error } = await supabase.from('cash_transactions').select('*').eq('branch_id', branchId).order('occurred_at', { ascending: false });
   if (error) throw error;
