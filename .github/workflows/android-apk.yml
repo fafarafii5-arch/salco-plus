@@ -63,13 +63,21 @@ jobs:
           python3 -m pip install --quiet pillow
           mkdir -p assets
           python3 - <<'PY'
-          from PIL import Image
-          from pathlib import Path
+          from PIL import Image, ImageDraw, ImageFilter
           src = Image.open("public/images/salco-logo.webp").convert("RGBA")
-          # Place the real SALCO logo centered on a premium matte-black square.
-          src.thumbnail((760, 760), Image.Resampling.LANCZOS)
-          canvas = Image.new("RGBA", (1024, 1024), (11, 11, 11, 255))
+          # Preserve the exact original SALCO+ logo; frame it in the approved black-and-gold app-icon style.
+          src.thumbnail((790, 790), Image.Resampling.LANCZOS)
+          canvas = Image.new("RGBA", (1024, 1024), (8, 8, 8, 255))
           canvas.alpha_composite(src, ((1024-src.width)//2, (1024-src.height)//2))
+          # Subtle gold glow and inset rounded-square border.
+          glow = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
+          gd = ImageDraw.Draw(glow)
+          gd.rounded_rectangle((26, 26, 998, 998), radius=120, outline=(255, 184, 48, 190), width=12)
+          glow = glow.filter(ImageFilter.GaussianBlur(18))
+          canvas = Image.alpha_composite(canvas, glow)
+          draw = ImageDraw.Draw(canvas)
+          draw.rounded_rectangle((30, 30, 994, 994), radius=118, outline=(219, 163, 47, 255), width=5)
+          draw.rounded_rectangle((43, 43, 981, 981), radius=105, outline=(105, 74, 22, 230), width=2)
           canvas.convert("RGB").save("assets/icon.png", quality=95)
           canvas.convert("RGB").save("assets/splash.png", quality=95)
           PY
