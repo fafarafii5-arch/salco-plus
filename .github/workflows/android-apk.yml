@@ -35,8 +35,8 @@ jobs:
       - name: Install web dependencies
         run: npm install --no-audit --no-fund
 
-      - name: Install Capacitor
-        run: npm install @capacitor/core @capacitor/android @capacitor/cli --no-audit --no-fund
+      - name: Install Capacitor and asset tools
+        run: npm install @capacitor/core @capacitor/android @capacitor/cli @capacitor/assets --no-audit --no-fund
 
       - name: Configure Android app
         run: |
@@ -58,7 +58,24 @@ jobs:
       - name: Add Android platform
         run: npx cap add android
 
-      - name: Sync app into Android project
+      - name: Prepare SALCO logo for Android icon
+        run: |
+          python3 -m pip install --quiet pillow
+          mkdir -p assets
+          python3 - <<'PY'
+          from PIL import Image
+          from pathlib import Path
+          src = Image.open("public/images/salco-logo.webp").convert("RGBA")
+          # Place the real SALCO logo centered on a premium matte-black square.
+          src.thumbnail((760, 760), Image.Resampling.LANCZOS)
+          canvas = Image.new("RGBA", (1024, 1024), (11, 11, 11, 255))
+          canvas.alpha_composite(src, ((1024-src.width)//2, (1024-src.height)//2))
+          canvas.convert("RGB").save("assets/icon.png", quality=95)
+          canvas.convert("RGB").save("assets/splash.png", quality=95)
+          PY
+          npx capacitor-assets generate --android
+
+      - name: Sync app and branded assets into Android project
         run: npx cap sync android
 
       - name: Build debug APK
