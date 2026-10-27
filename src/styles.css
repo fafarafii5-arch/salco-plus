@@ -12,3 +12,9 @@
 /* Original SALCO+ brand logo */
 .salco-logo-login{display:block;width:min(100%,190px);max-height:170px;object-fit:contain;align-self:center;margin:0 auto 4px}.salco-logo-sidebar{display:block;width:72px;height:58px;object-fit:contain;flex-shrink:0}.brand-caption{min-width:0}.brand-caption small{display:block;font-size:8px;color:#999;letter-spacing:1.5px;margin-top:2px}.brand{gap:12px}
 @media(max-width:480px){.salco-logo-login{width:160px;max-height:145px}}
+
+
+/* Header logo and top-priority best sellers */
+.topbar{position:relative}.salco-logo-topbar{width:88px;height:54px;object-fit:contain;flex-shrink:0;margin-inline-end:10px}.breadcrumb{margin-inline-end:auto}.dashboard-grid{grid-template-columns:1fr}.best-panel{margin-bottom:18px}.best-panel .best-item{min-width:0}
+@media(max-width:850px){.salco-logo-topbar{width:64px;height:43px;margin-inline-end:0}.topbar{gap:9px}.breadcrumb{font-size:10px}}
+@media(max-width:480px){.salco-logo-topbar{width:52px;height:38px}.topbar{padding:0 10px;gap:6px}.breadcrumb span{padding:0 4px}}
