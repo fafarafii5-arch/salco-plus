@@ -21,3 +21,6 @@ A Persian RTL, mobile-first React/Vite starter for SALCO⁺ store operations.
 - Never put a Supabase `service_role` key in frontend code.
 - Row Level Security must permit only authenticated members of a branch to read/write that branch's records.
 - Sale submission stays disabled until the atomic `record_sale` database function is installed; this avoids partially recording invoices or stock changes.
+
+
+Deployment configuration is supplied at build time through GitHub Actions repository secrets.
