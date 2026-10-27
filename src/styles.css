@@ -43,3 +43,9 @@
 @media(max-width:1050px){.dashboard-grid{grid-template-columns:minmax(0,1fr)}.dashboard-grid .panel{height:auto}}
 @media(max-width:850px){.page-heading{margin-bottom:16px}.stats-grid{gap:9px}.stat-card{padding:13px}.dashboard-grid{gap:10px}.dashboard-grid .panel{padding:14px}}
 @media(max-width:480px){.notice-bar{gap:9px;padding:10px}.notice-bar>div span{max-width:230px}.stats-grid{gap:8px}.stat-card{border-radius:10px}.stat-value{font-size:15px;margin:12px 0 8px}.stat-bottom{gap:4px}.dashboard-grid .panel-head{gap:8px}}
+
+
+/* Dashboard: remove empty heading space and prioritize best sellers */
+.dashboard-heading-hidden{display:none!important}
+.content{padding-top:24px}
+.best-panel{margin-bottom:16px}
