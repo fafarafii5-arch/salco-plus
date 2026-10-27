@@ -1,32 +1,17 @@
 name: SALCO Build Check
 
-on:
-push:
-branches: [main]
-workflow_dispatch:
+on: [push, workflow_dispatch]
 
 jobs:
-build:
-runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-steps:
-  - name: Checkout repository
-    uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-  - name: Setup Node.js
-    uses: actions/setup-node@v4
-    with:
-      node-version: 20
+      - run: npm install --no-audit --no-fund
 
-  - name: Verify project files
-    run: |
-      test -f package.json
-      test -f index.html
-      test -f src/main.jsx
-      test -f src/styles.css
-
-  - name: Install dependencies
-    run: npm install --no-audit --no-fund
-
-  - name: Build project
-    run: npm run build
+      - run: npm run build
