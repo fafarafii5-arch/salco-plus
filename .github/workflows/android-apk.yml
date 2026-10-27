@@ -78,16 +78,39 @@ jobs:
       - name: Sync app and branded assets into Android project
         run: npx cap sync android
 
-      - name: Build debug APK
+      - name: Audit Android manifest and SDK compatibility
         run: |
           cd android
           chmod +x gradlew
+          ./gradlew processDebugMainManifest
+          echo "=== Android SDK configuration ==="
+          grep -R -E 'minSdkVersion|targetSdkVersion|compileSdkVersion' app/build.gradle variables.gradle 2>/dev/null || true
+          echo "=== Merged app permissions ==="
+          MANIFEST="app/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml"
+          if [ -f "$MANIFEST" ]; then
+            grep -oE 'android.permission.[A-Z_]+' "$MANIFEST" | sort -u || true
+          else
+            find app/build/intermediates -name AndroidManifest.xml -type f -print
+          fi
+          echo "=== Basic check for common high-risk permissions ==="
+          if [ -f "$MANIFEST" ] && grep -Eqi 'REQUEST_IGNORE_BATTERY_OPTIMIZATIONS|BIND_DEVICE_ADMIN|MANAGE_EXTERNAL_STORAGE|REQUEST_INSTALL_PACKAGES' "$MANIFEST"; then
+            echo "::warning::Sensitive permission found in merged manifest; review before distribution."
+            grep -Eo 'android.permission.[A-Z_]+' "$MANIFEST" | sort -u
+          else
+            echo "No common high-risk permissions found by this basic check."
+          fi
+
+      - name: Build debug APK
+        run: |
+          cd android
           ./gradlew assembleDebug
 
-      - name: Upload installable APK
+      - name: Upload installable APK and manifest audit
         uses: actions/upload-artifact@v4
         with:
           name: SALCO-Plus-Android-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: |
+            android/app/build/outputs/apk/debug/app-debug.apk
+            android/app/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml
           if-no-files-found: error
           retention-days: 30
