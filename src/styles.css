@@ -58,3 +58,20 @@
 .price-cell-input{width:145px;max-width:100%;min-width:95px;background:#0d0d0c;color:#f4f1e8;border:1px solid #4b4537;border-radius:7px;padding:9px 10px;direction:ltr;text-align:right}
 .price-cell-input:focus{outline:1px solid #d7b56d;border-color:#d7b56d}
 @media(max-width:700px){.price-cell-input{width:115px;min-width:85px}.pricing-toolbar .searchbox{min-width:100%}.pricing-filter{white-space:normal}}
+
+
+/* Compact price cards: no sideways scrolling on phones */
+.pricing-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.pricing-card{min-width:0;border:1px solid #302e28;border-radius:10px;background:#10100f;padding:14px}
+.pricing-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:13px}
+.pricing-product{min-width:0;flex:1}
+.pricing-product b{display:block;color:#f0ece2;font-size:12px;line-height:1.8;overflow-wrap:anywhere}
+.pricing-product small{display:block;color:#8f8c83;font-size:10px;line-height:1.9;margin-top:3px;overflow-wrap:anywhere}
+.pricing-stock{flex-shrink:0;font-size:10px;color:var(--gold2);background:#211d14;border:1px solid #3b3323;border-radius:6px;padding:5px 7px}
+.pricing-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pricing-fields label{display:grid;gap:6px;color:#b8b3a8;font-size:10px}
+.pricing-fields label small{display:inline;color:#817d73;font-size:9px}
+.pricing-fields .price-cell-input{width:100%;min-width:0;height:40px;padding:8px;font-size:12px}
+.pricing-card-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid #292823;margin-top:12px;padding-top:11px}
+.pricing-card-footer .btn{padding:9px 12px;font-size:10px}
+@media(max-width:700px){.pricing-list{grid-template-columns:minmax(0,1fr);gap:9px}.pricing-card{padding:12px}.pricing-product b{font-size:12px}.pricing-card-head{margin-bottom:10px}.pricing-fields{gap:9px}.pricing-card-footer .btn{flex:0 0 auto}}
