@@ -5,6 +5,27 @@ import { createRoot } from 'react-dom/client';
 import { LayoutDashboard, ShoppingCart, Package, Users, Wallet, BarChart3, Search, Plus, Bell, Shirt, ArrowUpLeft, ArrowDownRight, Menu, X, Trash2, Download, Database, ShieldCheck } from 'lucide-react';
 import './styles.css';
 
+const productTaxonomy = {
+ 'کت': ['ساده','دبل‌برست','چهارخونه'],
+ 'کت‌وشلوار': ['ساده','دبل‌برست','جلیقه دبل‌فیس'],
+ 'شلوار کتان': ['ساده','هنسل','کمربنددار درایور'],
+ 'شلوار پارچه‌ای': ['ساده','دیپلمات نیم‌بگ مک‌کنزی','دیپلمات بگ مک‌کنزی','لینن مک‌کنزی'],
+ 'شلوار جین': ['ساده','بگ (Black Denim)','راسته (Alexander McQueen)'],
+ 'پیراهن': ['ساده','VIP'],
+ 'کفش': ['ساده','مجلسی بنددار','اسپرت','ونس','کالج','نیم‌بوت'],
+ 'کیف': ['ساده','دستی کوچک','ست کمربند و کیف'],
+ 'کراوات و پاپیون': ['ساده','کراوات','پاپیون'],
+ 'اکسسوری': ['ساده','ست گیره کراوات و دکمه سردست','دکمه سردست تکی'],
+ 'کمربند': ['ساده','VIP','پلاکی','پلاکی با سگک'],
+ 'بارانی': ['ساده','بلند','کوتاه'],
+ 'کاپشن': ['ساده','بهاره یقه‌ایستاده','چهار جیب','طرح‌دار','کلاه‌دار'],
+ 'سلانیک': ['ساده'],
+ 'تیشرت': ['ساده','یقه‌گرد'],
+ 'پولوشرت': ['ساده'],
+ 'کت تک': ['ساده','دبل‌برست','چهارخونه'],
+ 'شلوار': ['ساده']
+};
+
 const initialProducts = [
  {id:1,name:'کت‌وشلوار کلاسیک سورمه‌ای',sku:'SU-001',category:'کت‌وشلوار',size:'50',color:'سورمه‌ای',stock:8,buy:6500000,price:8900000,sold:18},
  {id:2,name:'کت‌وشلوار دامادی طوسی',sku:'SU-002',category:'دامادی',size:'52',color:'طوسی',stock:5,buy:7200000,price:9900000,sold:14},
@@ -22,7 +43,7 @@ function App(){
  const [session,setSession]=useState(null); const [authLoading,setAuthLoading]=useState(true); const [authBusy,setAuthBusy]=useState(false); const [authEmail,setAuthEmail]=useState(''); const [authPassword,setAuthPassword]=useState(''); const [branch,setBranch]=useState(null); const [dataLoading,setDataLoading]=useState(false);
  const [query,setQuery]=useState(''); const [notice,setNotice]=useState('');
  const [showProduct,setShowProduct]=useState(false); const [showSale,setShowSale]=useState(false); const [showCash,setShowCash]=useState(false);
- const [form,setForm]=useState({name:'',sku:'',category:'کت‌وشلوار',size:'50',color:'مشکی',stock:1,buy:0,price:0});
+ const [form,setForm]=useState({name:'',sku:'',category:'کت‌وشلوار',variant:'ساده',size:'50',color:'مشکی',stock:1,buy:0,price:0});
  const [saleForm,setSaleForm]=useState({productId:'1',qty:1,customer:'',discount:0,payment:'کارت‌خوان'});
  const [cashForm,setCashForm]=useState({type:'دریافت',title:'',amount:0});
  const persist=(key,val,setter)=>{setter(val);};
@@ -50,7 +71,7 @@ function App(){
  const lowStock=products.filter(p=>p.stock<=5).length;
  const nav=[['داشبورد',LayoutDashboard],['ثبت فروش',ShoppingCart],['موجودی کالا',Package],['مشتریان',Users],['صندوق',Wallet],['گزارش‌ها',BarChart3]];
  const filteredProducts=products.filter(p=>(p.name+' '+p.sku+' '+p.category+' '+p.color).toLowerCase().includes(query.toLowerCase()));
- const addProduct=async e=>{e.preventDefault();try{if(!branch)throw new Error('شعبه هنوز بارگذاری نشده است.');const p=await createProduct(branch.id,form);setProducts([p,...products]);setShowProduct(false);setForm({name:'',sku:'',category:'کت‌وشلوار',size:'50',color:'مشکی',stock:1,buy:0,price:0});toast('کالا در پایگاه داده ذخیره شد.');}catch(err){toast(err.message||'ذخیره کالا ناموفق بود.');}};
+ const addProduct=async e=>{e.preventDefault();try{if(!branch)throw new Error('شعبه هنوز بارگذاری نشده است.');const p=await createProduct(branch.id,form);setProducts([p,...products]);setShowProduct(false);setForm({name:'',sku:'',category:'کت‌وشلوار',variant:'ساده',size:'50',color:'مشکی',stock:1,buy:0,price:0});toast('کالا در پایگاه داده ذخیره شد.');}catch(err){toast(err.message||'ذخیره کالا ناموفق بود.');}};
  const addSale=async e=>{e.preventDefault();toast('ثبت فروش امن هنوز تا فعال‌شدن تابع تراکنشی پایگاه داده غیرفعال است؛ هیچ اطلاعاتی ثبت نشد.');};
  const addCash=async e=>{e.preventDefault();try{if(!branch)throw new Error('شعبه هنوز بارگذاری نشده است.');const item=await createCashTransaction(branch.id,branch.userId,{...cashForm,amount:Number(cashForm.amount)});setCash([item,...cash]);setShowCash(false);toast('تراکنش صندوق در پایگاه داده ذخیره شد.');}catch(err){toast(err.message||'ثبت تراکنش ناموفق بود.');}};
  const cashBalance=cash.reduce((s,x)=>s+(x.type==='دریافت'?x.amount:-x.amount),0);
@@ -68,7 +89,7 @@ function App(){
  {page==='صندوق'&&<section className="panel"><div className="panel-head"><div><h2>گردش صندوق</h2><p>دریافت‌ها و پرداخت‌های ثبت‌شده</p></div><button className="btn btn-gold" onClick={()=>setShowCash(true)}><Plus size={16}/> ثبت تراکنش</button></div><div className="cash-summary"><div><small>مانده محاسبه‌شده</small><b>{money(cashBalance)}</b></div><div><small>تعداد تراکنش‌ها</small><b>{num(cash.length)}</b></div></div>{cash.length===0?<Empty icon={Wallet} title="تراکنشی ثبت نشده" text="دریافت‌ها و پرداخت‌ها پس از ثبت در این فهرست ظاهر می‌شوند."/>:<div className="table-wrap"><table><thead><tr><th>شرح</th><th>نوع</th><th>تاریخ</th><th>مبلغ</th></tr></thead><tbody>{cash.map(c=><tr key={c.id}><td><b>{c.title}</b></td><td><span className={c.type==='دریافت'?'pill-green':'pill-red'}>{c.type}</span></td><td>{new Date(c.date).toLocaleDateString('fa-IR')}</td><td className={c.type==='دریافت'?'gold-text':'red-text'}>{money(c.amount)}</td></tr>)}</tbody></table></div>}</section>}
  {page==='گزارش‌ها'&&<><section className="stats-grid"><Stat icon={ShoppingCart} title="مجموع فروش ثبت‌شده" value={money(totalRevenue)} sub="همه فروش‌های محلی"/><Stat icon={Package} title="تعداد اقلام فروخته‌شده" value={num(sales.reduce((s,x)=>s+x.qty,0))} sub="بر اساس فاکتورها"/><Stat icon={Wallet} title="بهای تمام‌شده کالاها" value={money(totalCost)} sub="قیمت خرید × تعداد"/><Stat icon={BarChart3} title="سود ناخالص تخمینی" value={money(totalRevenue-totalCost)} sub="قبل از اجاره، حقوق و هزینه‌ها"/></section><section className="panel"><div className="panel-head"><div><h2>رتبه‌بندی کالاها</h2><p>فروش و موجودی فعلی</p></div><button className="btn btn-ghost" onClick={exportCsv}><Download size={16}/> خروجی موجودی</button></div><ProductTable products={[...products].sort((a,b)=>b.sold-a.sold)} onDelete={()=>{}} showSold/></section><section className="panel reset-panel"><div><h3>مدیریت داده‌های آزمایشی</h3><p>این دکمه فقط اطلاعات محلی همین مرورگر را به نمونه اولیه برمی‌گرداند.</p></div><button className="btn btn-danger" onClick={resetDemo}><Trash2 size={16}/> بازنشانی داده‌های محلی</button></section></>}
  </div></main>
- {showProduct&&<Modal title="افزودن کالای جدید" close={()=>setShowProduct(false)}><form className="form-grid modal-form" onSubmit={addProduct}><label>نام کالا<input required value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="مثلاً کت‌وشلوار سورمه‌ای"/></label><label>کد کالا<input required value={form.sku} onChange={e=>setForm({...form,sku:e.target.value})} placeholder="SU-010"/></label><label>دسته‌بندی<select value={form.category} onChange={e=>setForm({...form,category:e.target.value})}><option>کت‌وشلوار</option><option>کت تک</option><option>شلوار</option><option>پیراهن</option><option>پولوشرت</option><option>سویشرت</option><option>کاپشن</option><option>کفش</option><option>اکسسوری</option><option>دامادی</option></select></label><label>سایز<input value={form.size} onChange={e=>setForm({...form,size:e.target.value})}/></label><label>رنگ<input value={form.color} onChange={e=>setForm({...form,color:e.target.value})}/></label><label>موجودی اولیه<input type="number" min="0" value={form.stock} onChange={e=>setForm({...form,stock:e.target.value})}/></label><label>قیمت خرید (تومان)<input type="number" min="0" value={form.buy} onChange={e=>setForm({...form,buy:e.target.value})}/></label><label>قیمت فروش (تومان)<input type="number" min="0" value={form.price} onChange={e=>setForm({...form,price:e.target.value})}/></label><div className="form-footer"><button className="btn btn-gold" type="submit">ذخیره کالا</button><button type="button" className="btn btn-ghost" onClick={()=>setShowProduct(false)}>انصراف</button></div></form></Modal>}
+ {showProduct&&<Modal title="افزودن کالای جدید" close={()=>setShowProduct(false)}><form className="form-grid modal-form" onSubmit={addProduct}><label>نام کالا<input required value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="مثلاً کت‌وشلوار سورمه‌ای"/></label><label>کد کالا<input required value={form.sku} onChange={e=>setForm({...form,sku:e.target.value})} placeholder="SU-010"/></label><label>سرفصل اصلی<select value={form.category} onChange={e=>{const category=e.target.value;const variant=(productTaxonomy[category]||['ساده'])[0];setForm({...form,category,variant,name:category+' '+variant});}}>{Object.keys(productTaxonomy).map(category=><option key={category}>{category}</option>)}</select></label><label>مدل / انتخابی<select value={form.variant} onChange={e=>setForm({...form,variant:e.target.value,name:form.category+' '+e.target.value})}>{(productTaxonomy[form.category]||['ساده']).map(variant=><option key={variant}>{variant}</option>)}</select></label><label>سایز<input value={form.size} onChange={e=>setForm({...form,size:e.target.value})}/></label><label>رنگ<input value={form.color} onChange={e=>setForm({...form,color:e.target.value})}/></label><label>موجودی اولیه<input type="number" min="0" value={form.stock} onChange={e=>setForm({...form,stock:e.target.value})}/></label><label>قیمت خرید (تومان)<input type="number" min="0" value={form.buy} onChange={e=>setForm({...form,buy:e.target.value})}/></label><label>قیمت فروش (تومان)<input type="number" min="0" value={form.price} onChange={e=>setForm({...form,price:e.target.value})}/></label><div className="form-footer"><button className="btn btn-gold" type="submit">ذخیره کالا</button><button type="button" className="btn btn-ghost" onClick={()=>setShowProduct(false)}>انصراف</button></div></form></Modal>}
  {showCash&&<Modal title="ثبت تراکنش صندوق" close={()=>setShowCash(false)}><form className="form-grid modal-form" onSubmit={addCash}><label>نوع تراکنش<select value={cashForm.type} onChange={e=>setCashForm({...cashForm,type:e.target.value})}><option>دریافت</option><option>پرداخت</option></select></label><label>شرح تراکنش<input required value={cashForm.title} onChange={e=>setCashForm({...cashForm,title:e.target.value})} placeholder="مثلاً هزینه بسته‌بندی"/></label><label>مبلغ (تومان)<input type="number" min="1" required value={cashForm.amount} onChange={e=>setCashForm({...cashForm,amount:e.target.value})}/></label><div className="form-footer"><button className="btn btn-gold" type="submit">ثبت تراکنش</button><button type="button" className="btn btn-ghost" onClick={()=>setShowCash(false)}>انصراف</button></div></form></Modal>}
  {notice&&<div className="toast">{notice}</div>}</div>
 }
