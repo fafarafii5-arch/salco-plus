@@ -75,3 +75,16 @@
 .pricing-card-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid #292823;margin-top:12px;padding-top:11px}
 .pricing-card-footer .btn{padding:9px 12px;font-size:10px}
 @media(max-width:700px){.pricing-list{grid-template-columns:minmax(0,1fr);gap:9px}.pricing-card{padding:12px}.pricing-product b{font-size:12px}.pricing-card-head{margin-bottom:10px}.pricing-fields{gap:9px}.pricing-card-footer .btn{flex:0 0 auto}}
+
+
+/* Group color variants under one model in pricing */
+.pricing-group-card{padding:0;overflow:hidden}
+.pricing-group-card>.pricing-card-head{padding:14px;margin:0;background:#191815;border-bottom:1px solid #302e28}
+.pricing-color-list{padding:0 13px}
+.pricing-color-row{padding:13px 0;border-bottom:1px solid #292823}
+.pricing-color-row:last-child{border-bottom:0}
+.pricing-color-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.pricing-color-title b{font-size:11px;color:#e9e4d9}
+.pricing-color-title small{font-size:9px;color:#858178;direction:rtl;text-align:left}
+.pricing-color-row .pricing-card-footer{margin-top:10px;padding-top:9px}
+@media(max-width:700px){.pricing-group-card>.pricing-card-head{padding:12px}.pricing-color-list{padding:0 11px}.pricing-color-row{padding:11px 0}.pricing-color-title{align-items:flex-start}.pricing-color-title small{max-width:62%;overflow-wrap:anywhere}}
