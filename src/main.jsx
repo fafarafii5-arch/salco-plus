@@ -8,12 +8,12 @@ import './styles.css';
 
 const productTaxonomy = {
  'کت': ['ساده','دبل‌برست','چهارخونه'],
- 'کت‌وشلوار': ['ساده','کلاسیک','دامادی','آرشال','دبل‌برست','دبل‌فیس','جلیقه دبل‌فیس'],
- 'کت تک': ['ساده','دبل‌برست','چهارخونه','آرشال'],
+ 'کت‌وشلوار': ['ساده','کلاسیک','دامادی','یقه آرشال','ژیله‌دار','دبل‌برست','دبل‌برست دیپلمات','دبل‌فیس','دبل‌فیس دیپلمات','دبل‌فیس لیزری','جلیقه دبل‌فیس'],
+ 'کت تک': ['ساده','چهارخونه','دبل‌برست','آرشال'],
+ 'شلوار': ['ساده','پارچه‌ای','کتان هنسل','کتان کمربنددار درایور','پارچه‌ای دیپلمات نیم‌بگ (کمر انگلیسی، مک‌کنزی)','پارچه‌ای دیپلمات بگ (کمر انگلیسی، مک‌کنزی)','پارچه‌ای لینن (کمر انگلیسی، مک‌کنزی)','جین بگ (Black Denim)','جین راسته (Alexander McQueen)'],
  'شلوار کتان': ['ساده','هنسل','کمربنددار درایور'],
  'شلوار پارچه‌ای': ['ساده','دیپلمات نیم‌بگ (کمر انگلیسی، مک‌کنزی)','دیپلمات بگ (کمر انگلیسی، مک‌کنزی)','لینن (کمر انگلیسی، مک‌کنزی)'],
  'شلوار جین': ['ساده','بگ (Black Denim)','راسته (Alexander McQueen)'],
- 'شلوار': ['ساده','کتان هنسل','کتان کمربنددار درایور','پارچه‌ای دیپلمات نیم‌بگ (کمر انگلیسی، مک‌کنزی)','پارچه‌ای دیپلمات بگ (کمر انگلیسی، مک‌کنزی)','پارچه‌ای لینن (کمر انگلیسی، مک‌کنزی)','جین بگ (Black Denim)','جین راسته (Alexander McQueen)'],
  'پیراهن': ['ساده','VIP'],
  'کفش': ['ساده','مجلسی بنددار','اسپرت','ونس','کالج','نیم‌بوت'],
  'کیف': ['ساده','دستی کوچک'],
@@ -25,9 +25,11 @@ const productTaxonomy = {
  'کمربند': ['ساده','VIP','پلاکی','پلاکی با سگک'],
  'بارانی': ['ساده','بلند','کوتاه'],
  'کاپشن': ['ساده','بهاره یقه‌ایستاده','چهار جیب','طرح‌دار','کلاه‌دار'],
- 'سلانیک': ['ساده'],
+ 'سلانیک': ['ساده','یقه‌گرد','یقه ۷','۳ دکمه یقه‌دار'],
+ 'پولوشرت': ['ساده','یقه‌گرد','یقه ۷','۳ دکمه یقه‌دار'],
+ 'سویشرت': ['ساده','تمام زیپ فوتر'],
  'تیشرت': ['ساده','یقه‌گرد'],
- 'پولوشرت': ['ساده']
+ 'پولوشرت': ['ساده','یقه‌گرد','یقه ۷','۳ دکمه یقه‌دار']
 };
 
 const initialProducts = [
@@ -44,6 +46,7 @@ function load(key, fallback){try {const v=localStorage.getItem('salco_'+key);ret
 function cleanText(value){return String(value||'').trim().replace(/\s+/g,' ');}
 function productBase(p){return cleanText(p.category||'متفرقه');}
 function productVariant(p){
+ if(cleanText(p.variant)) return cleanText(p.variant);
  let n=cleanText(p.name);
  const c=cleanText(p.category);
  const color=cleanText(p.color);
@@ -124,7 +127,7 @@ function App(){
  {notice&&<div className="toast">{notice}</div>}</div>
 }
 function Stat({icon:Icon,title,value,sub,trend,warn}){return <div className="stat-card"><div className="stat-top"><span>{title}</span><div className="stat-icon"><Icon size={19}/></div></div><strong className="stat-value">{value}</strong><div className="stat-bottom"><span>{sub}</span>{trend&&<em className={warn?'warn':''}>{trend}</em>}</div></div>}
-function ProductTable({products,onDelete,showSold=false}){return products.length===0?<Empty icon={Package} title="کالایی پیدا نشد" text="جست‌وجو را تغییر بده یا کالای جدید اضافه کن."/>:<div className="table-wrap"><table><thead><tr><th>کالا</th><th>کد / دسته</th><th>سایز و رنگ</th><th>موجودی</th><th>قیمت فروش</th>{showSold&&<th>تعداد فروش</th>}<th>وضعیت</th><th></th></tr></thead><tbody>{products.map(p=><tr key={p.id}><td><div className="table-product"><div className="product-thumb"><Shirt size={18}/></div><b>{p.name}</b></div></td><td>{p.sku}<small>{p.category}</small></td><td>{p.size} / {p.color}</td><td><b>{num(p.stock)}</b> عدد</td><td className="gold-text">{money(p.price)}</td>{showSold&&<td>{num(p.sold)}</td>}<td><span className={p.stock<=3?'pill-red':p.stock<=5?'pill-yellow':'pill-green'}>{p.stock<=3?'رو به اتمام':p.stock<=5?'کم‌موجودی':'موجود'}</span></td><td>{onDelete&&<button className="row-delete" onClick={()=>onDelete(p.id)} title="حذف کالا"><Trash2 size={15}/></button>}</td></tr>)}</tbody></table></div>}
+function ProductTable({products,onDelete,showSold=false}){return products.length===0?<Empty icon={Package} title="کالایی پیدا نشد" text="جست‌وجو را تغییر بده یا کالای جدید اضافه کن."/>:<div className="table-wrap"><table><thead><tr><th>سرفصل / جنس</th><th>مدل / انتخابی</th><th>رنگ / سایز</th><th>موجودی</th><th>قیمت فروش</th>{showSold&&<th>تعداد فروش</th>}<th>وضعیت</th><th></th></tr></thead><tbody>{products.map(p=><tr key={p.id}><td><div className="table-product"><div className="product-thumb"><Shirt size={18}/></div><b>{p.category}</b></div><small>{p.sku}</small></td><td>{p.variant||productVariant(p)}</td><td>{p.color} / {p.size}</td><td><b>{num(p.stock)}</b> عدد</td><td className="gold-text">{money(p.price)}</td>{showSold&&<td>{num(p.sold)}</td>}<td><span className={p.stock<=3?'pill-red':p.stock<=5?'pill-yellow':'pill-green'}>{p.stock<=3?'رو به اتمام':p.stock<=5?'کم‌موجودی':'موجود'}</span></td><td>{onDelete&&<button className="row-delete" onClick={()=>onDelete(p.id)} title="حذف کالا"><Trash2 size={15}/></button>}</td></tr>)}</tbody></table></div>}
 function Empty({icon:Icon,title,text}){return <div className="empty"><div><Icon size={24}/></div><b>{title}</b><p>{text}</p></div>}
 function Modal({title,close,children}){return <div className="modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)close()}}><section className="modal"><div className="modal-head"><h2>{title}</h2><button className="icon-btn" onClick={close}><X size={18}/></button></div>{children}</section></div>}
 
