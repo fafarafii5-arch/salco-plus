@@ -76,3 +76,11 @@ export async function updateProductPrices(productId, prices) {
   if (error) throw error;
   return { buy: Number(data.purchase_price), price: Number(data.sale_price) };
 }
+
+
+// Soft-delete a product so existing sales/history remain intact.
+export async function deactivateProduct(productId) {
+  const { error } = await supabase.from('products').update({ is_active: false }).eq('id', productId);
+  if (error) throw error;
+  return true;
+}
