@@ -48,8 +48,7 @@ function productVariant(p){
  n=n.replace(/^(کت\s*شلوار|کت‌وشلوار)\s*/,'');
  return n||'ساده';
 }
-function App(){')+'\\s*','i'),'');
- if(color && color!=='-' && color!=='سایر') n=n.replace(new RegExp('\\s*'+color.replace(/[.*+?^${}()|[\]\\]/g,'\\function App(){')+'\\s*
+function App(){
  const [page,setPage]=useState('داشبورد'); const [mobileOpen,setMobileOpen]=useState(false);
  const [products,setProducts]=useState([]); const [sales,setSales]=useState([]); const [customers,setCustomers]=useState([]); const [cash,setCash]=useState([]);
  const [session,setSession]=useState(null); const [authLoading,setAuthLoading]=useState(true); const [authBusy,setAuthBusy]=useState(false); const [authEmail,setAuthEmail]=useState(''); const [authPassword,setAuthPassword]=useState(''); const [branch,setBranch]=useState(null); const [dataLoading,setDataLoading]=useState(false);
