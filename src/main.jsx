@@ -1,3 +1,4 @@
+// SALCO+ inventory taxonomy and sales selectors
 import React, { useEffect, useMemo, useState } from 'react';
 import { supabase, isSupabaseConfigured } from './lib/supabase';
 import { getCurrentBranch, listProducts, createProduct, listCustomers, createCustomer, listSales, listCashTransactions, createCashTransaction } from './lib/salcoData';
