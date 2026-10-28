@@ -69,12 +69,12 @@ export async function createCashTransaction(branchId, userId, item) {
 
 
 export async function updateProductPrices(productId, prices) {
+  // Purchase price is intentionally not exposed or modified by the app UI.
   const { data, error } = await supabase.from('products').update({
-    purchase_price: Number(prices.buy),
     sale_price: Number(prices.price),
   }).eq('id', productId).select('*').single();
   if (error) throw error;
-  return { buy: Number(data.purchase_price), price: Number(data.sale_price) };
+  return { price: Number(data.sale_price) };
 }
 
 
