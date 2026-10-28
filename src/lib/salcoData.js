@@ -66,3 +66,13 @@ export async function createCashTransaction(branchId, userId, item) {
   if (error) throw error;
   return { id: data.id, date: data.occurred_at, type: data.transaction_type === 'expense' ? 'پرداخت' : 'دریافت', title: data.description || '', amount: Number(data.amount) };
 }
+
+
+export async function updateProductPrices(productId, prices) {
+  const { data, error } = await supabase.from('products').update({
+    purchase_price: Number(prices.buy),
+    sale_price: Number(prices.price),
+  }).eq('id', productId).select('*').single();
+  if (error) throw error;
+  return { buy: Number(data.purchase_price), price: Number(data.sale_price) };
+}
