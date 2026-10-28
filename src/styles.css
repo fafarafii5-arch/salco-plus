@@ -49,3 +49,12 @@
 .dashboard-heading-hidden{display:none!important}
 .content{padding-top:24px}
 .best-panel{margin-bottom:16px}
+
+/* Dedicated bulk-friendly price management */
+.pricing-toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:4px 0 18px}
+.pricing-toolbar .searchbox{flex:1;min-width:230px}
+.pricing-filter{display:flex;align-items:center;gap:8px;color:#d9d5ca;font-size:12px;white-space:nowrap}
+.pricing-filter input{accent-color:#d7b56d;width:16px;height:16px}
+.price-cell-input{width:145px;max-width:100%;min-width:95px;background:#0d0d0c;color:#f4f1e8;border:1px solid #4b4537;border-radius:7px;padding:9px 10px;direction:ltr;text-align:right}
+.price-cell-input:focus{outline:1px solid #d7b56d;border-color:#d7b56d}
+@media(max-width:700px){.price-cell-input{width:115px;min-width:85px}.pricing-toolbar .searchbox{min-width:100%}.pricing-filter{white-space:normal}}
