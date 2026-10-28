@@ -43,7 +43,12 @@ function productVariant(p){
  let n=cleanText(p.name);
  const c=cleanText(p.category);
  const color=cleanText(p.color);
- n=n.replace(new RegExp('^'+c.replace(/[.*+?^${}()|[\]\\]/g,'\\function App(){')+'\\s*','i'),'');
+ if(c && n.toLowerCase().startsWith(c.toLowerCase())) n=cleanText(n.slice(c.length));
+ if(color && color!=='-' && color!=='سایر' && n.toLowerCase().endsWith(color.toLowerCase())) n=cleanText(n.slice(0,n.length-color.length));
+ n=n.replace(/^(کت\s*شلوار|کت‌وشلوار)\s*/,'');
+ return n||'ساده';
+}
+function App(){')+'\\s*','i'),'');
  if(color && color!=='-' && color!=='سایر') n=n.replace(new RegExp('\\s*'+color.replace(/[.*+?^${}()|[\]\\]/g,'\\function App(){')+'\\s*
  const [page,setPage]=useState('داشبورد'); const [mobileOpen,setMobileOpen]=useState(false);
  const [products,setProducts]=useState([]); const [sales,setSales]=useState([]); const [customers,setCustomers]=useState([]); const [cash,setCash]=useState([]);
