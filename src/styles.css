@@ -88,3 +88,8 @@
 .pricing-color-title small{font-size:9px;color:#858178;direction:rtl;text-align:left}
 .pricing-color-row .pricing-card-footer{margin-top:10px;padding-top:9px}
 @media(max-width:700px){.pricing-group-card>.pricing-card-head{padding:12px}.pricing-color-list{padding:0 11px}.pricing-color-row{padding:11px 0}.pricing-color-title{align-items:flex-start}.pricing-color-title small{max-width:62%;overflow-wrap:anywhere}}
+
+
+/* One shared price per model, not per color */
+.pricing-group-edit{padding:13px}
+.pricing-group-edit .pricing-card-footer{margin-top:11px;padding-top:10px}
