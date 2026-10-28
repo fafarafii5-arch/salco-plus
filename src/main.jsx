@@ -77,9 +77,37 @@ function App(){
  useEffect(() => {
    if (!supabase) { setAuthLoading(false); return; }
    let alive = true;
-   supabase.auth.getSession().then(({data}) => { if (!alive) return; setSession(data.session); setAuthLoading(false); if (data.session) loadRemote(data.session); });
-   const {data:{subscription}} = supabase.auth.onAuthStateChange((_event,nextSession) => { setSession(nextSession); if (nextSession) loadRemote(nextSession); else { setBranch(null); setProducts([]); setCustomers([]); setSales([]); setCash([]); } });
-   return () => { alive = false; subscription.unsubscribe(); };
+   let activeSession = null;
+   let refreshing = false;
+   const refreshOnReturn = async () => {
+     if (!alive || !activeSession || document.visibilityState !== 'visible' || refreshing) return;
+     refreshing = true;
+     try { await loadRemote(activeSession); }
+     finally { refreshing = false; }
+   };
+   supabase.auth.getSession().then(({data}) => {
+     if (!alive) return;
+     activeSession = data.session;
+     setSession(data.session);
+     setAuthLoading(false);
+     if (data.session) loadRemote(data.session);
+   });
+   const {data:{subscription}} = supabase.auth.onAuthStateChange((_event,nextSession) => {
+     activeSession = nextSession;
+     setSession(nextSession);
+     if (nextSession) loadRemote(nextSession);
+     else { setBranch(null); setProducts([]); setCustomers([]); setSales([]); setCash([]); }
+   });
+   window.addEventListener('focus', refreshOnReturn);
+   document.addEventListener('visibilitychange', refreshOnReturn);
+   window.addEventListener('online', refreshOnReturn);
+   return () => {
+     alive = false;
+     subscription.unsubscribe();
+     window.removeEventListener('focus', refreshOnReturn);
+     document.removeEventListener('visibilitychange', refreshOnReturn);
+     window.removeEventListener('online', refreshOnReturn);
+   };
  }, []); 
  const signIn = async e => { e.preventDefault(); if (!supabase) return; setAuthBusy(true); const {error} = await supabase.auth.signInWithPassword({email:authEmail,password:authPassword}); setAuthBusy(false); if(error) toast(error.message); };
  const signOut = async () => { if(supabase) await supabase.auth.signOut(); };
