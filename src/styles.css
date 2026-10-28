@@ -93,3 +93,6 @@
 /* One shared price per model, not per color */
 .pricing-group-edit{padding:13px}
 .pricing-group-edit .pricing-card-footer{margin-top:11px;padding-top:10px}
+
+.pricing-fields-single{grid-template-columns:minmax(0,1fr);max-width:340px}
+.pricing-fields-single .price-cell-input{width:100%}
