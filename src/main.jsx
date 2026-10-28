@@ -40,7 +40,8 @@ const initialProducts = [
 ];
 const initialCustomers = [{id:1,name:'آرمان محمدی',phone:'0912•••4521',visits:3,total:15800000},{id:2,name:'رضا کریمی',phone:'0935•••1184',visits:1,total:8900000},{id:3,name:'امیرحسین احمدی',phone:'0917•••2098',visits:2,total:12400000}];
 const money = n => new Intl.NumberFormat('fa-IR').format(Math.round(Number(n)||0))+' تومان';
-const num = n => new Intl.NumberFormat('fa-IR').format(n||0);\nconst digitsOnly = value => String(value ?? '').replace(/[۰-۹]/g,d=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d))).replace(/[٠-٩]/g,d=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(d))).replace(/[^0-9]/g,'');
+const num = n => new Intl.NumberFormat('fa-IR').format(n||0);
+const digitsOnly = value => String(value ?? '').replace(/[۰-۹]/g,d=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d))).replace(/[٠-٩]/g,d=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(d))).replace(/[^0-9]/g,'');
 const formatDigits = value => { const digits=digitsOnly(value); return digits ? Number(digits).toLocaleString('en-US') : ''; };
 const numericValue = value => Number(digitsOnly(value) || 0);
 
