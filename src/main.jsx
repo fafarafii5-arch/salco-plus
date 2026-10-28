@@ -1,9 +1,9 @@
 // SALCO+ inventory taxonomy and sales selectors
 import React, { useEffect, useMemo, useState } from 'react';
 import { supabase, isSupabaseConfigured } from './lib/supabase';
-import { getCurrentBranch, listProducts, createProduct, listCustomers, createCustomer, listSales, listCashTransactions, createCashTransaction } from './lib/salcoData';
+import { getCurrentBranch, listProducts, createProduct, updateProductPrices, listCustomers, createCustomer, listSales, listCashTransactions, createCashTransaction } from './lib/salcoData';
 import { createRoot } from 'react-dom/client';
-import { LayoutDashboard, ShoppingCart, Package, Users, Wallet, BarChart3, Search, Plus, Bell, Shirt, ArrowUpLeft, ArrowDownRight, Menu, X, Trash2, Download, Database, ShieldCheck } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, Package, Users, Wallet, BarChart3, Search, Plus, Bell, Shirt, ArrowUpLeft, ArrowDownRight, Menu, X, Trash2, Download, Database, ShieldCheck, Pencil } from 'lucide-react';
 import './styles.css';
 
 const productTaxonomy = {
