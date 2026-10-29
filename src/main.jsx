@@ -28,22 +28,14 @@ const jalaliMonthDays = (year,month) => {
 };
 const jalaliMonthName = (date) => new Intl.DateTimeFormat('fa-IR-u-ca-persian',{month:'long'}).format(date);
 const productTaxonomy = {
- 'کت': ['ساده','دبل‌برست','چهارخونه'],
- 'کت‌وشلوار': ['ساده','کلاسیک','دامادی','یقه آرشال','ژیله‌دار','دبل‌برست','دبل‌برست دیپلمات','دبل‌برست طوسی تیره','دبل‌فیس','دبل‌فیس سورمه‌ای برفی','دبل‌فیس دیپلمات','دبل‌فیس لیزری','جلیقه دبل‌فیس'],
- 'کت تک': ['ساده','چهارخونه','دبل‌برست','آرشال'],
- 'شلوار': ['ساده','پارچه‌ای','پارچه‌ای کمر انگلیسی دیپلمات نیم‌بگ مک‌کنزی','پارچه‌ای کمر انگلیسی دیپلمات بگ مک‌کنزی','پارچه‌ای کمر انگلیسی نیم‌بگ مک‌کنزی لینن','پارچه‌ای کمرکش نیم‌بگ مک‌کنزی','کتان هنسل','کتان ذغالی هنسل','کتان مشکی هنسل','کتان نوک‌مدادی هنسل','کتان کمربنددار درایور','کتان کمربنددار','کتان کمربنددار هنسل','جین بگ (Black Denim)','جین راسته (Alexander McQueen)'],
- 'شلوار کتان': ['ساده','هنسل','کمربنددار درایور'],
- 'شلوار پارچه‌ای': ['ساده','دیپلمات نیم‌بگ (کمر انگلیسی، مک‌کنزی)','دیپلمات بگ (کمر انگلیسی، مک‌کنزی)','لینن (کمر انگلیسی، مک‌کنزی)'],
- 'شلوار جین': ['ساده','بگ (Black Denim)','راسته (Alexander McQueen)'],
+ 'کت شلوار': ['کت شلوار ساده','کت شلوار کلاسیک','کت شلوار دامادی','کت تک ساده','کت تک چهارخونه','کت تک دبل برست','کت تک آرشال','کت یقه آرشال','کت ژیله‌دار','کت دبل برست دیپلمات','کت دبل برست طوسی تیره','کت دبل فیس','کت دبل فیس سورمه‌ای برفی','کت دبل فیس دیپلمات','کت دبل فیس لیزری','جلیقه دبل فیس'],
+ 'شلوار': ['ساده','کتان','کتان هنسل','کتان ذغالی هنسل','کتان مشکی هنسل','کتان نوک‌مدادی هنسل','کتان کمربنددار درایور','کتان کمربنددار','کتان کمربنددار هنسل','پارچه‌ای','پارچه‌ای کمر انگلیسی دیپلمات نیم‌بگ مک‌کنزی','پارچه‌ای کمر انگلیسی دیپلمات بگ مک‌کنزی','پارچه‌ای کمر انگلیسی نیم‌بگ مک‌کنزی لینن','پارچه‌ای کمرکش نیم‌بگ مک‌کنزی','جین','جین بگ (Black Denim)','جین راسته (Alexander McQueen)'],
  'پیراهن': ['ساده','VIP','جعبه‌ای','دیپلمات','آستین کوتاه'],
  'کفش': ['ساده','مجلسی بنددار','مجلسی قهوه‌ای','بنددار مشکی','اسپرت','ونس','کالج','نیم‌بوت'],
  'کیف': ['ساده','دستی کوچک'],
- 'ست کمربند و کیف': ['ساده','به‌همراه جاکارتی'],
- 'کراوات و پاپیون': ['ساده','کراوات','پاپیون'],
- 'اکسسوری': ['ساده','ست گیره کراوات و دکمه سردست','دکمه سردست تکی'],
- 'ست گیره کراوات و دکمه سردست': ['ساده'],
- 'دکمه سردست': ['ساده','تکی'],
+ 'اکسسوری': ['ساده','ست گیره کراوات','ست گیره کراوات و دکمه سردست','کراوات','پاپیون','دکمه سردست','دکمه سردست تکی','ست گیره و دکمه سرآستین','دکمه سرآستین تک'],
  'کمربند': ['ساده','VIP','پلاکی','پلاکی با سگک','کمربند VIP'],
+ 'ست کمربند و کیف': ['ساده','به‌همراه جاکارتی'],
  'بارانی': ['ساده','بلند','کوتاه'],
  'کاپشن': ['ساده','یقه‌ایستاده','بهاره یقه‌ایستاده','کلاه‌دار','چهار جیب','طرح‌دار'],
  'سلانیک': ['ساده','یقه‌گرد','یقه ۷','۳ دکمه یقه‌دار','یقه‌گرد طرح‌دار'],
@@ -51,7 +43,6 @@ const productTaxonomy = {
  'سویشرت': ['ساده','تمام زیپ فوتر'],
  'بافت': ['ساده','حصیری یقه‌گرد'],
  'جوراب': ['ساده'],
- 'اکسسوری': ['ساده','ست گیره کراوات و دکمه سردست','دکمه سردست تکی','ست گیره و دکمه سرآستین','دکمه سرآستین تک'],
  'تیشرت': ['ساده','یقه‌گرد'],
 };
 
@@ -88,7 +79,7 @@ function App(){
  const [session,setSession]=useState(null); const [authLoading,setAuthLoading]=useState(true); const [authBusy,setAuthBusy]=useState(false); const [authEmail,setAuthEmail]=useState(()=>{try{return localStorage.getItem('salco_login_email')||''}catch{return ''}}); const [authPassword,setAuthPassword]=useState(''); const [branch,setBranch]=useState(null); const [dataLoading,setDataLoading]=useState(false);
  const [query,setQuery]=useState(''); const [categoryQuery,setCategoryQuery]=useState(''); const [saleCategorySearch,setSaleCategorySearch]=useState(''); const [saleVariantSearch,setSaleVariantSearch]=useState(''); const [notice,setNotice]=useState('');
  const [showProduct,setShowProduct]=useState(false); const [invoice,setInvoice]=useState(null); const [editingPrice,setEditingPrice]=useState(null); const [priceBusy,setPriceBusy]=useState(false); const [priceDrafts,setPriceDrafts]=useState({}); const [priceSearch,setPriceSearch]=useState(''); const [priceOnlyUnpriced,setPriceOnlyUnpriced]=useState(false); const [savingPriceId,setSavingPriceId]=useState(null); const [showSale,setShowSale]=useState(false); const [showCash,setShowCash]=useState(false); const [editingSale,setEditingSale]=useState(null); const [saleBusy,setSaleBusy]=useState(false);
- const [form,setForm]=useState({name:'',sku:'',category:'کت‌وشلوار',variant:'ساده',size:'50',color:'',stock:'1',price:''});
+ const [form,setForm]=useState({name:'',sku:'',category:'کت شلوار',variant:'کت شلوار ساده',size:'50',color:'',stock:'1',price:''});
  const [saleForm,setSaleForm]=useState({productId:'',category:'',variant:'',color:'',qty:1,customer:'',discount:0,payment:'کارت‌خوان'});
  const [cashForm,setCashForm]=useState({type:'دریافت',title:'',amount:0});
  const persist=(key,val,setter)=>{setter(val);};
@@ -164,7 +155,7 @@ function App(){
  const matchingSaleProducts=variantProducts.filter(p=>colorKey(p)===saleColor);
  const selectedSaleProduct=matchingSaleProducts.find(p=>String(p.id)===String(saleForm.productId))||matchingSaleProducts[0]||null;
  
- const addProduct=async e=>{e.preventDefault();try{if(!branch)throw new Error('شعبه هنوز بارگذاری نشده است.');const productName=[form.category,form.variant&&form.variant!=='ساده'?form.variant:'',form.color&&form.color!=='-'?form.color:''].filter(Boolean).join(' ');const productSku='SAL-'+Date.now().toString(36).toUpperCase();const p=await createProduct(branch.id,{...form,stock:numericValue(form.stock),buy:0,price:numericValue(form.price),name:productName,sku:productSku});setProducts([p,...products]);setShowProduct(false);setForm({name:'',sku:'',category:'کت‌وشلوار',variant:'ساده',size:'50',color:'مشکی',stock:'1',price:''});toast('کالا در پایگاه داده ذخیره شد.');}catch(err){toast(err.message||'ذخیره کالا ناموفق بود.');}};
+ const addProduct=async e=>{e.preventDefault();try{if(!branch)throw new Error('شعبه هنوز بارگذاری نشده است.');const productName=[form.category,form.variant&&form.variant!=='ساده'?form.variant:'',form.color&&form.color!=='-'?form.color:''].filter(Boolean).join(' ');const productSku='SAL-'+Date.now().toString(36).toUpperCase();const p=await createProduct(branch.id,{...form,stock:numericValue(form.stock),buy:0,price:numericValue(form.price),name:productName,sku:productSku});setProducts([p,...products]);setShowProduct(false);setForm({name:'',sku:'',category:'کت شلوار',variant:'کت شلوار ساده',size:'50',color:'مشکی',stock:'1',price:''});toast('کالا در پایگاه داده ذخیره شد.');}catch(err){toast(err.message||'ذخیره کالا ناموفق بود.');}};
  const addSale=async e=>{e.preventDefault();if(!branch||!session){toast('ابتدا وارد حساب کاربری شوید.');return;}if(!selectedSaleProduct){toast('لطفاً کالای دارای موجودی را انتخاب کنید.');return;}const qty=Number(saleForm.qty);const discount=Number(saleForm.discount)||0;if(!Number.isInteger(qty)||qty<1){toast('تعداد باید حداقل ۱ عدد باشد.');return;}if(discount<0||discount>(Number(selectedSaleProduct.price)||0)*qty){toast('مبلغ تخفیف معتبر نیست.');return;}try{setDataLoading(true);const {data,error}=await supabase.rpc('register_sale',{p_branch_id:branch.id,p_product_id:selectedSaleProduct.id,p_quantity:qty,p_discount:discount,p_customer_name:saleForm.customer.trim()||null,p_payment_method:saleForm.payment});if(error)throw error;await loadRemote(session);const invoiceDate=new Date();const invoiceTotal=Math.max(0,(Number(selectedSaleProduct.price)||0)*qty-discount);setInvoice({number:data?.invoice_no||('SAL-'+invoiceDate.getTime()),date:invoiceDate,customer:saleForm.customer.trim()||'مشتری حضوری',product:selectedSaleProduct.name||[selectedSaleProduct.category,productVariant(selectedSaleProduct),selectedSaleProduct.color].filter(Boolean).join(' '),sku:selectedSaleProduct.sku||'',size:selectedSaleProduct.size||'',color:selectedSaleProduct.color||'',qty,unitPrice:Number(selectedSaleProduct.price)||0,discount,total:invoiceTotal,payment:saleForm.payment});setSaleForm({productId:'',category:'',variant:'',color:'',qty:1,customer:'',discount:0,payment:'کارت‌خوان'});toast('فروش ثبت شد؛ فاکتور آماده ارسال است.');}catch(err){toast(err.message||'ثبت فروش انجام نشد.');}finally{setDataLoading(false);}};
  const addCash=async e=>{e.preventDefault();try{if(!branch)throw new Error('شعبه هنوز بارگذاری نشده است.');const item=await createCashTransaction(branch.id,branch.userId,{...cashForm,amount:Number(cashForm.amount)});setCash([item,...cash]);setShowCash(false);toast('تراکنش صندوق در پایگاه داده ذخیره شد.');}catch(err){toast(err.message||'ثبت تراکنش ناموفق بود.');}};
  const saveSaleAmount=async e=>{e.preventDefault();if(!editingSale||saleBusy)return;const amount=numericValue(editingSale.total);if(amount<0){toast('مبلغ فروش نمی‌تواند منفی باشد.');return;}setSaleBusy(true);try{const {error}=await supabase.from('sales').update({total:amount}).eq('id',editingSale.id).eq('branch_id',branch.id).eq('status','completed');if(error)throw error;setSales(prev=>prev.map(s=>s.id===editingSale.id?{...s,total:amount}:s));setEditingSale(null);toast('مبلغ فروش اصلاح و گزارش‌ها به‌روزرسانی شد.');}catch(err){toast(err.message||'اصلاح مبلغ فروش ناموفق بود.');}finally{setSaleBusy(false);}};
