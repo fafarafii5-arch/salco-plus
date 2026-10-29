@@ -96,3 +96,20 @@
 
 .pricing-fields-single{grid-template-columns:minmax(0,1fr);max-width:340px}
 .pricing-fields-single .price-cell-input{width:100%}
+
+
+/* Persian Jalali calendar for daily reports */
+.jalali-date-field{position:relative;min-width:0}
+.jalali-date-field>label{display:block}
+.jalali-date-field input{cursor:pointer}
+.jalali-calendar{position:absolute;z-index:50;top:calc(100% + 7px);right:0;width:min(320px,calc(100vw - 56px));padding:12px;background:#151411;border:1px solid #65522b;border-radius:13px;box-shadow:0 16px 38px #0009;color:#eee8d8}
+.jalali-calendar-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+.jalali-calendar-head b{font-size:13px;color:#e0c27c}
+.jalali-calendar-head .btn{min-width:34px;padding:6px 10px;font-size:18px}
+.jalali-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;text-align:center}
+.jalali-calendar-grid>span,.jalali-calendar-grid>button{display:flex;align-items:center;justify-content:center;min-width:0;height:34px;border-radius:8px;font-size:12px}
+.jalali-calendar-grid .jalali-weekday{color:#c5aa67;font-weight:700}
+.jalali-calendar-grid>button{border:1px solid transparent;background:#22201b;color:#eee8d8;cursor:pointer}
+.jalali-calendar-grid>button:hover{border-color:#c8a75b}
+.jalali-calendar-grid>button.selected{background:#d7b56d;color:#17130b;font-weight:700}
+.jalali-today{width:100%;margin-top:10px}
