@@ -158,7 +158,7 @@ function App(){
  if(saleVariant && !visibleVariantOptions.includes(saleVariant)) visibleVariantOptions.unshift(saleVariant);
  const variantProducts=categoryProducts.filter(p=>productVariant(p)===saleVariant);
  const colorKey=p=>{const c=cleanText(p.color);return c&&c!=='-'?c:'بدون رنگ';};
- const commonColors=["مشکی","سفید","طوسی","خاکستری","نقره‌ای","ذغالی","سرمه‌ای","سورمه‌ای","آبی","آبی روشن","آبی نفتی","آبی کاربنی","آبی آسمانی","قرمز","زرشکی","صورتی","گلبهی","نارنجی","زرد","کرم","بژ","قهوه‌ای","شکلاتی","نسکافه‌ای","شتری","سبز","سبز زیتونی","سبز یشمی","سبز کله‌غازی","بنفش","یاسی","طلایی","مسی","زیتونی","استخوانی","شیری","لیمویی","چند رنگ","طرح‌دار","چهارخانه","بدون رنگ"];
+ const commonColors=["مشکی","سفید","طوسی","طوسی روشن","طوسی تیره","خاکستری","نقره‌ای","ذغالی","نوک‌مدادی","سرمه‌ای","سورمه‌ای","آبی","آبی روشن","آبی نفتی","آبی کاربنی","آبی آسمانی","آبی برفی","قرمز","زرشکی","صورتی","گلبهی","نارنجی","زرد","کرم","کرم روشن","بژ","قهوه‌ای","قهوه‌ای روشن","شکلاتی","نسکافه‌ای","موکا","شتری","سبز","سبز زیتونی","سبز یشمی","سبز کله‌غازی","زیتونی","بنفش","یاسی","طلایی","مسی","استخوانی","شیری","لیمویی","چند رنگ","طرح‌دار","چهارخانه","بدون رنگ"];
  const colorOptions=[...new Set([...commonColors,...variantProducts.map(colorKey)])];
  const saleColor=saleForm.color && colorOptions.includes(saleForm.color) ? saleForm.color : colorOptions[0] || '';
  const matchingSaleProducts=variantProducts.filter(p=>colorKey(p)===saleColor);
