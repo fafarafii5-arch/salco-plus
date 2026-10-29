@@ -102,11 +102,14 @@ function App(){
      if (nextSession) loadRemote(nextSession);
      else { setBranch(null); setProducts([]); setCustomers([]); setSales([]); setCash([]); }
    });
+   // Refresh server data periodically while the app is open, plus whenever it returns to foreground.
+   const refreshTimer = window.setInterval(refreshOnReturn, 30000);
    window.addEventListener('focus', refreshOnReturn);
    document.addEventListener('visibilitychange', refreshOnReturn);
    window.addEventListener('online', refreshOnReturn);
    return () => {
      alive = false;
+     window.clearInterval(refreshTimer);
      subscription.unsubscribe();
      window.removeEventListener('focus', refreshOnReturn);
      document.removeEventListener('visibilitychange', refreshOnReturn);
