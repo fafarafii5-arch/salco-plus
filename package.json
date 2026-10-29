@@ -4,6 +4,6 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {"dev":"vite --host 0.0.0.0", "build":"vite build", "preview":"vite preview --host 0.0.0.0"},
-  "dependencies": {"@capacitor/core":"^7.4.3", "@capacitor/filesystem":"^7.1.4", "@capgo/capacitor-printer":"^8.1.8", "@supabase/supabase-js":"^2.57.0", "html2pdf.js":"^0.10.3", "lucide-react":"^0.468.0", "react":"^18.3.1", "react-dom":"^18.3.1"},
+  "dependencies": {"@capacitor/core":"^8.0.0", "@capacitor/filesystem":"^8.0.0", "@capgo/capacitor-printer":"^8.1.8", "@supabase/supabase-js":"^2.57.0", "html2pdf.js":"^0.10.3", "lucide-react":"^0.468.0", "react":"^18.3.1", "react-dom":"^18.3.1"},
   "devDependencies": {"@vitejs/plugin-react":"^4.3.4", "vite":"^6.0.7"}
 }
