@@ -224,3 +224,7 @@
  .daily-report-footer{break-inside:avoid}
  .invoice-backdrop,.invoice-backdrop *{visibility:hidden!important;display:none!important}
 }
+
+
+/* Expanded inventory model details */
+.inventory-detail-row>td{background:rgba(201,164,82,.045);padding:14px!important}.inventory-detail{display:flex;flex-direction:column;gap:12px}.inventory-detail-heading{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;color:var(--gold,#d2b36b)}.inventory-detail-colors{font-size:13px;color:var(--muted,#aaa);line-height:1.8}.inventory-detail .table-wrap{overflow-x:auto}.inventory-detail table{min-width:460px}.inventory-detail table th,.inventory-detail table td{padding:10px 12px}.inventory-detail table tr:last-child td{border-bottom:0}
