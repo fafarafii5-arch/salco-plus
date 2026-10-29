@@ -32,6 +32,13 @@ jobs:
           distribution: temurin
           java-version: '21'
 
+      # Keep the Android debug signing key between builds so future APKs can update in place.
+      - name: Restore stable Android debug signing key
+        uses: actions/cache@v4
+        with:
+          path: ~/.android/debug.keystore
+          key: salco-android-debug-signing-v1
+
       - name: Install web dependencies
         run: npm install --no-audit --no-fund
 
