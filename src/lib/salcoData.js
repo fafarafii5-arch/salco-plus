@@ -47,9 +47,9 @@ export async function createCustomer(branchId, customer) {
 }
 
 export async function listSales(branchId) {
-  const { data, error } = await supabase.from('sales').select('id, invoice_no, discount, total, payment_method, sold_at, sale_items(product_name, quantity, unit_cost), customers(full_name)').eq('branch_id', branchId).eq('status', 'completed').order('sold_at', { ascending: false });
+  const { data, error } = await supabase.from('sales').select('id, invoice_no, discount, total, payment_method, sold_at, sale_items(product_id, product_name, quantity, unit_cost), customers(full_name)').eq('branch_id', branchId).eq('status', 'completed').order('sold_at', { ascending: false });
   if (error) throw error;
-  return (data || []).map(s => ({ id: s.id, date: s.sold_at, product: (s.sale_items || []).map(i => i.product_name).join('، '), qty: (s.sale_items || []).reduce((n, i) => n + Number(i.quantity), 0), customer: s.customers?.full_name || 'مشتری حضوری', total: Number(s.total), cost: (s.sale_items || []).reduce((n, i) => n + Number(i.unit_cost) * Number(i.quantity), 0), discount: Number(s.discount), payment: s.payment_method }));
+  return (data || []).map(s => ({ id: s.id, invoiceNo: s.invoice_no, date: s.sold_at, product: (s.sale_items || []).map(i => i.product_name).join('، '), items: (s.sale_items || []).map(i => ({ productId: i.product_id, productName: i.product_name, quantity: Number(i.quantity), unitCost: Number(i.unit_cost) })), qty: (s.sale_items || []).reduce((n, i) => n + Number(i.quantity), 0), customer: s.customers?.full_name || 'مشتری حضوری', total: Number(s.total), cost: (s.sale_items || []).reduce((n, i) => n + Number(i.unit_cost) * Number(i.quantity), 0), discount: Number(s.discount), payment: s.payment_method }));
 }
 
 export async function listCashTransactions(branchId) {
