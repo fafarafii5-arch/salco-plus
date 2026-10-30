@@ -2,6 +2,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import html2pdf from 'html2pdf.js';
 import { Filesystem, Directory } from '@capacitor/filesystem';
+import { App as CapacitorApp } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import { supabase, isSupabaseConfigured } from './lib/supabase';
 import { getCurrentBranch, listProducts, createProduct, updateProductPrices, listCustomers, createCustomer, listSales, listCashTransactions, createCashTransaction, deactivateProduct } from './lib/salcoData';
@@ -97,7 +98,7 @@ function App(){
  const [transferBusy,setTransferBusy]=useState(false);
  const [cashForm,setCashForm]=useState({type:'دریافت',title:'',amount:0});
  const backStateRef=useRef({});
- backStateRef.current={page,mobileOpen,showProduct,invoice,editingPrice,showCash,editingSale,calendarOpen};
+ backStateRef.current={page,mobileOpen,showProduct,invoice,editingPrice,showCash,showSale,editingSale,calendarOpen};
  useEffect(()=>{
    const pushGuard=()=>window.history.pushState({salcoBackGuard:true},'','#salco');
    pushGuard();
@@ -108,14 +109,22 @@ function App(){
      else if(state.editingPrice)setEditingPrice(null);
      else if(state.showCash)setShowCash(false);
      else if(state.showProduct)setShowProduct(false);
+     else if(state.showSale)setShowSale(false);
      else if(state.calendarOpen)setCalendarOpen(false);
      else if(state.mobileOpen)setMobileOpen(false);
      else if(state.page!=='داشبورد')setPage('داشبورد');
-     else return;
+     else { CapacitorApp.exitApp().catch(()=>{}); return; }
      pushGuard();
    };
    window.addEventListener('popstate',handleBack);
-   return ()=>window.removeEventListener('popstate',handleBack);
+   let nativeBackListener;
+   if(Capacitor.isNativePlatform()){
+     CapacitorApp.addListener('backButton',handleBack).then(listener=>{nativeBackListener=listener;}).catch(()=>{});
+   }
+   return ()=>{
+     window.removeEventListener('popstate',handleBack);
+     nativeBackListener?.remove();
+   };
  },[]);
  const persist=(key,val,setter)=>{setter(val);};
  const loadRemote = async (activeSession) => {
