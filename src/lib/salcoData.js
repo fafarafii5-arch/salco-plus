@@ -47,7 +47,12 @@ export async function createProduct(branchId, product) {
 export async function listCustomers(branchId) {
   const { data, error } = await supabase.from('customers').select('id, full_name, phone, notes, created_at').eq('branch_id', branchId).order('created_at', { ascending: false });
   if (error) throw error;
-  return (data || []).map(c => ({ id: c.id, name: c.full_name, phone: c.phone || '', visits: 0, total: 0, notes: c.notes || '' }));
+  const ids=(data||[]).map(c=>c.id);
+  let ledger=[];
+  if(ids.length){const result=await supabase.from('customer_credit_ledger').select('customer_id,amount,entry_type').eq('branch_id',branchId).in('customer_id',ids);if(result.error)throw new Error('دریافت اعتبار مشتریان: '+result.error.message);ledger=result.data||[];}
+  const balances={};
+  ledger.forEach(x=>{balances[x.customer_id]=(balances[x.customer_id]||0)+(x.entry_type==='credit'?1:-1)*Number(x.amount||0);});
+  return (data || []).map(c => ({ id: c.id, name: c.full_name, phone: c.phone || '', visits: 0, total: 0, notes: c.notes || '', creditBalance: balances[c.id]||0 }));
 }
 
 export async function createCustomer(branchId, customer) {
