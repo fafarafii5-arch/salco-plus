@@ -92,10 +92,11 @@ export async function listSales(branchId) {
 }
 
 export async function registerSaleExchange(branchId, payload) {
-  const { data, error } = await supabase.rpc('register_sale_exchange', {
+  const { data, error } = await supabase.rpc('register_sale_exchange_v2', {
     p_branch_id: branchId,
     p_original_sale_id: payload.saleId,
     p_original_sale_item_id: payload.saleItemId,
+    p_exchange_date: payload.exchangeDate,
     p_return_quantity: Number(payload.returnQuantity),
     p_new_product_id: payload.newProductId,
     p_new_quantity: Number(payload.newQuantity),
