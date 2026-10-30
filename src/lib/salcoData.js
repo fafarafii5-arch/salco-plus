@@ -20,13 +20,20 @@ export async function getCurrentBranch() {
 
 export async function listProducts(branchId) {
   const { data, error } = await supabase.from('products').select('*').eq('branch_id', branchId).eq('is_active', true).order('created_at', { ascending: false });
-  if (error) throw error;
+  if (error) throw new Error('دریافت موجودی کالاها: ' + error.message);
   const ids = (data || []).map(p => p.id);
   const soldByProduct = {};
   if (ids.length) {
-    const { data: items, error: itemsError } = await supabase.from('sale_items').select('product_id, quantity, sales!inner(status, branch_id)').in('product_id', ids).eq('sales.status', 'completed').eq('sales.branch_id', branchId);
-    if (itemsError) throw itemsError;
-    (items || []).forEach(item => { soldByProduct[item.product_id] = (soldByProduct[item.product_id] || 0) + Number(item.quantity || 0); });
+    const { data: items, error: itemsError } = await supabase.from('sale_items').select('sale_id, product_id, quantity').in('product_id', ids);
+    if (itemsError) throw new Error('دریافت اقلام فروش برای موجودی: ' + itemsError.message);
+    const saleIds = [...new Set((items || []).map(i => i.sale_id).filter(Boolean))];
+    let completedSales = new Set();
+    if (saleIds.length) {
+      const { data: completed, error: salesError } = await supabase.from('sales').select('id').in('id', saleIds).eq('branch_id', branchId).eq('status', 'completed');
+      if (salesError) throw new Error('تطبیق فروش‌های ثبت‌شده با موجودی: ' + salesError.message);
+      completedSales = new Set((completed || []).map(s => s.id));
+    }
+    (items || []).forEach(item => { if(completedSales.has(item.sale_id)) soldByProduct[item.product_id] = (soldByProduct[item.product_id] || 0) + Number(item.quantity || 0); });
   }
   return (data || []).map(p => ({ id: p.id, name: p.name, sku: p.sku, category: p.category || 'متفرقه', variant: p.variant || 'ساده', size: p.size || '-', color: p.color || '-', stock: p.stock_qty, initialStock: Number(p.initial_stock_qty ?? p.stock_qty), buy: Number(p.purchase_price), price: Number(p.sale_price), sold: soldByProduct[p.id] || 0 }));
 }
@@ -54,9 +61,28 @@ export async function createCustomer(branchId, customer) {
 }
 
 export async function listSales(branchId) {
-  const { data, error } = await supabase.from('sales').select('id, invoice_no, discount, total, payment_method, sold_at, sale_items(product_id, product_name, quantity, unit_cost), customers(full_name)').eq('branch_id', branchId).eq('status', 'completed').order('sold_at', { ascending: false });
-  if (error) throw error;
-  return (data || []).map(s => ({ id: s.id, invoiceNo: s.invoice_no, date: s.sold_at, product: (s.sale_items || []).map(i => i.product_name).join('، '), items: (s.sale_items || []).map(i => ({ productId: i.product_id, productName: i.product_name, quantity: Number(i.quantity), unitCost: Number(i.unit_cost) })), qty: (s.sale_items || []).reduce((n, i) => n + Number(i.quantity), 0), customer: s.customers?.full_name || 'مشتری حضوری', total: Number(s.total), cost: (s.sale_items || []).reduce((n, i) => n + Number(i.unit_cost) * Number(i.quantity), 0), discount: Number(s.discount), payment: s.payment_method }));
+  const { data: sales, error } = await supabase.from('sales').select('id, invoice_no, customer_id, discount, total, payment_method, sold_at').eq('branch_id', branchId).eq('status', 'completed').order('sold_at', { ascending: false });
+  if (error) throw new Error('دریافت فاکتورهای فروش: ' + error.message);
+  const saleIds = (sales || []).map(s => s.id);
+  const customerIds = [...new Set((sales || []).map(s => s.customer_id).filter(Boolean))];
+  let items = [], customers = [];
+  if (saleIds.length) {
+    const result = await supabase.from('sale_items').select('sale_id, product_id, product_name, quantity, unit_cost').in('sale_id', saleIds);
+    if (result.error) throw new Error('دریافت ریز اقلام فاکتورها: ' + result.error.message);
+    items = result.data || [];
+  }
+  if (customerIds.length) {
+    const result = await supabase.from('customers').select('id, full_name').in('id', customerIds);
+    if (result.error) throw new Error('دریافت نام مشتریان فاکتورها: ' + result.error.message);
+    customers = result.data || [];
+  }
+  const customerById = Object.fromEntries(customers.map(c => [c.id, c.full_name]));
+  const itemsBySale = {};
+  items.forEach(i => { (itemsBySale[i.sale_id] ||= []).push(i); });
+  return (sales || []).map(s => {
+    const saleItems = itemsBySale[s.id] || [];
+    return { id: s.id, invoiceNo: s.invoice_no, date: s.sold_at, product: saleItems.map(i => i.product_name).join('، '), items: saleItems.map(i => ({ productId: i.product_id, productName: i.product_name, quantity: Number(i.quantity), unitCost: Number(i.unit_cost) })), qty: saleItems.reduce((n, i) => n + Number(i.quantity), 0), customer: customerById[s.customer_id] || 'مشتری حضوری', total: Number(s.total), cost: saleItems.reduce((n, i) => n + Number(i.unit_cost) * Number(i.quantity), 0), discount: Number(s.discount), payment: s.payment_method };
+  });
 }
 
 export async function listCashTransactions(branchId) {
