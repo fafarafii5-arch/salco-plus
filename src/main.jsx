@@ -1,5 +1,5 @@
 // SALCO+ inventory taxonomy and sales selectors
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import html2pdf from 'html2pdf.js';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Capacitor } from '@capacitor/core';
@@ -96,6 +96,27 @@ function App(){
  const [transfers,setTransfers]=useState([]);
  const [transferBusy,setTransferBusy]=useState(false);
  const [cashForm,setCashForm]=useState({type:'دریافت',title:'',amount:0});
+ const backStateRef=useRef({});
+ backStateRef.current={page,mobileOpen,showProduct,invoice,editingPrice,showCash,editingSale,calendarOpen};
+ useEffect(()=>{
+   const pushGuard=()=>window.history.pushState({salcoBackGuard:true},'','#salco');
+   pushGuard();
+   const handleBack=()=>{
+     const state=backStateRef.current;
+     if(state.invoice)setInvoice(null);
+     else if(state.editingSale)setEditingSale(null);
+     else if(state.editingPrice)setEditingPrice(null);
+     else if(state.showCash)setShowCash(false);
+     else if(state.showProduct)setShowProduct(false);
+     else if(state.calendarOpen)setCalendarOpen(false);
+     else if(state.mobileOpen)setMobileOpen(false);
+     else if(state.page!=='داشبورد')setPage('داشبورد');
+     else return;
+     pushGuard();
+   };
+   window.addEventListener('popstate',handleBack);
+   return ()=>window.removeEventListener('popstate',handleBack);
+ },[]);
  const persist=(key,val,setter)=>{setter(val);};
  const loadRemote = async (activeSession) => {
    if (!activeSession || !supabase) return;
