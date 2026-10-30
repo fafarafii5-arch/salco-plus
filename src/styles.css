@@ -592,3 +592,52 @@
 .daily-report-pdf .salco-signature-table th{
   overflow:visible!important;white-space:normal!important;overflow-wrap:anywhere!important;
 }
+
+
+/* Isolate the live daily-report panel from PDF-only dimensions */
+.daily-report-export-panel{
+  width:100%!important;max-width:100%!important;min-width:0!important;
+  box-sizing:border-box!important;overflow:hidden!important;
+}
+.daily-report-export-panel .form-grid{
+  width:100%!important;min-width:0!important;
+  grid-template-columns:minmax(0,1fr)!important;
+}
+.daily-report-export-panel .form-grid>*,
+.daily-report-export-panel .form-total,
+.daily-report-export-panel .form-footer{
+  min-width:0!important;max-width:100%!important;width:100%!important;
+  box-sizing:border-box!important;grid-column:1/-1!important;
+}
+.daily-report-export-panel .form-total{
+  display:flex!important;flex-wrap:wrap!important;
+  justify-content:space-between!important;align-items:center!important;
+  gap:8px 12px!important;padding:12px 14px!important;
+}
+.daily-report-export-panel .form-total span{
+  min-width:0!important;flex:1 1 120px!important;overflow-wrap:anywhere!important;
+}
+.daily-report-export-panel .form-total b{
+  min-width:0!important;max-width:100%!important;
+  flex:0 1 auto!important;text-align:left!important;
+  overflow-wrap:anywhere!important;word-break:break-word!important;
+  font-size:clamp(13px,3.8vw,16px)!important;
+}
+.daily-report-export-panel .form-footer{
+  display:flex!important;flex-wrap:wrap!important;gap:9px!important;
+}
+.daily-report-export-panel .form-footer .btn{
+  flex:1 1 210px!important;min-width:0!important;max-width:100%!important;
+  white-space:normal!important;line-height:1.5!important;
+}
+.daily-report-print.salco-signature-report.daily-report-pdf{
+  width:720px!important;max-width:720px!important;min-width:0!important;
+  height:auto!important;max-height:none!important;overflow:visible!important;
+}
+@media(max-width:600px){
+ .daily-report-export-panel{padding:14px!important}
+ .daily-report-export-panel .panel-head{min-width:0!important}
+ .daily-report-export-panel .panel-head h2{font-size:15px!important}
+ .daily-report-export-panel .form-footer .btn{flex:1 1 100%!important;width:100%!important}
+ .daily-report-print.salco-signature-report:not(.daily-report-pdf){width:100%!important;max-width:100%!important}
+}
