@@ -41,7 +41,7 @@ function JalaliDatePicker({value,onChange,label='تاریخ'}) {
 
 const productTaxonomy = {
  'کت شلوار': ['کت شلوار ساده','کت شلوار کلاسیک','کت شلوار دامادی','کت تک ساده','کت تک چهارخونه','کت تک دبل برست','کت تک آرشال','کت یقه آرشال','کت ژیله‌دار','کت دبل برست دیپلمات','کت دبل برست طوسی تیره','کت دبل فیس','کت دبل فیس سورمه‌ای برفی','کت دبل فیس دیپلمات','کت دبل فیس لیزری','جلیقه دبل فیس'],
- 'شلوار': ['ساده','کتان هنسل','کتان کمربند دار','پارچه‌ای','پارچه‌ای کمر انگلیسی دیپلمات نیم‌بگ مک‌کنزی','پارچه‌ای کمر انگلیسی دیپلمات بگ مک‌کنزی','پارچه‌ای کمر انگلیسی نیم‌بگ مک‌کنزی لینن','پارچه‌ای کمرکش نیم‌بگ مک‌کنزی','جین','جین بگ (Black Denim)','جین راسته (Alexander McQueen)'],
+ 'شلوار': ['کتان هنسل','کتان کمربند دار'],
  'پیراهن': ['ساده','VIP','جعبه‌ای','دیپلمات','آستین کوتاه'],
  'کفش': ['ساده','مجلسی بنددار','مجلسی قهوه‌ای','بنددار مشکی','اسپرت','ونس','کالج','نیم‌بوت'],
  'کیف': ['ساده','دستی کوچک'],
@@ -197,8 +197,8 @@ function App(){
  const visibleInventoryCategories=inventoryCategories.filter(c=>c.toLocaleLowerCase('fa').includes(saleCategorySearch.trim().toLocaleLowerCase('fa')));
  if(saleCategory && !visibleInventoryCategories.includes(saleCategory)) visibleInventoryCategories.unshift(saleCategory);
  const categoryProducts=products.filter(p=>productBase(p)===saleCategory);
- const variantOptions=[...new Set([...(productTaxonomy[saleCategory]||['ساده']),...categoryProducts.map(productVariant)])];
- const saleVariant=saleForm.variant && variantOptions.includes(saleForm.variant) ? saleForm.variant : (categoryProducts[0] ? productVariant(categoryProducts[0]) : variantOptions[0] || '');
+ const variantOptions=saleCategory==='شلوار' ? productTaxonomy['شلوار'] : [...new Set([...(productTaxonomy[saleCategory]||['ساده']),...categoryProducts.map(productVariant)])];
+ const saleVariant=saleForm.variant && variantOptions.includes(saleForm.variant) ? saleForm.variant : (categoryProducts.find(p=>variantOptions.includes(productVariant(p))) ? productVariant(categoryProducts.find(p=>variantOptions.includes(productVariant(p)))) : variantOptions[0] || '');
  const visibleVariantOptions=variantOptions.filter(v=>v.toLocaleLowerCase('fa').includes(saleVariantSearch.trim().toLocaleLowerCase('fa')));
  if(saleVariant && !visibleVariantOptions.includes(saleVariant)) visibleVariantOptions.unshift(saleVariant);
  const variantProducts=categoryProducts.filter(p=>productVariant(p)===saleVariant);
