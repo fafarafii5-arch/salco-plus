@@ -236,7 +236,8 @@ function App(){
  const visibleInventoryCategories=inventoryCategories.filter(c=>c.toLocaleLowerCase('fa').includes(saleCategorySearch.trim().toLocaleLowerCase('fa')));
  if(saleCategory && !visibleInventoryCategories.includes(saleCategory)) visibleInventoryCategories.unshift(saleCategory);
  const categoryProducts=products.filter(p=>productBase(p)===saleCategory);
- const variantOptions=saleCategory==='شلوار' ? productTaxonomy['شلوار'] : [...new Set([...(productTaxonomy[saleCategory]||['ساده']),...categoryProducts.map(productVariant)])];
+ const actualSaleVariants=[...new Set(categoryProducts.map(productVariant).filter(Boolean))];
+ const variantOptions=actualSaleVariants.length ? [...new Set([...(productTaxonomy[saleCategory]||[]).filter(v=>actualSaleVariants.includes(v)),...actualSaleVariants])] : (productTaxonomy[saleCategory]||['ساده']);
  const saleVariant=saleForm.variant && variantOptions.includes(saleForm.variant) ? saleForm.variant : (categoryProducts.find(p=>variantOptions.includes(productVariant(p))) ? productVariant(categoryProducts.find(p=>variantOptions.includes(productVariant(p)))) : variantOptions[0] || '');
  const visibleVariantOptions=variantOptions.filter(v=>v.toLocaleLowerCase('fa').includes(saleVariantSearch.trim().toLocaleLowerCase('fa')));
  if(saleVariant && !visibleVariantOptions.includes(saleVariant)) visibleVariantOptions.unshift(saleVariant);
