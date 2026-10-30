@@ -523,3 +523,42 @@
  .daily-report-print.salco-signature-report{width:100%!important;max-width:none!important;margin:0!important;border-radius:0!important;box-shadow:none!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
  .salco-report-hero,.salco-report-summary,.salco-report-details,.salco-report-footer,.salco-signature-table th,.salco-signature-table td{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 }
+
+
+/* Final containment fix for SALCO report on narrow app screens and A4 export */
+.daily-report-print.salco-signature-report{
+  display:block!important;position:relative!important;
+  width:100%!important;max-width:100%!important;min-width:0!important;
+  margin-left:0!important;margin-right:0!important;
+  justify-self:stretch!important;align-self:stretch!important;
+  overflow:hidden!important;
+}
+.daily-report-print.salco-signature-report,
+.daily-report-print.salco-signature-report *{min-width:0!important;max-width:100%}
+.daily-report-print.salco-signature-report .salco-report-hero,
+.daily-report-print.salco-signature-report .salco-report-summary,
+.daily-report-print.salco-signature-report .salco-report-details,
+.daily-report-print.salco-signature-report .salco-report-footer{width:100%!important}
+.daily-report-print.salco-signature-report .salco-report-hero{grid-template-columns:minmax(0, .82fr) minmax(0,1.18fr)!important}
+.daily-report-print.salco-signature-report .salco-report-logo img{
+  width:min(100%,225px)!important;height:auto!important;object-fit:contain!important
+}
+.daily-report-print.salco-signature-report .salco-signature-table{
+  width:100%!important;max-width:100%!important;table-layout:fixed!important
+}
+.daily-report-print.salco-signature-report .salco-signature-table td,
+.daily-report-print.salco-signature-report .salco-signature-table th{
+  overflow-wrap:anywhere!important;word-break:break-word!important
+}
+.daily-report-print.salco-signature-report.daily-report-pdf{
+  display:block!important;width:720px!important;max-width:720px!important;min-width:0!important;
+  margin:0!important;padding:0!important;border-radius:0!important;overflow:hidden!important
+}
+.daily-report-pdf .salco-report-hero{grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr)!important}
+.daily-report-pdf .salco-report-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+@media(max-width:600px){
+ .daily-report-print.salco-signature-report .salco-report-hero{grid-template-columns:minmax(0,1fr)!important}
+ .daily-report-print.salco-signature-report .salco-report-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .daily-report-print.salco-signature-report .salco-report-details{margin-left:8px!important;margin-right:8px!important;width:calc(100% - 16px)!important}
+ .daily-report-print.salco-signature-report .salco-report-footer{margin-left:12px!important;margin-right:12px!important;width:calc(100% - 24px)!important}
+}
