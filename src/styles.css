@@ -750,3 +750,22 @@
 .daily-report-pdf .salco-footer-copy em{font-size:14px!important;line-height:1.9!important}
 .daily-report-pdf .salco-footer-brand strong{font-size:42px!important}
 .daily-report-pdf .salco-footer-brand span{font-size:12px!important}
+
+
+/* Higher-specificity PDF table type overrides */
+.daily-report-pdf .salco-report-details .salco-signature-table th:nth-child(1),
+.daily-report-pdf .salco-report-details .salco-signature-table th:nth-child(2),
+.daily-report-pdf .salco-report-details .salco-signature-table th:nth-child(3){
+  font-size:17px!important;line-height:1.7!important;padding:17px 12px!important
+}
+.daily-report-pdf .salco-report-details .salco-signature-table td:nth-child(1),
+.daily-report-pdf .salco-report-details .salco-signature-table td:nth-child(2),
+.daily-report-pdf .salco-report-details .salco-signature-table td:nth-child(3){
+  font-size:18px!important;line-height:2!important;font-weight:700!important;
+  padding:20px 12px!important
+}
+.daily-report-pdf .salco-report-details .salco-signature-table tfoot th:nth-child(1),
+.daily-report-pdf .salco-report-details .salco-signature-table tfoot th:nth-child(2),
+.daily-report-pdf .salco-report-details .salco-signature-table tfoot th:nth-child(3){
+  font-size:18px!important;font-weight:900!important;padding:19px 12px!important
+}
