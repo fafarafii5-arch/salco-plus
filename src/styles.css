@@ -244,3 +244,17 @@
 
 /* Expanded inventory model details */
 .inventory-detail-row>td{background:rgba(201,164,82,.045);padding:14px!important}.inventory-detail{display:flex;flex-direction:column;gap:12px}.inventory-detail-heading{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;color:var(--gold,#d2b36b)}.inventory-detail-colors{font-size:13px;color:var(--muted,#aaa);line-height:1.8}.inventory-detail .table-wrap{overflow-x:auto}.inventory-detail table{min-width:460px}.inventory-detail table th,.inventory-detail table td{padding:10px 12px}.inventory-detail table tr:last-child td{border-bottom:0}
+
+/* Simple daily sales list: product and price only */
+.daily-report-print .daily-report-table-wrap{overflow:visible!important}
+.daily-report-print .daily-report-simple{width:100%!important;min-width:0!important;table-layout:fixed!important;border-collapse:collapse}
+.daily-report-print .daily-report-simple th{background:#24221d!important;color:#f0d58e!important;font-size:14px!important;padding:14px 16px!important;text-align:right}
+.daily-report-print .daily-report-simple th:first-child,.daily-report-print .daily-report-simple td:first-child{width:68%}
+.daily-report-print .daily-report-simple th:last-child,.daily-report-print .daily-report-simple td:last-child{width:32%;text-align:left;white-space:nowrap}
+.daily-report-print .daily-report-simple td{font-size:13px!important;padding:13px 16px!important;line-height:1.8;border-bottom:1px solid #e5dfd3;vertical-align:middle;overflow-wrap:anywhere}
+.daily-report-pdf .daily-report-simple{width:100%!important;min-width:0!important;table-layout:fixed!important}
+.daily-report-pdf .daily-report-simple th{font-size:15px!important;padding:15px 18px!important}
+.daily-report-pdf .daily-report-simple td{font-size:14px!important;padding:14px 18px!important;line-height:1.8}
+.daily-report-pdf .daily-report-simple th:first-child,.daily-report-pdf .daily-report-simple td:first-child{width:68%}
+.daily-report-pdf .daily-report-simple th:last-child,.daily-report-pdf .daily-report-simple td:last-child{width:32%;text-align:left;white-space:nowrap}
+@media(max-width:600px){.daily-report-print .daily-report-simple th,.daily-report-print .daily-report-simple td{font-size:12px!important;padding:11px 10px!important}}
