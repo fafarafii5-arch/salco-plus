@@ -41,7 +41,7 @@ export async function createProduct(branchId, product) {
     purchase_price: Number(product.buy), sale_price: Number(product.price), min_stock_qty: 3,
   }).select('*').single();
   if (error) throw error;
-  return { id: data.id, name: data.name, sku: data.sku, category: data.category, size: data.size, color: data.color, stock: data.stock_qty, initialStock: Number(data.initial_stock_qty ?? data.stock_qty), buy: Number(data.purchase_price), price: Number(data.sale_price), sold: 0 };
+  return { id: data.id, name: data.name, sku: data.sku, category: data.category, variant: data.variant || 'ساده', size: data.size || '-', color: data.color || '-', stock: data.stock_qty, initialStock: Number(data.initial_stock_qty ?? data.stock_qty), buy: Number(data.purchase_price), price: Number(data.sale_price), sold: 0 };
 }
 
 export async function listCustomers(branchId) {
