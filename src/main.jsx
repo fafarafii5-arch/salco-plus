@@ -237,7 +237,8 @@ function App(){
  if(saleCategory && !visibleInventoryCategories.includes(saleCategory)) visibleInventoryCategories.unshift(saleCategory);
  const categoryProducts=products.filter(p=>productBase(p)===saleCategory);
  const actualSaleVariants=[...new Set(categoryProducts.map(productVariant).filter(Boolean))];
- const variantOptions=actualSaleVariants.length ? [...new Set([...(productTaxonomy[saleCategory]||[]).filter(v=>actualSaleVariants.includes(v)),...actualSaleVariants])] : (productTaxonomy[saleCategory]||['ساده']);
+ // Keep the complete predefined catalog visible; append any legacy/custom variants found in inventory.
+ const variantOptions=[...new Set([...(productTaxonomy[saleCategory]||['ساده']),...actualSaleVariants])];
  const saleVariant=saleForm.variant && variantOptions.includes(saleForm.variant) ? saleForm.variant : (categoryProducts.find(p=>variantOptions.includes(productVariant(p))) ? productVariant(categoryProducts.find(p=>variantOptions.includes(productVariant(p)))) : variantOptions[0] || '');
  const visibleVariantOptions=variantOptions.filter(v=>v.toLocaleLowerCase('fa').includes(saleVariantSearch.trim().toLocaleLowerCase('fa')));
  if(saleVariant && !visibleVariantOptions.includes(saleVariant)) visibleVariantOptions.unshift(saleVariant);
