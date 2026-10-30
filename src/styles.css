@@ -290,3 +290,44 @@
  .invoice-paper .invoice-table td{background:#fff!important;color:#171717!important}
  .invoice-paper .invoice-table th{background:#24221d!important;color:#fff!important}
 }
+
+/* SALCO invoice: dark charcoal sheet with genuinely white readable text */
+.invoice-paper{background:#171714!important;color:#fff!important}
+.invoice-paper :where(h1,h2,h3,p,b,strong,span,small,td,th,div){color:#fff!important;opacity:1!important}
+.invoice-paper .invoice-brand h1,
+.invoice-paper .invoice-customer b,
+.invoice-paper .invoice-number small,
+.invoice-paper .invoice-number b,
+.invoice-paper .invoice-brand p,
+.invoice-paper .invoice-brand>div:nth-child(2)>span,
+.invoice-paper .invoice-customer small,
+.invoice-paper .invoice-table td,
+.invoice-paper .invoice-table td b,
+.invoice-paper .invoice-table td small,
+.invoice-paper .invoice-totals>div span,
+.invoice-paper .invoice-totals>div b,
+.invoice-paper .invoice-footer p,
+.invoice-paper .invoice-footer small,
+.invoice-paper .invoice-footer b,
+.invoice-paper .invoice-stamp,
+.invoice-paper .invoice-stamp small{color:#fff!important}
+.invoice-paper .invoice-brand>div:nth-child(2)>span,
+.invoice-paper .invoice-number b,
+.invoice-paper .invoice-footer b,
+.invoice-paper .invoice-stamp{color:#f0d58e!important}
+.invoice-paper .invoice-table th{background:#292720!important;color:#fff!important}
+.invoice-paper .invoice-table td{background:#20201c!important;color:#fff!important;border-bottom:1px solid #454238!important}
+.invoice-paper .invoice-table td small{color:#e5e2da!important}
+.invoice-paper .invoice-totals>div{border-bottom:1px solid #454238!important}
+.invoice-paper .invoice-totals .invoice-grand-total{background:#302b1e!important;border-right-color:#f0d58e!important}
+.invoice-paper .invoice-totals .invoice-grand-total span{color:#fff!important}
+.invoice-paper .invoice-totals .invoice-grand-total strong{color:#f0d58e!important}
+.invoice-paper .invoice-footer{border-top:1px solid #454238!important}
+.invoice-paper .invoice-stamp{border-color:#f0d58e!important}
+.invoice-paper .invoice-rule{background:linear-gradient(90deg,#b48a36,#f0d58e,#b48a36)!important}
+@media print{
+ .invoice-paper,.invoice-paper *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+ .invoice-paper{background:#171714!important;color:#fff!important}
+ .invoice-paper .invoice-table td{background:#20201c!important;color:#fff!important}
+ .invoice-paper .invoice-table th{background:#292720!important;color:#fff!important}
+}
