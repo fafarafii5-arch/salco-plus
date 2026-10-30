@@ -769,3 +769,27 @@
 .daily-report-pdf .salco-report-details .salco-signature-table tfoot th:nth-child(3){
   font-size:18px!important;font-weight:900!important;padding:19px 12px!important
 }
+
+
+/* PDF pagination: keep the complete sales-details card, including total row, together */
+.daily-report-pdf .salco-report-details{
+  break-inside:avoid!important;
+  page-break-inside:avoid!important;
+  -webkit-column-break-inside:avoid!important;
+}
+.daily-report-pdf .salco-report-details .salco-signature-table{
+  break-inside:avoid!important;
+  page-break-inside:avoid!important;
+}
+.daily-report-pdf .salco-report-details .salco-signature-table thead,
+.daily-report-pdf .salco-report-details .salco-signature-table tbody,
+.daily-report-pdf .salco-report-details .salco-signature-table tfoot{
+  break-inside:avoid!important;
+  page-break-inside:avoid!important;
+}
+.daily-report-pdf .salco-report-details .salco-signature-table tfoot tr{
+  break-before:avoid!important;
+  page-break-before:avoid!important;
+  break-inside:avoid!important;
+  page-break-inside:avoid!important;
+}
