@@ -61,11 +61,14 @@ export async function listSales(branchId) {
   if (error) throw new Error('دریافت فاکتورهای فروش: ' + error.message);
   const saleIds = (sales || []).map(s => s.id);
   const customerIds = [...new Set((sales || []).map(s => s.customer_id).filter(Boolean))];
-  let items = [], customers = [];
+  let items = [], customers = [], exchangeRows = [];
   if (saleIds.length) {
-    const result = await supabase.from('sale_items').select('sale_id, product_id, product_name, quantity, unit_cost').in('sale_id', saleIds);
+    const result = await supabase.from('sale_items').select('id, sale_id, product_id, product_name, sku, quantity, unit_price, discount, line_total, unit_cost').in('sale_id', saleIds);
     if (result.error) throw new Error('دریافت ریز اقلام فاکتورها: ' + result.error.message);
     items = result.data || [];
+    const exchanges = await supabase.from('sale_exchanges').select('original_sale_item_id, returned_quantity').in('original_sale_id', saleIds);
+    if (exchanges.error) throw new Error('دریافت سوابق تعویض: ' + exchanges.error.message);
+    exchangeRows = exchanges.data || [];
   }
   if (customerIds.length) {
     const result = await supabase.from('customers').select('id, full_name').in('id', customerIds);
@@ -75,10 +78,28 @@ export async function listSales(branchId) {
   const customerById = Object.fromEntries(customers.map(c => [c.id, c.full_name]));
   const itemsBySale = {};
   items.forEach(i => { (itemsBySale[i.sale_id] ||= []).push(i); });
+  const returnedByItem = {};
+  exchangeRows.forEach(x => { returnedByItem[x.original_sale_item_id] = (returnedByItem[x.original_sale_item_id] || 0) + Number(x.returned_quantity || 0); });
   return (sales || []).map(s => {
     const saleItems = itemsBySale[s.id] || [];
-    return { id: s.id, invoiceNo: s.invoice_no, date: s.sold_at, product: saleItems.map(i => i.product_name).join('، '), items: saleItems.map(i => ({ productId: i.product_id, productName: i.product_name, quantity: Number(i.quantity), unitCost: Number(i.unit_cost) })), qty: saleItems.reduce((n, i) => n + Number(i.quantity), 0), customer: customerById[s.customer_id] || 'مشتری حضوری', total: Number(s.total), cost: saleItems.reduce((n, i) => n + Number(i.unit_cost) * Number(i.quantity), 0), discount: Number(s.discount), payment: s.payment_method };
+    return { id: s.id, invoiceNo: s.invoice_no, date: s.sold_at, customerId: s.customer_id, product: saleItems.map(i => i.product_name).join('، '), items: saleItems.map(i => ({ id: i.id, productId: i.product_id, productName: i.product_name, sku: i.sku, quantity: Number(i.quantity), unitPrice: Number(i.unit_price), discount: Number(i.discount), lineTotal: Number(i.line_total), returnedQuantity: returnedByItem[i.id] || 0, unitCost: Number(i.unit_cost) })), qty: saleItems.reduce((n, i) => n + Number(i.quantity), 0), customer: customerById[s.customer_id] || 'مشتری حضوری', total: Number(s.total), cost: saleItems.reduce((n, i) => n + Number(i.unit_cost) * Number(i.quantity), 0), discount: Number(s.discount), payment: s.payment_method };
   });
+}
+
+export async function registerSaleExchange(branchId, payload) {
+  const { data, error } = await supabase.rpc('register_sale_exchange', {
+    p_branch_id: branchId,
+    p_original_sale_id: payload.saleId,
+    p_original_sale_item_id: payload.saleItemId,
+    p_return_quantity: Number(payload.returnQuantity),
+    p_new_product_id: payload.newProductId,
+    p_new_quantity: Number(payload.newQuantity),
+    p_return_condition: payload.returnCondition,
+    p_settlement_method: payload.settlementMethod,
+    p_notes: payload.notes || null,
+  });
+  if (error) throw error;
+  return data;
 }
 
 export async function listCashTransactions(branchId) {
