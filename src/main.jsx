@@ -147,7 +147,7 @@ function App(){
    (!normalizeInventorySearch(inventoryColorSearch)||normalizeInventorySearch(p.color).includes(normalizeInventorySearch(inventoryColorSearch)));
  });
  const inventoryCategories=[...new Set([...Object.keys(productTaxonomy),...products.map(p=>productBase(p))])].sort((a,b)=>a.localeCompare(b,'fa'));
- const inventoryColorOptions=[...new Set(["مشکی","سفید","طوسی","طوسی روشن","طوسی تیره","خاکستری","نقره‌ای","ذغالی","نوک‌مدادی","سرمه‌ای","سورمه‌ای","آبی","آبی روشن","آبی نفتی","آبی کاربنی","آبی آسمانی","آبی برفی","سبز","سبزآبی","سبز زیتونی","سبز یشمی","سبز کله‌غازی","زیتونی","کرم","کرم روشن","بژ","قهوه‌ای","قهوه‌ای روشن","شکلاتی","نسکافه‌ای","موکا","شتری","قرمز","زرشکی","صورتی","گلبهی","نارنجی","زرد","بنفش","یاسی","طلایی","مسی","استخوانی","شیری","لیمویی","بادمجونی","مشکی شاین","سورمه‌ای برفکی","چهارخانه","طرح‌دار","چند رنگ","بدون رنگ",...products.map(p=>cleanText(p.color)).filter(c=>c&&c!=='-'),form.color].filter(Boolean))].sort((a,b)=>a.localeCompare(b,'fa'));
+ const inventoryColorOptions=[...new Set(products.map(p=>cleanText(p.color)).filter(color=>color&&color!=='-'))].sort((a,b)=>a.localeCompare(b,'fa'));
  const saleCategory=saleForm.category || inventoryCategories[0] || '';
  const visibleInventoryCategories=inventoryCategories.filter(c=>c.toLocaleLowerCase('fa').includes(saleCategorySearch.trim().toLocaleLowerCase('fa')));
  if(saleCategory && !visibleInventoryCategories.includes(saleCategory)) visibleInventoryCategories.unshift(saleCategory);
