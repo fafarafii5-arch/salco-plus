@@ -187,7 +187,23 @@
 }
 
 
-/* Premium printable SALCO+ daily sales report */
+
+/* Fixed-width PDF layout: prevents narrow mobile viewport from collapsing report columns */
+.daily-report-pdf .daily-report-table-wrap{overflow:visible!important;width:100%}
+.daily-report-pdf .daily-report-table{width:100%!important;min-width:100%!important;table-layout:fixed!important;border-collapse:collapse}
+.daily-report-pdf .daily-report-table th,.daily-report-pdf .daily-report-table td{font-size:12px!important;padding:11px 9px!important;line-height:1.65;word-break:normal!important;overflow-wrap:break-word!important;white-space:normal}
+.daily-report-pdf .daily-report-table th:nth-child(1),.daily-report-pdf .daily-report-table td:nth-child(1){width:6%;text-align:center}
+.daily-report-pdf .daily-report-table th:nth-child(2),.daily-report-pdf .daily-report-table td:nth-child(2){width:9%;white-space:nowrap}
+.daily-report-pdf .daily-report-table th:nth-child(3),.daily-report-pdf .daily-report-table td:nth-child(3){width:15%}
+.daily-report-pdf .daily-report-table th:nth-child(4),.daily-report-pdf .daily-report-table td:nth-child(4){width:23%}
+.daily-report-pdf .daily-report-table th:nth-child(5),.daily-report-pdf .daily-report-table td:nth-child(5){width:7%;text-align:center}
+.daily-report-pdf .daily-report-table th:nth-child(6),.daily-report-pdf .daily-report-table td:nth-child(6){width:13%;white-space:nowrap}
+.daily-report-pdf .daily-report-table th:nth-child(7),.daily-report-pdf .daily-report-table td:nth-child(7){width:17%;white-space:nowrap}
+.daily-report-pdf .daily-report-table th:nth-child(8),.daily-report-pdf .daily-report-table td:nth-child(8){width:10%;white-space:nowrap}
+.daily-report-pdf .daily-report-summary{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.daily-report-pdf .daily-report-summary b{font-size:16px!important;white-space:nowrap}
+.daily-report-pdf .daily-report-footer{break-inside:avoid}
+\n/* Premium printable SALCO+ daily sales report */
 .daily-report-print{margin-top:18px;padding:clamp(16px,3vw,30px);background:#fbfaf7;color:#24221d;border:1px solid #c7a253;border-radius:10px;font-family:Tahoma,Arial,sans-serif}
 .daily-report-head{display:flex;align-items:center;justify-content:space-between;gap:18px}
 .daily-report-head span{font-size:10px;letter-spacing:2px;color:#96732e;font-weight:700}
