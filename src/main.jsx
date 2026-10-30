@@ -75,13 +75,21 @@ function load(key, fallback){try {const v=localStorage.getItem('salco_'+key);ret
 function cleanText(value){return String(value||'').trim().replace(/\s+/g,' ');}
 function productBase(p){return cleanText(p.category||'متفرقه');}
 function productVariant(p){
- if(cleanText(p.variant)) return cleanText(p.variant);
- let n=cleanText(p.name);
+ let n=cleanText(p.variant);
  const c=cleanText(p.category);
- const color=cleanText(p.color);
- if(c && n.toLowerCase().startsWith(c.toLowerCase())) n=cleanText(n.slice(c.length));
- if(color && color!=='-' && color!=='سایر' && n.toLowerCase().endsWith(color.toLowerCase())) n=cleanText(n.slice(0,n.length-color.length));
- n=n.replace(/^(کت\s*شلوار|کت‌وشلوار)\s*/,'');
+ if(!n){
+  n=cleanText(p.name);
+  const color=cleanText(p.color);
+  if(c && n.toLowerCase().startsWith(c.toLowerCase())) n=cleanText(n.slice(c.length));
+  if(color && color!=='-' && color!=='سایر' && n.toLowerCase().endsWith(color.toLowerCase())) n=cleanText(n.slice(0,n.length-color.length));
+  n=n.replace(/^(کت\s*شلوار|کت‌وشلوار)\s*/,'');
+ }
+ // Legacy cotton records stored the color inside the model name. Normalize them
+ // to the two canonical trouser models; the actual color remains in p.color.
+ if(c==='شلوار' && /کتان/.test(n)){
+  if(/هنسل/.test(n)) return 'کتان هنسل';
+  if(/کمربند/.test(n)) return 'کتان کمربند دار';
+ }
  return n||'ساده';
 }
 function App(){
