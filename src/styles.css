@@ -258,3 +258,35 @@
 .daily-report-pdf .daily-report-simple th:first-child,.daily-report-pdf .daily-report-simple td:first-child{width:68%}
 .daily-report-pdf .daily-report-simple th:last-child,.daily-report-pdf .daily-report-simple td:last-child{width:32%;text-align:left;white-space:nowrap}
 @media(max-width:600px){.daily-report-print .daily-report-simple th,.daily-report-print .daily-report-simple td{font-size:12px!important;padding:11px 10px!important}}
+
+/* Invoice readability: clean white paper with high-contrast dark typography */
+.invoice-paper{background:#fff!important;color:#171717!important;opacity:1!important}
+.invoice-paper :where(h1,h2,h3,p,b,strong,span,small,td,th,div){opacity:1!important}
+.invoice-paper .invoice-brand h1,
+.invoice-paper .invoice-customer b,
+.invoice-paper .invoice-table td,
+.invoice-paper .invoice-table td b,
+.invoice-paper .invoice-totals>div b,
+.invoice-paper .invoice-footer p{color:#171717!important}
+.invoice-paper .invoice-brand p,
+.invoice-paper .invoice-number small,
+.invoice-paper .invoice-customer small,
+.invoice-paper .invoice-table td small,
+.invoice-paper .invoice-totals>div span,
+.invoice-paper .invoice-footer small{color:#454545!important}
+.invoice-paper .invoice-number b,
+.invoice-paper .invoice-brand>div:nth-child(2)>span,
+.invoice-paper .invoice-footer b,
+.invoice-paper .invoice-stamp,
+.invoice-paper .invoice-stamp small{color:#76591e!important}
+.invoice-paper .invoice-table td{background:#fff!important;color:#171717!important}
+.invoice-paper .invoice-table th{background:#24221d!important;color:#fff!important}
+.invoice-paper .invoice-totals .invoice-grand-total{background:#24221d!important}
+.invoice-paper .invoice-totals .invoice-grand-total span{color:#fff!important}
+.invoice-paper .invoice-totals .invoice-grand-total strong{color:#f0d58e!important}
+@media print{
+ .invoice-paper,.invoice-paper *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+ .invoice-paper{background:#fff!important;color:#171717!important}
+ .invoice-paper .invoice-table td{background:#fff!important;color:#171717!important}
+ .invoice-paper .invoice-table th{background:#24221d!important;color:#fff!important}
+}
