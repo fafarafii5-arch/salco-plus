@@ -21,19 +21,15 @@ export async function getCurrentBranch() {
 export async function listProducts(branchId) {
   const { data, error } = await supabase.from('products').select('*').eq('branch_id', branchId).eq('is_active', true).order('created_at', { ascending: false });
   if (error) throw new Error('دریافت موجودی کالاها: ' + error.message);
-  const ids = (data || []).map(p => p.id);
   const soldByProduct = {};
-  if (ids.length) {
-    const { data: items, error: itemsError } = await supabase.from('sale_items').select('sale_id, product_id, quantity').in('product_id', ids);
+  const { data: sales, error: salesError } = await supabase.from('sales').select('id').eq('branch_id', branchId).eq('status', 'completed');
+  if (salesError) throw new Error('دریافت فروش‌های تکمیل‌شده برای محاسبه موجودی: ' + salesError.message);
+  const saleIds = (sales || []).map(s => s.id);
+  for (let offset = 0; offset < saleIds.length; offset += 100) {
+    const batch = saleIds.slice(offset, offset + 100);
+    const { data: items, error: itemsError } = await supabase.from('sale_items').select('sale_id, product_id, quantity').in('sale_id', batch);
     if (itemsError) throw new Error('دریافت اقلام فروش برای موجودی: ' + itemsError.message);
-    const saleIds = [...new Set((items || []).map(i => i.sale_id).filter(Boolean))];
-    let completedSales = new Set();
-    if (saleIds.length) {
-      const { data: completed, error: salesError } = await supabase.from('sales').select('id').in('id', saleIds).eq('branch_id', branchId).eq('status', 'completed');
-      if (salesError) throw new Error('تطبیق فروش‌های ثبت‌شده با موجودی: ' + salesError.message);
-      completedSales = new Set((completed || []).map(s => s.id));
-    }
-    (items || []).forEach(item => { if(completedSales.has(item.sale_id)) soldByProduct[item.product_id] = (soldByProduct[item.product_id] || 0) + Number(item.quantity || 0); });
+    (items || []).forEach(item => { if (item.product_id) soldByProduct[item.product_id] = (soldByProduct[item.product_id] || 0) + Number(item.quantity || 0); });
   }
   return (data || []).map(p => ({ id: p.id, name: p.name, sku: p.sku, category: p.category || 'متفرقه', variant: p.variant || 'ساده', size: p.size || '-', color: p.color || '-', stock: p.stock_qty, initialStock: Number(p.initial_stock_qty ?? p.stock_qty), buy: Number(p.purchase_price), price: Number(p.sale_price), sold: soldByProduct[p.id] || 0 }));
 }
