@@ -113,3 +113,14 @@ export async function deactivateProduct(productId) {
   if (error) throw error;
   return true;
 }
+export async function listProductPriceHistory(branchId, productIds) {
+  if (!productIds?.length) return [];
+  const { data, error } = await supabase
+    .from('product_price_history')
+    .select('id, product_id, old_price, new_price, changed_at, change_type')
+    .eq('branch_id', branchId)
+    .in('product_id', productIds)
+    .order('changed_at', { ascending: false });
+  if (error) throw new Error('دریافت سابقه قیمت: ' + error.message);
+  return data || [];
+}
