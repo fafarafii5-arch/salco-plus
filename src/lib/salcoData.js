@@ -31,17 +31,17 @@ export async function listProducts(branchId) {
     if (itemsError) throw new Error('دریافت اقلام فروش برای موجودی: ' + itemsError.message);
     (items || []).forEach(item => { if (item.product_id) soldByProduct[item.product_id] = (soldByProduct[item.product_id] || 0) + Number(item.quantity || 0); });
   }
-  return (data || []).map(p => ({ id: p.id, name: p.name, sku: p.sku, category: p.category || 'متفرقه', variant: p.variant || 'ساده', size: p.size || '-', color: p.color || '-', stock: p.stock_qty, initialStock: Number(p.initial_stock_qty ?? p.stock_qty), buy: Number(p.purchase_price), price: Number(p.sale_price), sold: soldByProduct[p.id] || 0 }));
+  return (data || []).map(p => ({ id: p.id, name: p.name, sku: p.sku, category: p.category || 'متفرقه', variant: p.variant || 'ساده', size: p.size || '-', color: p.color || '-', stock: p.stock_qty, initialStock: Number(p.initial_stock_qty ?? p.stock_qty), buy: Number(p.purchase_price), price: Number(p.sale_price), imageUrl: p.image_url || '', sold: soldByProduct[p.id] || 0 }));
 }
 
 export async function createProduct(branchId, product) {
   const { data, error } = await supabase.from('products').insert({
     branch_id: branchId, name: product.name, sku: product.sku, category: product.category, variant: product.variant || 'ساده',
     size: product.size, color: product.color, stock_qty: Number(product.stock), initial_stock_qty: Number(product.stock),
-    purchase_price: Number(product.buy), sale_price: Number(product.price), min_stock_qty: 3,
+    purchase_price: Number(product.buy), sale_price: Number(product.price), image_url: product.imageUrl || null, min_stock_qty: 3,
   }).select('*').single();
   if (error) throw error;
-  return { id: data.id, name: data.name, sku: data.sku, category: data.category, variant: data.variant || 'ساده', size: data.size || '-', color: data.color || '-', stock: data.stock_qty, initialStock: Number(data.initial_stock_qty ?? data.stock_qty), buy: Number(data.purchase_price), price: Number(data.sale_price), sold: 0 };
+  return { id: data.id, name: data.name, sku: data.sku, category: data.category, variant: data.variant || 'ساده', size: data.size || '-', color: data.color || '-', stock: data.stock_qty, initialStock: Number(data.initial_stock_qty ?? data.stock_qty), buy: Number(data.purchase_price), price: Number(data.sale_price), imageUrl: data.image_url || '', sold: 0 };
 }
 
 export async function listCustomers(branchId) {
@@ -150,4 +150,10 @@ export async function listProductPriceHistory(branchId, productIds) {
     .order('changed_at', { ascending: false });
   if (error) throw new Error('دریافت سابقه قیمت: ' + error.message);
   return data || [];
+}
+
+export async function updateProductImage(productId, imageUrl) {
+  const { data, error } = await supabase.from('products').update({ image_url: imageUrl || null }).eq('id', productId).select('id,image_url').single();
+  if (error) throw error;
+  return { id: data.id, imageUrl: data.image_url || '' };
 }
