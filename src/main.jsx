@@ -94,16 +94,7 @@ function productVariant(p){
  }
  return n||'ساده';
 }
-const PRODUCT_IMAGE_GALLERY = [
- {id:'black-puffer',label:'کاپشن کلاه‌دار مشکی',kind:'کاپشن',color:'مشکی',url:'https://images.unsplash.com/photo-1544923246-77307dd654cb?auto=format&fit=crop&w=320&q=85'},
- {id:'white-puffer',label:'کاپشن کلاه‌دار سفید',kind:'کاپشن',color:'سفید',url:'https://images.unsplash.com/photo-1548126032-079a0fb0099d?auto=format&fit=crop&w=320&q=85'},
- {id:'white-shirt',label:'پیراهن سفید',kind:'پیراهن',color:'سفید',url:'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=320&q=85'},
- 
- {id:'navy-suit',label:'کت‌وشلوار سرمه‌ای',kind:'کت‌وشلوار',color:'سرمه‌ای',url:'https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?auto=format&fit=crop&w=320&q=85'},
- {id:'cream-trousers',label:'شلوار کرم',kind:'شلوار',color:'کرم',url:'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?auto=format&fit=crop&w=320&q=85'},
- {id:'black-trousers',label:'شلوار مشکی',kind:'شلوار',color:'مشکی',url:'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=320&q=85'},
- {id:'grey-knit',label:'بافت طوسی',kind:'بافت',color:'طوسی',url:'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&w=320&q=85'}
-];
+const PRODUCT_IMAGE_GALLERY = [];
 function galleryImagesForProduct(product) {
  const normalize=value=>cleanText(value).replace(/[ي]/g,'ی').replace(/[ك]/g,'ک').replace(/[\u200c\s_-]+/g,'').toLowerCase();
  const category=normalize(product?.category);
