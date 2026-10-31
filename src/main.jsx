@@ -109,16 +109,31 @@ function productIllustrationUrl(product) {
  const category=cleanText(product?.category||'').replace(/[ي]/g,'ی').replace(/[ك]/g,'ک');
  const color=productColorHex(product?.color);
  const isPants=/شلوار/.test(category);
- const isShirt=/پیراهن|تیشرت|پولوشرت/.test(category);
- const isCoat=/کاپشن|بارانی|سویشرت|بافت/.test(category);
- const shape=isPants
-  ? '<path d="M72 38h56l-5 145h-22l-9-86-9 86H61L56 38z" fill="'+color+'" stroke="#343434" stroke-width="2"/><path d="M90 42v52" stroke="#fff" opacity=".35" stroke-width="2"/>'
+ const isShoe=/کفش/.test(category);
+ const isBag=/کیف/.test(category);
+ const isAccessory=/اکسسوری|کراوات|کمربند|جوراب/.test(category);
+ const isOuter=/کت|کاپشن|بارانی|سویشرت|بافت|سلانیک/.test(category);
+ const isPolo=/پولوشرت/.test(category);
+ const isTee=/تیشرت/.test(category);
+ const isShirt=/پیراهن/.test(category);
+ const garment = isShoe
+  ? '<path d="M42 119c20-5 31-19 39-43l15-31 28 8c7 30 20 46 38 56 10 6 13 15 12 27H45c-8-3-10-10-3-17z" fill="'+color+'" stroke="#d6a94d" stroke-width="3"/><path d="M89 82l31 11m-38-1 31 11m-39-1 31 11" stroke="#f5df9a" stroke-width="4" stroke-linecap="round"/><path d="M48 133h124" stroke="#f7d77d" stroke-width="5" stroke-linecap="round"/>'
+  : isPants
+  ? '<path d="M65 42h70l-5 67-8 68H96l-5-58-7 58H58l-3-68z" fill="'+color+'" stroke="#d6a94d" stroke-width="3" stroke-linejoin="round"/><path d="M66 49h68M100 49v70" stroke="#f5df9a" stroke-width="3" opacity=".9"/><path d="M93 53h14" stroke="#f5df9a" stroke-width="4" stroke-linecap="round"/>'
+  : isBag
+  ? '<rect x="52" y="72" width="96" height="96" rx="16" fill="'+color+'" stroke="#d6a94d" stroke-width="3"/><path d="M75 76V62a25 25 0 0 1 50 0v14" fill="none" stroke="#f5df9a" stroke-width="7"/><path d="M83 111h34" stroke="#f5df9a" stroke-width="4" stroke-linecap="round"/>'
+  : isAccessory
+  ? '<path d="M84 43h32l-8 27 21 87-21 17-21-17 21-87z" fill="'+color+'" stroke="#d6a94d" stroke-width="3" stroke-linejoin="round"/><path d="M85 44l15 20 15-20M100 65l-8 53 8 18 8-18z" fill="#f5df9a" opacity=".9"/>'
+  : isOuter
+  ? '<path d="M77 39l23 12 23-12 31 27-17 24-15-12v91H78V78L63 90 46 66z" fill="'+color+'" stroke="#d6a94d" stroke-width="3" stroke-linejoin="round"/><path d="M100 51v118M77 39l23 25 23-25" fill="none" stroke="#f5df9a" stroke-width="4"/><path d="M91 89h18m-18 18h18m-18 18h18" stroke="#f5df9a" stroke-width="3" stroke-linecap="round"/>'
+  : isPolo
+  ? '<path d="M77 39l23 12 23-12 31 27-17 24-15-12v91H78V78L63 90 46 66z" fill="'+color+'" stroke="#d6a94d" stroke-width="3" stroke-linejoin="round"/><path d="M77 39l23 25 23-25-13 37-10-12-10 12z" fill="#f5df9a" stroke="#d6a94d" stroke-width="2"/><path d="M100 76v28m0 4v3m0 8v3" stroke="#f5df9a" stroke-width="3" stroke-linecap="round"/>'
+  : isTee
+  ? '<path d="M77 39l23 12 23-12 31 27-17 24-15-12v91H78V78L63 90 46 66z" fill="'+color+'" stroke="#d6a94d" stroke-width="3" stroke-linejoin="round"/><path d="M85 42q15 20 30 0" fill="none" stroke="#f5df9a" stroke-width="4"/>'
   : isShirt
-  ? '<path d="M75 35l25 12 25-12 28 25-18 24-14-12v108H54V72L40 84 22 60l28-25 25 0z" fill="'+color+'" stroke="#343434" stroke-width="2"/><path d="M75 35l25 22 25-22M100 57v123" fill="none" stroke="#fff" opacity=".5" stroke-width="2"/>'
-  : isCoat
-  ? '<path d="M72 32l28 12 28-12 28 29-17 25-13-12v100H46V74L33 86 16 61l28-29z" fill="'+color+'" stroke="#343434" stroke-width="2"/><path d="M100 44v130M76 51l24 23 24-23" fill="none" stroke="#fff" opacity=".45" stroke-width="3"/>'
-  : '<path d="M72 35l28 12 28-12 30 27-18 25-16-12v103H56V75L40 87 10 62l30-27z" fill="'+color+'" stroke="#343434" stroke-width="2"/><path d="M100 47v131M72 35l28 23 28-23" fill="none" stroke="#fff" opacity=".55" stroke-width="2"/>';
- const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220"><rect width="200" height="220" rx="14" fill="#f4f1ea"/><ellipse cx="100" cy="190" rx="52" ry="7" fill="#d9d4ca"/>'+shape+'</svg>';
+  ? '<path d="M77 39l23 12 23-12 31 27-17 24-15-12v91H78V78L63 90 46 66z" fill="'+color+'" stroke="#d6a94d" stroke-width="3" stroke-linejoin="round"/><path d="M77 39l23 25 23-25-13 37-10-12-10 12z" fill="#f5df9a" stroke="#d6a94d" stroke-width="2"/><path d="M100 76v93m0-79h4m-4 17h4m-4 17h4" stroke="#f5df9a" stroke-width="3"/>'
+  : '<path d="M77 39l23 12 23-12 31 27-17 24-15-12v91H78V78L63 90 46 66z" fill="'+color+'" stroke="#d6a94d" stroke-width="3" stroke-linejoin="round"/><path d="M77 39l23 25 23-25-13 37-10-12-10 12z" fill="#f5df9a" stroke="#d6a94d" stroke-width="2"/>';
+ const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220"><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#14241d"/><stop offset="1" stop-color="#080d0b"/></linearGradient><linearGradient id="gold" x1="0" y1="0" x2="0.9" y2="1"><stop stop-color="#fff0ad"/><stop offset=".45" stop-color="#d6a94d"/><stop offset="1" stop-color="#8d6023"/></linearGradient><radialGradient id="glow"><stop stop-color="#c99a40" stop-opacity=".2"/><stop offset="1" stop-color="#c99a40" stop-opacity="0"/></radialGradient></defs><rect width="200" height="220" rx="24" fill="url(#bg)"/><circle cx="100" cy="106" r="95" fill="url(#glow)"/><rect x="8" y="8" width="184" height="204" rx="20" fill="none" stroke="url(#gold)" stroke-width="2.5"/><ellipse cx="100" cy="180" rx="51" ry="7" fill="#000" opacity=".45"/>'+garment+'<path d="M29 190h142" stroke="#d6a94d" stroke-opacity=".35" stroke-width="1.5"/></svg>';
  return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
 }
 function galleryImagesForProduct(product) {
