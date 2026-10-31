@@ -152,8 +152,10 @@ export async function listProductPriceHistory(branchId, productIds) {
   return data || [];
 }
 
-export async function updateProductImage(productId, imageUrl) {
-  const { data, error } = await supabase.from('products').update({ image_url: imageUrl || null }).eq('id', productId).select('id,image_url').single();
+export async function updateProductImage(productId, imageUrl, color) {
+  const changes = { image_url: imageUrl || null };
+  if (color !== undefined) changes.color = color || null;
+  const { data, error } = await supabase.from('products').update(changes).eq('id', productId).select('id,image_url,color').single();
   if (error) throw error;
-  return { id: data.id, imageUrl: data.image_url || '' };
+  return { id: data.id, imageUrl: data.image_url || '', color: data.color || '' };
 }
