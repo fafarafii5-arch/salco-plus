@@ -109,7 +109,7 @@ export async function registerSaleExchange(branchId, payload) {
 }
 
 export async function listCashTransactions(branchId) {
-  const { data, error } = await supabase.from('cash_transactions').select('*').eq('branch_id', branchId).order('occurred_at', { ascending: false });
+  const { data, error } = await supabase.from('cash_transactions').select('*').eq('branch_id', branchId).eq('is_voided', false).order('occurred_at', { ascending: false });
   if (error) throw error;
   return (data || []).map(c => ({ id: c.id, date: c.occurred_at, type: c.transaction_type === 'expense' ? 'پرداخت' : 'دریافت', title: c.description || '', amount: Number(c.amount), payment: c.payment_method }));
 }
