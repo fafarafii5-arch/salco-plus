@@ -813,3 +813,5 @@
 .gallery-image-choice:focus-visible{outline:2px solid #f0c75a;outline-offset:2px}
 .gallery-clear-image{align-self:flex-start;border:1px solid #65502b;background:transparent;color:#c8b58b;border-radius:7px;padding:6px 10px;font:inherit;font-size:11px;cursor:pointer}
 .gallery-clear-image:hover{background:#302515;color:#f3d17b}
+
+.gallery-no-matches{grid-column:1/-1;color:#a79a7e;font-size:11px;padding:8px 2px;line-height:1.6}
