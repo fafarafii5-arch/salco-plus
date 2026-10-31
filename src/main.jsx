@@ -107,32 +107,61 @@ const productColorHex = value => {
 };
 function productIllustrationUrl(product) {
  const category=cleanText(product?.category||'').replace(/[ي]/g,'ی').replace(/[ك]/g,'ک');
+ const description=[category,product?.variant,product?.name].map(cleanText).join(' ').replace(/[ي]/g,'ی').replace(/[ك]/g,'ک');
  const color=productColorHex(product?.color);
- const isPants=/شلوار/.test(category);
- const isShoe=/کفش/.test(category);
- const isBag=/کیف/.test(category);
- const isAccessory=/اکسسوری|کراوات|کمربند|جوراب/.test(category);
- const isOuter=/کت|کاپشن|بارانی|سویشرت|بافت|سلانیک/.test(category);
- const isPolo=/پولوشرت/.test(category);
- const isTee=/تیشرت/.test(category);
- const isShirt=/پیراهن/.test(category);
+ const has=(pattern)=>pattern.test(description);
+ const isSuit=has(/کت\s*شلوار|کت‌وشلوار/);
+ const isPants=has(/شلوار/);
+ const isShoe=has(/کفش|نیم.?بوت/);
+ const isBag=has(/کیف|جاکارتی/);
+ const isTie=has(/کراوات|پاپیون/);
+ const isBelt=has(/کمربند/);
+ const isSock=has(/جوراب/);
+ const isAccessory=has(/اکسسوری|دکمه\s*سردست|گیره\s*کراوات/);
+ const isPuffer=has(/کاپشن|پافر/);
+ const isHooded=has(/کلاه.?دار|هودی/);
+ const isCoat=has(/بارانی|پالتو/);
+ const isVest=has(/جلیقه|ژیله/);
+ const isJacket=has(/کت\s*تک|کت تک|کت کلاسیک|کت دامادی|کت دبل|کت یقه|کت آرشال|کت ساده/);
+ const isKnit=has(/بافت|سلانیک|سویشرت/);
+ const isPolo=has(/پولوشرت/);
+ const isTee=has(/تیشرت|تی.?شرت/);
+ const isShirt=has(/پیراهن/);
+ const stroke='#d6a94d', detail='#f5df9a';
+ const shirtShape='<path d="M77 39l23 12 23-12 31 27-17 24-15-12v91H78V78L63 90 46 66z" fill="'+color+'" stroke="'+stroke+'" stroke-width="3" stroke-linejoin="round"/>';
  const garment = isShoe
-  ? '<path d="M42 119c20-5 31-19 39-43l15-31 28 8c7 30 20 46 38 56 10 6 13 15 12 27H45c-8-3-10-10-3-17z" fill="'+color+'" stroke="#d6a94d" stroke-width="3"/><path d="M89 82l31 11m-38-1 31 11m-39-1 31 11" stroke="#f5df9a" stroke-width="4" stroke-linecap="round"/><path d="M48 133h124" stroke="#f7d77d" stroke-width="5" stroke-linecap="round"/>'
+  ? '<path d="M42 119c20-5 31-19 39-43l15-31 28 8c7 30 20 46 38 56 10 6 13 15 12 27H45c-8-3-10-10-3-17z" fill="'+color+'" stroke="'+stroke+'" stroke-width="3"/><path d="M89 82l31 11m-38-1 31 11m-39-1 31 11" stroke="'+detail+'" stroke-width="4" stroke-linecap="round"/><path d="M48 133h124" stroke="'+detail+'" stroke-width="5" stroke-linecap="round"/>'
   : isPants
-  ? '<path d="M65 42h70l-5 67-8 68H96l-5-58-7 58H58l-3-68z" fill="'+color+'" stroke="#d6a94d" stroke-width="3" stroke-linejoin="round"/><path d="M66 49h68M100 49v70" stroke="#f5df9a" stroke-width="3" opacity=".9"/><path d="M93 53h14" stroke="#f5df9a" stroke-width="4" stroke-linecap="round"/>'
+  ? '<path d="M65 42h70l-5 67-8 68H96l-5-58-7 58H58l-3-68z" fill="'+color+'" stroke="'+stroke+'" stroke-width="3" stroke-linejoin="round"/><path d="M66 49h68M100 49v70" stroke="'+detail+'" stroke-width="3"/><path d="M93 53h14" stroke="'+detail+'" stroke-width="4" stroke-linecap="round"/>'
   : isBag
-  ? '<rect x="52" y="72" width="96" height="96" rx="16" fill="'+color+'" stroke="#d6a94d" stroke-width="3"/><path d="M75 76V62a25 25 0 0 1 50 0v14" fill="none" stroke="#f5df9a" stroke-width="7"/><path d="M83 111h34" stroke="#f5df9a" stroke-width="4" stroke-linecap="round"/>'
-  : isAccessory
-  ? '<path d="M84 43h32l-8 27 21 87-21 17-21-17 21-87z" fill="'+color+'" stroke="#d6a94d" stroke-width="3" stroke-linejoin="round"/><path d="M85 44l15 20 15-20M100 65l-8 53 8 18 8-18z" fill="#f5df9a" opacity=".9"/>'
-  : isOuter
-  ? '<path d="M77 39l23 12 23-12 31 27-17 24-15-12v91H78V78L63 90 46 66z" fill="'+color+'" stroke="#d6a94d" stroke-width="3" stroke-linejoin="round"/><path d="M100 51v118M77 39l23 25 23-25" fill="none" stroke="#f5df9a" stroke-width="4"/><path d="M91 89h18m-18 18h18m-18 18h18" stroke="#f5df9a" stroke-width="3" stroke-linecap="round"/>'
+  ? '<rect x="52" y="72" width="96" height="96" rx="16" fill="'+color+'" stroke="'+stroke+'" stroke-width="3"/><path d="M75 76V62a25 25 0 0 1 50 0v14" fill="none" stroke="'+detail+'" stroke-width="7"/><path d="M83 111h34" stroke="'+detail+'" stroke-width="4" stroke-linecap="round"/>'
+  : isTie
+  ? '<path d="M84 43h32l-8 27 21 87-21 17-21-17 21-87z" fill="'+color+'" stroke="'+stroke+'" stroke-width="3" stroke-linejoin="round"/><path d="M85 44l15 20 15-20M100 65l-8 53 8 18 8-18z" fill="'+detail+'" opacity=".9"/>'
+  : isBelt
+  ? '<path d="M35 92h130v34H35z" fill="'+color+'" stroke="'+stroke+'" stroke-width="3"/><rect x="88" y="81" width="38" height="56" rx="5" fill="none" stroke="'+detail+'" stroke-width="6"/><rect x="100" y="94" width="14" height="30" rx="2" fill="'+color+'"/>'
+  : isSock
+  ? '<path d="M68 42h42v83l25 18c13 9 8 27-8 27H76c-15 0-20-11-13-23l13-20V42z" fill="'+color+'" stroke="'+stroke+'" stroke-width="3" stroke-linejoin="round"/><path d="M68 58h42M68 70h42" stroke="'+detail+'" stroke-width="3"/>'
+  : isSuit
+  ? '<path d="M70 39l30 12 30-12 26 25-18 25-14-10v90H76V79L62 89 44 64z" fill="'+color+'" stroke="'+stroke+'" stroke-width="3" stroke-linejoin="round"/><path d="M70 39l30 28 30-28-15 42-15-14-15 14z" fill="#f5df9a" stroke="'+stroke+'" stroke-width="2"/><path d="M100 68v101M89 91l11 15 11-15" fill="none" stroke="'+detail+'" stroke-width="3"/><path d="M82 105h12m-12 15h12m-12 15h12m16-30h12m-12 15h12m-12 15h12" stroke="'+detail+'" stroke-width="2"/>'
+  : isHooded
+  ? '<path d="M76 62q24-39 48 0l8 15 25-11 16 28-20 17-12-9v76H59v-76l-12 9-20-17 16-28 25 11z" fill="'+color+'" stroke="'+stroke+'" stroke-width="3" stroke-linejoin="round"/><path d="M76 62q24-39 48 0l-8 28h-32z" fill="'+color+'" stroke="'+detail+'" stroke-width="3"/><path d="M100 91v87M83 111h34" stroke="'+detail+'" stroke-width="3"/>'
+  : isPuffer
+  ? '<path d="M77 39l23 12 23-12 31 27-17 24-15-12v91H78V78L63 90 46 66z" fill="'+color+'" stroke="'+stroke+'" stroke-width="3" stroke-linejoin="round"/><path d="M78 68h44M78 91h44M78 114h44M78 137h44M100 51v118" fill="none" stroke="'+detail+'" stroke-width="4"/>'
+  : isCoat
+  ? '<path d="M77 39l23 12 23-12 31 27-17 24-15-12v111H78V78L63 90 46 66z" fill="'+color+'" stroke="'+stroke+'" stroke-width="3" stroke-linejoin="round"/><path d="M77 39l23 25 23-25-13 37-10-12-10 12z" fill="'+detail+'" stroke="'+stroke+'" stroke-width="2"/><path d="M100 76v113M85 108h10m10 0h10m-25 23h10m10 0h10" stroke="'+detail+'" stroke-width="3"/>'
+  : isVest
+  ? '<path d="M77 39l23 12 23-12 23 29-15 20-11-10v91H82V78L71 88 56 68z" fill="'+color+'" stroke="'+stroke+'" stroke-width="3" stroke-linejoin="round"/><path d="M77 39l23 25 23-25-13 37-10-12-10 12z" fill="'+detail+'" stroke="'+stroke+'" stroke-width="2"/><path d="M100 76v93m-8-65h5m-5 17h5m-5 17h5" stroke="'+detail+'" stroke-width="3"/>'
+  : isJacket
+  ? '<path d="M77 39l23 12 23-12 31 27-17 24-15-12v91H78V78L63 90 46 66z" fill="'+color+'" stroke="'+stroke+'" stroke-width="3" stroke-linejoin="round"/><path d="M77 39l23 25 23-25-13 37-10-12-10 12z" fill="'+detail+'" stroke="'+stroke+'" stroke-width="2"/><path d="M100 76v93m-18-55h12m-12 20h12m-12 20h12m10-40h12m-12 20h12m-12 20h12" stroke="'+detail+'" stroke-width="3"/>'
+  : isKnit
+  ? '<path d="M77 39l23 12 23-12 31 27-17 24-15-12v91H78V78L63 90 46 66z" fill="'+color+'" stroke="'+stroke+'" stroke-width="3" stroke-linejoin="round"/><path d="M85 42q15 20 30 0" fill="none" stroke="'+detail+'" stroke-width="4"/><path d="M82 77v91m12-91v91m12-91v91m12-91v91" stroke="'+detail+'" stroke-opacity=".45" stroke-width="2"/>'
   : isPolo
-  ? '<path d="M77 39l23 12 23-12 31 27-17 24-15-12v91H78V78L63 90 46 66z" fill="'+color+'" stroke="#d6a94d" stroke-width="3" stroke-linejoin="round"/><path d="M77 39l23 25 23-25-13 37-10-12-10 12z" fill="#f5df9a" stroke="#d6a94d" stroke-width="2"/><path d="M100 76v28m0 4v3m0 8v3" stroke="#f5df9a" stroke-width="3" stroke-linecap="round"/>'
+  ? shirtShape+'<path d="M77 39l23 25 23-25-13 37-10-12-10 12z" fill="'+detail+'" stroke="'+stroke+'" stroke-width="2"/><path d="M100 76v28m0 4v3m0 8v3" stroke="'+detail+'" stroke-width="3" stroke-linecap="round"/>'
   : isTee
-  ? '<path d="M77 39l23 12 23-12 31 27-17 24-15-12v91H78V78L63 90 46 66z" fill="'+color+'" stroke="#d6a94d" stroke-width="3" stroke-linejoin="round"/><path d="M85 42q15 20 30 0" fill="none" stroke="#f5df9a" stroke-width="4"/>'
+  ? shirtShape+'<path d="M85 42q15 20 30 0" fill="none" stroke="'+detail+'" stroke-width="4"/>'
   : isShirt
-  ? '<path d="M77 39l23 12 23-12 31 27-17 24-15-12v91H78V78L63 90 46 66z" fill="'+color+'" stroke="#d6a94d" stroke-width="3" stroke-linejoin="round"/><path d="M77 39l23 25 23-25-13 37-10-12-10 12z" fill="#f5df9a" stroke="#d6a94d" stroke-width="2"/><path d="M100 76v93m0-79h4m-4 17h4m-4 17h4" stroke="#f5df9a" stroke-width="3"/>'
-  : '<path d="M77 39l23 12 23-12 31 27-17 24-15-12v91H78V78L63 90 46 66z" fill="'+color+'" stroke="#d6a94d" stroke-width="3" stroke-linejoin="round"/><path d="M77 39l23 25 23-25-13 37-10-12-10 12z" fill="#f5df9a" stroke="#d6a94d" stroke-width="2"/>';
+  ? shirtShape+'<path d="M77 39l23 25 23-25-13 37-10-12-10 12z" fill="'+detail+'" stroke="'+stroke+'" stroke-width="2"/><path d="M100 76v93m0-79h4m-4 17h4m-4 17h4" stroke="'+detail+'" stroke-width="3"/>'
+  : shirtShape+'<path d="M77 39l23 25 23-25-13 37-10-12-10 12z" fill="'+detail+'" stroke="'+stroke+'" stroke-width="2"/>';
  const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220"><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#14241d"/><stop offset="1" stop-color="#080d0b"/></linearGradient><linearGradient id="gold" x1="0" y1="0" x2="0.9" y2="1"><stop stop-color="#fff0ad"/><stop offset=".45" stop-color="#d6a94d"/><stop offset="1" stop-color="#8d6023"/></linearGradient><radialGradient id="glow"><stop stop-color="#c99a40" stop-opacity=".2"/><stop offset="1" stop-color="#c99a40" stop-opacity="0"/></radialGradient></defs><rect width="200" height="220" rx="24" fill="url(#bg)"/><circle cx="100" cy="106" r="95" fill="url(#glow)"/><rect x="8" y="8" width="184" height="204" rx="20" fill="none" stroke="url(#gold)" stroke-width="2.5"/><ellipse cx="100" cy="180" rx="51" ry="7" fill="#000" opacity=".45"/>'+garment+'<path d="M29 190h142" stroke="#d6a94d" stroke-opacity=".35" stroke-width="1.5"/></svg>';
  return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
 }
