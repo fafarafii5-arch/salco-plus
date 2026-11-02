@@ -62,7 +62,7 @@ export async function createCustomer(branchId, customer) {
 }
 
 export async function listSales(branchId) {
-  const { data: sales, error } = await supabase.from('sales').select('id, invoice_no, customer_id, discount, total, payment_method, sold_at').eq('branch_id', branchId).eq('status', 'completed').order('sold_at', { ascending: false });
+  const { data: sales, error } = await supabase.from('sales').select('id, invoice_no, customer_id, seller_name, discount, total, payment_method, sold_at').eq('branch_id', branchId).eq('status', 'completed').order('sold_at', { ascending: false });
   if (error) throw new Error('دریافت فاکتورهای فروش: ' + error.message);
   const saleIds = (sales || []).map(s => s.id);
   const customerIds = [...new Set((sales || []).map(s => s.customer_id).filter(Boolean))];
@@ -94,7 +94,7 @@ export async function listSales(branchId) {
   exchangeRows.forEach(x => { returnedByItem[x.original_sale_item_id] = (returnedByItem[x.original_sale_item_id] || 0) + Number(x.returned_quantity || 0); });
   return (sales || []).map(s => {
     const saleItems = itemsBySale[s.id] || [];
-    return { id: s.id, invoiceNo: s.invoice_no, date: s.sold_at, customerId: s.customer_id, product: saleItems.map(i => i.product_name).join('، '), items: saleItems.map(i => ({ id: i.id, productId: i.product_id, productName: i.product_name, sku: i.sku, size: productById[i.product_id]?.size || '', color: productById[i.product_id]?.color || '', quantity: Number(i.quantity), unitPrice: Number(i.unit_price), discount: Number(i.discount), lineTotal: Number(i.line_total), returnedQuantity: returnedByItem[i.id] || 0, unitCost: Number(i.unit_cost) })), qty: saleItems.reduce((n, i) => n + Number(i.quantity), 0), customer: customerById[s.customer_id] || 'مشتری حضوری', total: Number(s.total), cost: saleItems.reduce((n, i) => n + Number(i.unit_cost) * Number(i.quantity), 0), discount: Number(s.discount), payment: s.payment_method };
+    return { id: s.id, invoiceNo: s.invoice_no, date: s.sold_at, customerId: s.customer_id, seller: s.seller_name || '', product: saleItems.map(i => i.product_name).join('، '), items: saleItems.map(i => ({ id: i.id, productId: i.product_id, productName: i.product_name, sku: i.sku, size: productById[i.product_id]?.size || '', color: productById[i.product_id]?.color || '', quantity: Number(i.quantity), unitPrice: Number(i.unit_price), discount: Number(i.discount), lineTotal: Number(i.line_total), returnedQuantity: returnedByItem[i.id] || 0, unitCost: Number(i.unit_cost) })), qty: saleItems.reduce((n, i) => n + Number(i.quantity), 0), customer: customerById[s.customer_id] || 'مشتری حضوری', total: Number(s.total), cost: saleItems.reduce((n, i) => n + Number(i.unit_cost) * Number(i.quantity), 0), discount: Number(s.discount), payment: s.payment_method };
   });
 }
 
