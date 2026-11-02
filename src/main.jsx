@@ -305,9 +305,22 @@ function App(){
  const visibleInventoryCategories=inventoryCategories.filter(c=>c.toLocaleLowerCase('fa').includes(saleCategorySearch.trim().toLocaleLowerCase('fa')));
  if(saleCategory && !visibleInventoryCategories.includes(saleCategory)) visibleInventoryCategories.unshift(saleCategory);
  const categoryProducts=products.filter(p=>productBase(p)===saleCategory);
- const actualSaleVariants=[...new Set(categoryProducts.map(productVariant).filter(Boolean))];
- // Keep the complete predefined catalog visible; append any legacy/custom variants found in inventory.
- const variantOptions=[...new Set([...(productTaxonomy[saleCategory]||['ساده']),...actualSaleVariants])];
+ const canonicalSaleVariant=(value,category)=>{
+  let v=cleanText(value).replace(/[ي]/g,'ی').replace(/[ك]/g,'ک');
+  if(category==='کت شلوار'){
+   v=v.replace(/^(کت\s*و\s*شلوار|کت‌وشلوار|کت\s*شلوار)\s*/,'').trim();
+   if(/^یقه\s*آرشال$/i.test(v)) return 'کت و شلوار یقه آرشال';
+   if(/^کت\s*و\s*شلوار\s*یقه\s*آرشال$/i.test(v)) return 'کت و شلوار یقه آرشال';
+  }
+  return v;
+ };
+ const optionMap=new Map();
+ [...(productTaxonomy[saleCategory]||['ساده']),...categoryProducts.map(productVariant).filter(Boolean)].forEach(value=>{
+  const canonical=canonicalSaleVariant(value,saleCategory);
+  const key=saleVariantKey(canonical).toLocaleLowerCase('fa');
+  if(key&&!optionMap.has(key)) optionMap.set(key,canonical);
+ });
+ const variantOptions=[...optionMap.values()];
  const saleVariant=saleForm.variant && variantOptions.includes(saleForm.variant) ? saleForm.variant : (categoryProducts.find(p=>variantOptions.includes(productVariant(p))) ? productVariant(categoryProducts.find(p=>variantOptions.includes(productVariant(p)))) : variantOptions[0] || '');
  const visibleVariantOptions=variantOptions.filter(v=>v.toLocaleLowerCase('fa').includes(saleVariantSearch.trim().toLocaleLowerCase('fa')));
  if(saleVariant && !visibleVariantOptions.includes(saleVariant)) visibleVariantOptions.unshift(saleVariant);
