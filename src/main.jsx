@@ -44,7 +44,7 @@ const productTaxonomy = {
  'کت شلوار': ['کت شلوار ساده','کت شلوار کلاسیک','کت شلوار دامادی','کت شلوار دبل برست','کت تک ساده','کت تک چهارخونه','کت تک دبل برست','کت و شلوار یقه آرشال','کت ژیله‌دار','کت دبل فیس','جلیقه دبل فیس'],
  'شلوار': ['ساده','کتان هنسل','کتان کمربند دار','پارچه‌ای','پارچه‌ای کمر انگلیسی دیپلمات نیم‌بگ مک‌کنزی','پارچه‌ای کمر انگلیسی دیپلمات بگ مک‌کنزی','پارچه‌ای کمر انگلیسی نیم‌بگ مک‌کنزی لینن','پارچه‌ای کمرکش نیم‌بگ مک‌کنزی','جین','جین بگ (Black Denim)','جین راسته (Alexander McQueen)'],
  'پیراهن': ['ساده','VIP','جعبه‌ای','دیپلمات','آستین کوتاه'],
- 'کفش': ['ساده','مجلسی بنددار','مجلسی قهوه‌ای','بنددار مشکی','اسپرت','ونس','کالج','نیم‌بوت'],
+ 'کفش': ['ساده','مجلسی بنددار','مجلسی','بنددار','اسپرت','ونس','کالج','نیم‌بوت'],
  'کیف': ['ساده','دستی کوچک'],
  'اکسسوری': ['ساده','ست گیره کراوات','ست گیره کراوات و دکمه سردست','کراوات','پاپیون','دکمه سردست','دکمه سردست تکی','ست گیره و دکمه سرآستین','دکمه سرآستین تک'],
  'کمربند': ['ساده','VIP','پلاکی','پلاکی با سگک','کمربند VIP','ست کمربند و کیف','ست کمربند و کیف ساده','ست کمربند و کیف به‌همراه جاکارتی'],
@@ -85,6 +85,13 @@ function productVariant(p){
   if(c && n.toLowerCase().startsWith(c.toLowerCase())) n=cleanText(n.slice(c.length));
   if(color && color!=='-' && color!=='سایر' && n.toLowerCase().endsWith(color.toLowerCase())) n=cleanText(n.slice(0,n.length-color.length));
   n=n.replace(/^(کت\s*شلوار|کت‌وشلوار)\s*/,'');
+ }
+ // Color is a separate product attribute. Strip a trailing color accidentally
+ // embedded in the model/variant so the selector does not repeat it.
+ const color=cleanText(p.color).replace(/[ي]/g,'ی').replace(/[ك]/g,'ک');
+ const normalizedName=n.replace(/[ي]/g,'ی').replace(/[ك]/g,'ک');
+ if(color && color!=='-' && color!=='سایر' && normalizedName.toLowerCase().endsWith(color.toLowerCase())){
+  n=cleanText(n.slice(0,n.length-color.length));
  }
  // Legacy cotton records stored the color inside the model name. Normalize them
  // to the two canonical trouser models; the actual color remains in p.color.
