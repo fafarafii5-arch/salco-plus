@@ -77,24 +77,29 @@ function cleanText(value){return String(value||'').trim().replace(/\s+/g,' ');}
 function productBase(p){return cleanText(p.category||'متفرقه');}
 function saleVariantKey(value){return cleanText(value).replace(/[ي]/g,'ی').replace(/[ك]/g,'ک').replace(/نیم[\s‌-]*بگ/g,'بگ').replace(/\s+/g,' ').trim();}
 function productVariant(p){
- let n=cleanText(p.variant);
- const c=cleanText(p.category);
- if(!n){
-  n=cleanText(p.name);
-  const color=cleanText(p.color);
-  if(c && n.toLowerCase().startsWith(c.toLowerCase())) n=cleanText(n.slice(c.length));
-  if(color && color!=='-' && color!=='سایر' && n.toLowerCase().endsWith(color.toLowerCase())) n=cleanText(n.slice(0,n.length-color.length));
-  n=n.replace(/^(کت\s*شلوار|کت‌وشلوار)\s*/,'');
- }
- // Color is a separate product attribute. Strip a trailing color accidentally
- // embedded in the model/variant so the selector does not repeat it.
+ let n=cleanText(p.variant || p.name);
+ const c=cleanText(p.category).replace(/[ي]/g,'ی').replace(/[ك]/g,'ک');
  const color=cleanText(p.color).replace(/[ي]/g,'ی').replace(/[ك]/g,'ک');
- const normalizedName=n.replace(/[ي]/g,'ی').replace(/[ك]/g,'ک');
- if(color && color!=='-' && color!=='سایر' && normalizedName.toLowerCase().endsWith(color.toLowerCase())){
-  n=cleanText(n.slice(0,n.length-color.length));
+ // Strip category prefix from both explicit variants and legacy names.
+ const prefixes=[c,'کت و شلوار','کت‌وشلوار','کت شلوار'].filter(Boolean);
+ for(const prefix of prefixes){
+  if(n.toLocaleLowerCase('fa').startsWith(prefix.toLocaleLowerCase('fa'))){
+   n=cleanText(n.slice(prefix.length));
+  }
  }
- // Legacy cotton records stored the color inside the model name. Normalize them
- // to the two canonical trouser models; the actual color remains in p.color.
+ // Color belongs to its own field, not to the model selector.
+ if(color && color!=='-' && color!=='سایر'){
+  const normalizedN=n.replace(/[ي]/g,'ی').replace(/[ك]/g,'ک').toLocaleLowerCase('fa');
+  const normalizedColor=color.toLocaleLowerCase('fa');
+  if(normalizedN.endsWith(normalizedColor)){
+   n=cleanText(n.slice(0,n.length-color.length).replace(/[،,_-]+$/,''));
+  }
+ }
+ n=cleanText(n).replace(/[ي]/g,'ی').replace(/[ك]/g,'ک');
+ // Canonicalize legacy Arshal labels into one single catalog model.
+ if(c==='کت شلوار' && /^(یقه\s*آرشال|کت\s*و\s*شلوار\s*یقه\s*آرشال|کت\s*شلوار\s*یقه\s*آرشال)$/i.test(n)){
+  return 'کت و شلوار یقه آرشال';
+ }
  if(c==='شلوار' && /کتان/.test(n)){
   if(/هنسل/.test(n)) return 'کتان هنسل';
   if(/کمربند/.test(n)) return 'کتان کمربند دار';
