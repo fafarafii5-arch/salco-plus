@@ -815,3 +815,12 @@
 .gallery-clear-image:hover{background:#302515;color:#f3d17b}
 
 .gallery-no-matches{grid-column:1/-1;color:#a79a7e;font-size:11px;padding:8px 2px;line-height:1.6}
+
+
+/* Mobile drawer: scroll the menu itself, never the page underneath. */
+@media(max-width:850px){
+ .sidebar{height:100dvh;max-height:100dvh;overflow-y:auto;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;}
+ .sidebar nav{flex:0 0 auto;min-height:0;overscroll-behavior:contain;touch-action:pan-y;}
+ .sidebar-bottom{flex-shrink:0;}
+ body:has(.sidebar.open){overflow:hidden;}
+}
