@@ -1039,3 +1039,89 @@
     font-weight: 800 !important;
   }
 }
+
+
+/* Correct field overflow in mobile report cards and total row. */
+@media (max-width: 600px) {
+  .salco-signature-report .salco-signature-table tbody td:not(:first-child) {
+    display: flex !important;
+    flex-flow: row nowrap !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    text-align: right !important;
+  }
+  .salco-signature-report .salco-signature-table tbody td:not(:first-child)::before {
+    flex: 0 0 76px !important;
+    width: 76px !important;
+    max-width: 76px !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+  }
+  .salco-signature-report .salco-signature-table tbody td:not(:first-child) {
+    color: #f4ead7 !important;
+  }
+  .salco-signature-report .salco-signature-table tbody td:nth-child(2) {
+    min-height: 48px !important;
+  }
+  .salco-signature-report .salco-signature-table tbody td:nth-child(2)::before {
+    content: "فروشنده" !important;
+  }
+  .salco-signature-report .salco-signature-table tbody td:nth-child(6) {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
+  }
+  .salco-signature-report .salco-signature-table tbody td:nth-child(6)::before {
+    flex-basis: 76px !important;
+    width: 76px !important;
+    max-width: 76px !important;
+    content: "مبلغ نهایی" !important;
+  }
+  .salco-signature-report .salco-signature-table tfoot {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+  .salco-signature-report .salco-signature-table tfoot tr {
+    display: flex !important;
+    flex-flow: row wrap !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px 12px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    padding: 14px 12px !important;
+    overflow: hidden !important;
+  }
+  .salco-signature-report .salco-signature-table tfoot th {
+    display: block !important;
+    float: none !important;
+    width: auto !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    padding: 6px 0 !important;
+    margin: 0 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
+    text-align: right !important;
+  }
+  .salco-signature-report .salco-signature-table tfoot th:first-child {
+    flex: 1 1 110px !important;
+  }
+  .salco-signature-report .salco-signature-table tfoot th:last-child {
+    flex: 0 1 auto !important;
+    white-space: normal !important;
+    text-align: left !important;
+    color: #17130c !important;
+  }
+}
