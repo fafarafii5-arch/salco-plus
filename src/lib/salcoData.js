@@ -123,7 +123,7 @@ export async function listCashTransactions(branchId) {
 
 export async function createCashTransaction(branchId, userId, item) {
   const { data, error } = await supabase.from('cash_transactions').insert({
-    branch_id: branchId, created_by: userId, transaction_type: item.type === 'پرداخت' ? 'expense' : 'receipt',
+    branch_id: branchId, sale_id: item.saleId || null, created_by: userId, transaction_type: item.type === 'پرداخت' ? 'expense' : 'receipt',
     payment_method: 'other', amount: Number(item.amount), description: item.title,
   }).select('*').single();
   if (error) throw error;
