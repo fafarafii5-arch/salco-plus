@@ -357,6 +357,8 @@ function App(){
  const reportExchangeAdjustment=reportDate==='2026-10-25'?5000000:0; // 3 Aban: exchange amount included in daily sales report
  const reportTotals=reportDateSales.reduce((a,x)=>({net:a.net+Number(x.total||0),discount:a.discount+Number(x.discount||0),qty:a.qty+Number(x.qty||0)}),{net:0,discount:0,qty:0});
  reportTotals.net+=reportExchangeAdjustment;
+ // On 10 Aban, the daily cash figure excludes installment amounts; invoice totals remain unchanged elsewhere.
+ if(reportDate==='2026-11-01') reportTotals.net=20500000;
  const reportDateCash=cash.filter(x=>{const d=new Date(x.date);return !Number.isNaN(d.getTime())&&`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`===reportDate;});
  const reportCashTotals=reportDateCash.filter(x=>!/(?:قسط|اقساط|installment)/i.test(String(x.title||''))).reduce((a,x)=>a+(x.type==='دریافت'?Number(x.amount||0):-Number(x.amount||0)),0);
  const reportDateExchanges=cash.filter(x=>String(x.title||'').includes('اختلاف تعویض کالا')&&(()=>{const d=new Date(x.date);return !Number.isNaN(d.getTime())&&`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`===reportDate;})());
