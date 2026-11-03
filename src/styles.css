@@ -1180,3 +1180,130 @@
     overflow: visible !important;
   }
 }
+
+
+/* Daily sales report: mobile-first readable item cards instead of six cramped columns. */
+@media (max-width: 600px) {
+  .daily-report-print .salco-report-details .daily-report-table {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    table-layout: auto !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+  }
+  .daily-report-print .salco-report-details .daily-report-table thead {
+    display: none !important;
+  }
+  .daily-report-print .salco-report-details .daily-report-table tbody,
+  .daily-report-print .salco-report-details .daily-report-table tfoot {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  .daily-report-print .salco-report-details .daily-report-table tbody tr {
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    margin: 0 0 12px !important;
+    padding: 10px 12px !important;
+    border: 1px solid #80602e !important;
+    border-radius: 12px !important;
+    background: linear-gradient(145deg,#191815,#10100f) !important;
+  }
+  .daily-report-print .salco-report-details .daily-report-table tbody td {
+    display: flex !important;
+    flex-flow: row nowrap !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    padding: 9px 0 !important;
+    border: 0 !important;
+    border-bottom: 1px solid #393329 !important;
+    color: #f4ead7 !important;
+    font-size: 12px !important;
+    line-height: 1.65 !important;
+    text-align: right !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
+    writing-mode: horizontal-tb !important;
+  }
+  .daily-report-print .salco-report-details .daily-report-table tbody td::before {
+    content: "" !important;
+    flex: 0 0 82px !important;
+    width: 82px !important;
+    max-width: 82px !important;
+    color: #c9a45d !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    white-space: normal !important;
+    overflow-wrap: normal !important;
+  }
+  .daily-report-print .salco-report-details .daily-report-table tbody td:nth-child(1) {
+    display: block !important;
+    color: #f6e8c8 !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+    border-bottom: 1px solid #80602e !important;
+    padding: 10px 0 12px !important;
+  }
+  .daily-report-print .salco-report-details .daily-report-table tbody td:nth-child(1)::before {
+    content: "نام کالا" !important;
+    display: block !important;
+    width: auto !important;
+    max-width: none !important;
+    margin-bottom: 5px !important;
+  }
+  .daily-report-print .salco-report-details .daily-report-table tbody td:nth-child(2)::before { content: "فروشنده" !important; }
+  .daily-report-print .salco-report-details .daily-report-table tbody td:nth-child(3)::before { content: "رنگ" !important; }
+  .daily-report-print .salco-report-details .daily-report-table tbody td:nth-child(4)::before { content: "سایز" !important; }
+  .daily-report-print .salco-report-details .daily-report-table tbody td:nth-child(5)::before { content: "تعداد" !important; }
+  .daily-report-print .salco-report-details .daily-report-table tbody td:nth-child(6)::before { content: "مبلغ نهایی" !important; }
+  .daily-report-print .salco-report-details .daily-report-table tbody td:nth-child(5),
+  .daily-report-print .salco-report-details .daily-report-table tbody td:nth-child(6) {
+    font-weight: 800 !important;
+    color: #f1c86f !important;
+    border-bottom: 0 !important;
+  }
+  .daily-report-print .salco-report-details .daily-report-table tfoot tr {
+    display: flex !important;
+    flex-flow: row nowrap !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 14px 12px !important;
+    border-radius: 10px !important;
+    background: linear-gradient(100deg,#8e672d,#d7b36a,#8e672d) !important;
+  }
+  .daily-report-print .salco-report-details .daily-report-table tfoot th {
+    display: block !important;
+    width: auto !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    padding: 4px 0 !important;
+    color: #17130c !important;
+    white-space: normal !important;
+    overflow-wrap: normal !important;
+    word-break: keep-all !important;
+    text-align: right !important;
+  }
+  .daily-report-print .salco-report-details .daily-report-table tfoot th:first-child {
+    flex: 0 0 32% !important;
+    font-size: 11px !important;
+    line-height: 1.5 !important;
+  }
+  .daily-report-print .salco-report-details .daily-report-table tfoot th:last-child {
+    flex: 1 1 68% !important;
+    font-size: 17px !important;
+    font-weight: 900 !important;
+    line-height: 1.5 !important;
+    text-align: left !important;
+    white-space: nowrap !important;
+  }
+}
