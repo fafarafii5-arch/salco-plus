@@ -921,3 +921,49 @@
     text-align: left !important;
   }
 }
+
+
+/* Mobile readability override: use full-width horizontal label/value rows. */
+@media (max-width: 600px) {
+  .salco-signature-report .salco-signature-table tbody tr {
+    display: block !important;
+    padding: 10px 14px !important;
+  }
+  .salco-signature-report .salco-signature-table tbody td {
+    display: grid !important;
+    grid-template-columns: minmax(72px, 30%) minmax(0, 1fr) !important;
+    align-items: center !important;
+    justify-content: initial !important;
+    gap: 10px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    text-align: right !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+    writing-mode: horizontal-tb !important;
+    line-height: 1.7 !important;
+  }
+  .salco-signature-report .salco-signature-table tbody td::before {
+    display: block !important;
+    min-width: 0 !important;
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+    word-break: keep-all !important;
+  }
+  .salco-signature-report .salco-signature-table tbody td:nth-child(1) {
+    display: block !important;
+    width: 100% !important;
+  }
+  .salco-signature-report .salco-signature-table tbody td:nth-child(1)::before {
+    display: block !important;
+  }
+  .salco-signature-report .salco-signature-table tbody td:nth-child(6) {
+    display: grid !important;
+    grid-template-columns: minmax(72px, 30%) minmax(0, 1fr) !important;
+    width: 100% !important;
+  }
+  .salco-signature-report .salco-signature-table tbody td:nth-child(6)::before {
+    display: block !important;
+  }
+}
