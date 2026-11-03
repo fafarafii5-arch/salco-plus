@@ -1157,3 +1157,26 @@
     word-break: keep-all !important;
   }
 }
+
+
+/* Increase total amount legibility while keeping it inside the gold total bar. */
+@media (max-width: 600px) {
+  .salco-signature-report .salco-signature-table tfoot th:first-child {
+    flex: 0 0 30% !important;
+    width: 30% !important;
+    font-size: 10px !important;
+    line-height: 1.45 !important;
+  }
+  .salco-signature-report .salco-signature-table tfoot th:last-child {
+    flex: 1 1 70% !important;
+    width: auto !important;
+    min-width: 0 !important;
+    font-size: clamp(15px, 4.4vw, 19px) !important;
+    font-weight: 900 !important;
+    line-height: 1.45 !important;
+    letter-spacing: 0 !important;
+    text-align: left !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+  }
+}
