@@ -344,7 +344,8 @@ function App(){
   return v;
  };
  const optionMap=new Map();
- [...(productTaxonomy[saleCategory]||[]),...categoryProducts.map(productVariant).filter(Boolean)].forEach(value=>{
+ // Sales model options must come only from active products with positive stock.
+ categoryProducts.map(productVariant).filter(Boolean).forEach(value=>{
   const canonical=canonicalSaleVariant(value,saleCategory);
   const key=saleVariantKey(canonical).toLocaleLowerCase('fa');
   if(key&&!optionMap.has(key)) optionMap.set(key,canonical);
