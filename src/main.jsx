@@ -98,6 +98,7 @@ function productVariant(p){
  for(const prefix of prefixes){const px=normalizeProductText(prefix);if(n.toLocaleLowerCase('fa').startsWith(px.toLocaleLowerCase('fa'))){n=normalizeProductText(n.slice(prefix.length));break;}}
  if(color){const nn=normalizeProductText(n).toLocaleLowerCase('fa'),cc=normalizeProductText(color).toLocaleLowerCase('fa');if(nn.endsWith(cc))n=normalizeProductText(n.slice(0,n.length-color.length));}
  n=normalizeProductText(n);
+ if(c==='کت شلوار' && /^دبل\s*فیس\s*(?:سورمه‌ای\s*)?(?:برفی|برفکی)$/.test(n)) return 'دبل فیس';
  if(c==='کت شلوار'){
   if(/^یقه\s*آرشال$/.test(n))return 'یقه آرشال';
   if(/^دبل\s*برست$/.test(n))return 'دبل برست';
@@ -337,7 +338,7 @@ function App(){
   if(category==='کت شلوار'){
    v=v.replace(/^(کت\s*و\s*شلوار|کت‌وشلوار|کت\s*شلوار)\s*/,'').trim();
    v=v.replace(/^کت\s*/,'').trim();
-   if(/^کت\s*دبل\s*فیس\s*(?:سورمه‌ای\s*)?(?:برفی|برفکی)$/.test(v)) return 'دبل فیس';
+   if(/^دبل\s*فیس\s*(?:سورمه‌ای\s*)?(?:برفی|برفکی)$/.test(v)) return 'دبل فیس';
   if(/^یقه\s*آرشال$/i.test(v)) return 'یقه آرشال';
   }
   return v;
