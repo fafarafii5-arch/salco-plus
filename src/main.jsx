@@ -92,46 +92,46 @@ function saleVariantKey(value){return normalizeProductText(value).replace(/\s+/g
 function productVariant(p){
  let n=normalizeProductText(p?.variant || p?.name || '');
  const c=productBase(p), color=productColorValue(p);
- if(c==='کت شلوار' && /^دبل\\s*برست\\s*سبز\\s*دیپلمات$/.test(n)) return 'کت شلوار دبل برست دیپلمات';
+ if(c==='کت شلوار' && /^دبل\\s*برست\\s*سبز\\s*دیپلمات$/.test(n)) return 'دبل برست دیپلمات';
  if(c==='کت شلوار' && /^کت\\s*دبل\\s*فیس\\s*سورمه‌ای\\s*برفی$/.test(n)) return 'کت دبل فیس';
  const prefixes=[c,'کت و شلوار','کت‌وشلوار','کت شلوار','شلوار'].filter(Boolean).sort((x,y)=>y.length-x.length);
  for(const prefix of prefixes){const px=normalizeProductText(prefix);if(n.toLocaleLowerCase('fa').startsWith(px.toLocaleLowerCase('fa'))){n=normalizeProductText(n.slice(prefix.length));break;}}
  if(color){const nn=normalizeProductText(n).toLocaleLowerCase('fa'),cc=normalizeProductText(color).toLocaleLowerCase('fa');if(nn.endsWith(cc))n=normalizeProductText(n.slice(0,n.length-color.length));}
  n=normalizeProductText(n);
  if(c==='کت شلوار'){
-  if(/^یقه\s*آرشال$/.test(n))return 'کت و شلوار یقه آرشال';
-  if(/^دبل\s*برست$/.test(n))return 'کت شلوار دبل برست';
-  if(/^دبل\s*برست\s*سبز\s*دیپلمات$/.test(n))return 'کت شلوار دبل برست دیپلمات';
-  if(/^دبل\s*فیس$/.test(n))return 'کت دبل فیس';
-  if(/^دبل\s*فیس\s*دیپلمات$/.test(n))return 'کت دبل فیس دیپلمات';
-  if(/^دبل\s*فیس\s*لیزری$/.test(n))return 'کت دبل فیس لیزری';
+  if(/^یقه\\s*آرشال$/.test(n))return 'کت و شلوار یقه آرشال';
+  if(/^دبل\\s*برست$/.test(n))return 'دبل برست';
+  if(/^دبل\\s*برست\\s*سبز\\s*دیپلمات$/.test(n))return 'دبل برست دیپلمات';
+  if(/^دبل\\s*فیس$/.test(n))return 'کت دبل فیس';
+  if(/^دبل\\s*فیس\\s*دیپلمات$/.test(n))return 'کت دبل فیس دیپلمات';
+  if(/^دبل\\s*فیس\\s*لیزری$/.test(n))return 'کت دبل فیس لیزری';
   if(/^ژیله.?دار$/.test(n))return 'کت ژیله‌دار';
-  if(/^کت\s*تک\s*چهارخونه$/.test(n))return 'کت تک چهارخونه';
-  if(/^کت\s*تک\s*دبل\s*برست$/.test(n))return 'کت تک دبل برست';
-  if(/^کت\s*تک$/.test(n))return 'کت تک ساده';
-  if(/^کت\s*دبل\s*برست(?:\s*طوسی\s*تیره)?$/.test(n))return 'کت شلوار دبل برست';
-  if(/^کت\s*دبل\s*فیس(?:\s*سورمه‌ای\s*برفی)?$/.test(n))return 'کت دبل فیس';
-  if(/^کت\s*دبل\s*فیس\s*دیپلمات$/.test(n))return 'کت دبل فیس دیپلمات';
-  if(/^کت\s*دبل\s*فیس\s*لیزری$/.test(n))return 'کت دبل فیس لیزری';
-  if(/^کت\s*شلوار\s*(.+)$/.test(n))n=normalizeProductText(n.replace(/^کت\s*شلوار\s*/,''));
-  if(n==='ساده')return 'کت شلوار ساده';
-  if(n==='کلاسیک')return 'کت شلوار کلاسیک';
-  if(n==='دامادی')return 'کت شلوار دامادی';
+  if(/^کت\\s*تک\\s*چهارخونه$/.test(n))return 'کت تک چهارخونه';
+  if(/^کت\\s*تک\\s*دبل\\s*برست$/.test(n))return 'کت تک دبل برست';
+  if(/^کت\\s*تک$/.test(n))return 'کت تک ساده';
+  if(/^کت\\s*دبل\\s*برست(?:\\s*طوسی\\s*تیره)?$/.test(n))return 'دبل برست';
+  if(/^کت\\s*دبل\\s*فیس(?:\\s*سورمه‌ای\\s*برفی)?$/.test(n))return 'کت دبل فیس';
+  if(/^کت\\s*دبل\\s*فیس\\s*دیپلمات$/.test(n))return 'کت دبل فیس دیپلمات';
+  if(/^کت\\s*دبل\\s*فیس\\s*لیزری$/.test(n))return 'کت دبل فیس لیزری';
+  if(/^کت\\s*شلوار\\s*(.+)$/.test(n))n=normalizeProductText(n.replace(/^کت\\s*شلوار\\s*/,'')); 
+  if(n==='ساده')return 'ساده';
+  if(n==='کلاسیک')return 'کلاسیک';
+  if(n==='دامادی')return 'دامادی';
   if(n==='چهارخونه')return 'کت تک چهارخونه';
-  return n||'کت شلوار ساده';
+  return n||'ساده';
  }
  if(c==='شلوار'){
-  n=n.replace(/\s*\([^)]*\)\s*$/,'').trim();
+  n=n.replace(/\\s*\\([^)]*\\)\\s*$/,'').trim();
   if(/کتان/.test(n)){if(/هنسل/.test(n))return 'کتان هنسل';if(/کمربند/.test(n))return 'کتان کمربنددار';}
-  if(/^جین\s*راسته(?:\s*Alexander McQueen)?$/i.test(n))return 'جین راسته (Alexander McQueen)';
+  if(/^جین\\s*راسته(?:\\s*Alexander McQueen)?$/i.test(n))return 'جین راسته (Alexander McQueen)';
  }
  if(c==='کمربند'&&/^VIP$/i.test(n))return 'کمربند VIP';
- if(c==='سلانیک')n=n.replace(/^یقه\s+گرد$/,'یقه‌گرد');
+ if(c==='سلانیک')n=n.replace(/^یقه\\s+گرد$/,'یقه‌گرد');
  if(c==='اکسسوری'){
   if(/^کروات$/i.test(n))return 'کراوات';
-  if(/^دکمه\s*سرآستین\s*تک$/.test(n))return 'دکمه سردست تکی';
-  if(/^دکمه\s*سرآستین$/.test(n))return 'دکمه سردست';
-  if(/^ست\s*گیره\s*و\s*دکمه\s*سرآستین$/.test(n))return 'ست گیره کراوات و دکمه سردست';
+  if(/^دکمه\\s*سرآستین\\s*تک$/.test(n))return 'دکمه سردست تکی';
+  if(/^دکمه\\s*سرآستین$/.test(n))return 'دکمه سردست';
+  if(/^ست\\s*گیره\\s*و\\s*دکمه\\s*سرآستین$/.test(n))return 'ست گیره کراوات و دکمه سردست';
  }
  return n||'ساده';
 }
