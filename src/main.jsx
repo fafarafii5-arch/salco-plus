@@ -75,7 +75,7 @@ const numericValue = value => Number(digitsOnly(value) || 0);
 function load(key, fallback){try {const v=localStorage.getItem('salco_'+key);return v?JSON.parse(v):fallback}catch{return fallback}}
 function cleanText(value){return String(value||'').trim().replace(/\s+/g,' ');}
 const normalizeProductText=value=>cleanText(value).replace(/[ي]/g,'ی').replace(/[ك]/g,'ک').replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();
-const productColorCatalog=['سرمه‌ای برفی','سرمه‌ای','سورمه‌ای','آبی آسمانی','آبی روشن','آبی','ذغالی','خاکستری','طوسی','نقره‌ای','مشکی','سفید','شیری','استخوانی','کرم','بژ','قهوه‌ای','نسکافه‌ای','موکا','شکلاتی','زرشکی','قرمز','زرشکی تیره','صورتی','گلبهی','سبز یشمی','سبز زیتونی','زیتونی','سبز','نفتی','لیمویی','طلایی','نقره‌ای'];
+const productColorCatalog=['سرمه‌ای برفی','سورمه‌ای برفی','سورمه‌ای برفکی','سرمه‌ای','سورمه‌ای','آبی آسمانی','آبی روشن','آبی','ذغالی','خاکستری','طوسی','نقره‌ای','مشکی','سفید','شیری','استخوانی','کرم','بژ','قهوه‌ای','نسکافه‌ای','موکا','شکلاتی','زرشکی','قرمز','زرشکی تیره','صورتی','گلبهی','سبز یشمی','سبز زیتونی','زیتونی','سبز','نفتی','لیمویی','طلایی','نقره‌ای'];
 function productBase(p){
  const raw=normalizeProductText(p?.category||'متفرقه');
  if(/^(کت\s*و\s*شلوار|کت\s*شلوار|کتوشلوار)$/.test(raw)) return 'کت شلوار';
@@ -93,7 +93,7 @@ function productVariant(p){
  let n=normalizeProductText(p?.variant || p?.name || '');
  const c=productBase(p), color=productColorValue(p);
  if(c==='کت شلوار' && /^دبل\s*برست\s*سبز\s*دیپلمات$/.test(n)) return 'دبل برست دیپلمات';
- if(c==='کت شلوار' && /^کت\s*دبل\s*فیس\s*سورمه‌ای\s*برفی$/.test(n)) return 'کت دبل فیس';
+ if(c==='کت شلوار' && /^کت\s*دبل\s*فیس\s*سورمه‌ای\s*برفی$/.test(n)) return 'دبل فیس';
  const prefixes=[c,'کت و شلوار','کت‌وشلوار','کت شلوار','شلوار'].filter(Boolean).sort((x,y)=>y.length-x.length);
  for(const prefix of prefixes){const px=normalizeProductText(prefix);if(n.toLocaleLowerCase('fa').startsWith(px.toLocaleLowerCase('fa'))){n=normalizeProductText(n.slice(prefix.length));break;}}
  if(color){const nn=normalizeProductText(n).toLocaleLowerCase('fa'),cc=normalizeProductText(color).toLocaleLowerCase('fa');if(nn.endsWith(cc))n=normalizeProductText(n.slice(0,n.length-color.length));}
