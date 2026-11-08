@@ -349,7 +349,11 @@ function App(){
   const key=saleVariantKey(canonical).toLocaleLowerCase('fa');
   if(key&&!optionMap.has(key)) optionMap.set(key,canonical);
  });
- const variantOptions=[...optionMap.values()];
+ const variantOptions=[...optionMap.values()].filter(value=>{
+  const normalized=normalizeProductText(value);
+  // Defensive guard: shade descriptors must never become selectable suit models.
+  return !(saleCategory==='کت شلوار' && /دبل\s*فیس/.test(normalized) && /(?:سورمه‌ای|سرمه‌ای)?\s*(?:برفی|برفکی)/.test(normalized));
+ });
  const saleVariant=saleForm.variant && variantOptions.includes(saleForm.variant) ? saleForm.variant : (categoryProducts.find(p=>variantOptions.includes(productVariant(p))) ? productVariant(categoryProducts.find(p=>variantOptions.includes(productVariant(p)))) : variantOptions[0] || '');
  const visibleVariantOptions=variantOptions.filter(v=>v.toLocaleLowerCase('fa').includes(saleVariantSearch.trim().toLocaleLowerCase('fa')));
  if(saleVariant && !visibleVariantOptions.includes(saleVariant)) visibleVariantOptions.unshift(saleVariant);
