@@ -41,7 +41,7 @@ function JalaliDatePicker({value,onChange,label='تاریخ'}) {
 }
 
 const productTaxonomy = {
- 'کت شلوار': ['کت شلوار ساده','کت شلوار کلاسیک','کت شلوار دامادی','کت شلوار دبل برست','کت شلوار دبل برست دیپلمات','کت تک ساده','کت تک چهارخونه','کت تک دبل برست','کت و شلوار یقه آرشال','کت ژیله‌دار','کت دبل فیس','کت دبل فیس دیپلمات','کت دبل فیس لیزری','جلیقه دبل فیس'],
+ 'کت شلوار': ['دبل برست','دبل برست دیپلمات','تک ساده','تک چهارخونه','تک دبل برست','یقه آرشال','ژیله‌دار','دبل فیس','دبل فیس دیپلمات','دبل فیس لیزری'],
  'شلوار': ['ساده','پارچه‌ای','پارچه‌ای کمر انگلیسی دیپلمات نیم‌بگ مک‌کنزی','پارچه‌ای کمر انگلیسی نیم‌بگ مک‌کنزی لینن','پارچه‌ای کمرکش نیم‌بگ مک‌کنزی','جین','جین بگ (Black Denim)','جین راسته (Alexander McQueen)','کتان هنسل','کتان کمربنددار'],
  'پیراهن': ['ساده','VIP','جعبه‌ای','دیپلمات','آستین کوتاه'],
  'کفش': ['ساده','مجلسی بنددار','مجلسی','بنددار','اسپرت','ونس','کالج','نیم‌بوت'],
@@ -99,25 +99,22 @@ function productVariant(p){
  if(color){const nn=normalizeProductText(n).toLocaleLowerCase('fa'),cc=normalizeProductText(color).toLocaleLowerCase('fa');if(nn.endsWith(cc))n=normalizeProductText(n.slice(0,n.length-color.length));}
  n=normalizeProductText(n);
  if(c==='کت شلوار'){
-  if(/^یقه\s*آرشال$/.test(n))return 'کت و شلوار یقه آرشال';
+  if(/^یقه\s*آرشال$/.test(n))return 'یقه آرشال';
   if(/^دبل\s*برست$/.test(n))return 'دبل برست';
   if(/^دبل\s*برست\s*سبز\s*دیپلمات$/.test(n))return 'دبل برست دیپلمات';
-  if(/^دبل\s*فیس$/.test(n))return 'کت دبل فیس';
-  if(/^دبل\s*فیس\s*دیپلمات$/.test(n))return 'کت دبل فیس دیپلمات';
-  if(/^دبل\s*فیس\s*لیزری$/.test(n))return 'کت دبل فیس لیزری';
-  if(/^ژیله.?دار$/.test(n))return 'کت ژیله‌دار';
-  if(/^کت\s*تک\s*چهارخونه$/.test(n))return 'کت تک چهارخونه';
-  if(/^کت\s*تک\s*دبل\s*برست$/.test(n))return 'کت تک دبل برست';
-  if(/^کت\s*تک$/.test(n))return 'کت تک ساده';
+  if(/^دبل\s*فیس$/.test(n))return 'دبل فیس';
+  if(/^دبل\s*فیس\s*دیپلمات$/.test(n))return 'دبل فیس دیپلمات';
+  if(/^دبل\s*فیس\s*لیزری$/.test(n))return 'دبل فیس لیزری';
+  if(/^ژیله.?دار$/.test(n))return 'ژیله‌دار';
+  if(/^کت\s*تک\s*چهارخونه$/.test(n)||/^تک\s*چهارخونه$/.test(n))return 'تک چهارخونه';
+  if(/^کت\s*تک\s*دبل\s*برست$/.test(n)||/^تک\s*دبل\s*برست$/.test(n))return 'تک دبل برست';
+  if(/^کت\s*تک$/.test(n)||/^تک\s*ساده$/.test(n))return 'تک ساده';
   if(/^کت\s*دبل\s*برست(?:\s*طوسی\s*تیره)?$/.test(n))return 'دبل برست';
-  if(/^کت\s*دبل\s*فیس(?:\s*سورمه‌ای\s*برفی)?$/.test(n))return 'کت دبل فیس';
-  if(/^کت\s*دبل\s*فیس\s*دیپلمات$/.test(n))return 'کت دبل فیس دیپلمات';
-  if(/^کت\s*دبل\s*فیس\s*لیزری$/.test(n))return 'کت دبل فیس لیزری';
+  if(/^کت\s*دبل\s*فیس(?:\s*سورمه‌ای\s*برفی)?$/.test(n))return 'دبل فیس';
+  if(/^کت\s*دبل\s*فیس\s*دیپلمات$/.test(n))return 'دبل فیس دیپلمات';
+  if(/^کت\s*دبل\s*فیس\s*لیزری$/.test(n))return 'دبل فیس لیزری';
   if(/^کت\s*شلوار\s*(.+)$/.test(n))n=normalizeProductText(n.replace(/^کت\s*شلوار\s*/,'')); 
-  if(n==='ساده')return 'ساده';
-  if(n==='کلاسیک')return 'کلاسیک';
-  if(n==='دامادی')return 'دامادی';
-  if(n==='چهارخونه')return 'کت تک چهارخونه';
+  if(n==='چهارخونه')return 'تک چهارخونه';
   return n||'ساده';
  }
  if(c==='شلوار'){
@@ -334,18 +331,18 @@ function App(){
  const saleCategory=saleForm.category || inventoryCategories[0] || '';
  const visibleInventoryCategories=inventoryCategories.filter(c=>c.toLocaleLowerCase('fa').includes(saleCategorySearch.trim().toLocaleLowerCase('fa')));
  if(saleCategory && !visibleInventoryCategories.includes(saleCategory)) visibleInventoryCategories.unshift(saleCategory);
- const categoryProducts=products.filter(p=>productBase(p)===saleCategory);
+ const categoryProducts=products.filter(p=>productBase(p)===saleCategory&&Number(p.stock||0)>0);
  const canonicalSaleVariant=(value,category)=>{
   let v=cleanText(value).replace(/[ي]/g,'ی').replace(/[ك]/g,'ک');
   if(category==='کت شلوار'){
    v=v.replace(/^(کت\s*و\s*شلوار|کت‌وشلوار|کت\s*شلوار)\s*/,'').trim();
-   if(/^یقه\s*آرشال$/i.test(v)) return 'کت و شلوار یقه آرشال';
-   if(/^کت\s*و\s*شلوار\s*یقه\s*آرشال$/i.test(v)) return 'کت و شلوار یقه آرشال';
+   v=v.replace(/^کت\s*/,'').trim();
+   if(/^یقه\s*آرشال$/i.test(v)) return 'یقه آرشال';
   }
   return v;
  };
  const optionMap=new Map();
- [...(productTaxonomy[saleCategory]||['ساده']),...categoryProducts.map(productVariant).filter(Boolean)].forEach(value=>{
+ [...(productTaxonomy[saleCategory]||[]),...categoryProducts.map(productVariant).filter(Boolean)].forEach(value=>{
   const canonical=canonicalSaleVariant(value,saleCategory);
   const key=saleVariantKey(canonical).toLocaleLowerCase('fa');
   if(key&&!optionMap.has(key)) optionMap.set(key,canonical);
@@ -508,7 +505,7 @@ function App(){
 function Stat({icon:Icon,title,value,sub,trend,warn}){return <div className="stat-card"><div className="stat-top"><span>{title}</span><div className="stat-icon"><Icon size={19}/></div></div><strong className="stat-value">{value}</strong><div className="stat-bottom"><span>{sub}</span>{trend&&<em className={warn?'warn':''}>{trend}</em>}</div></div>}
 function ProductTable({products,onDelete,showSold=false,onEditPrice,groupVariants=false}){
  const [expandedGroups,setExpandedGroups]=useState({});
- const displayProducts=groupVariants?Object.values(products.reduce((groups,p)=>{const category=productBase(p)||'متفرقه';const variant=productVariant(p);const key=category+'::'+variant;if(!groups[key])groups[key]={...p,id:key,ids:[],category,variant,sku:'',color:'رنگ‌های مختلف',size:'',stock:0,sold:0,items:[]};groups[key].ids.push(p.id);groups[key].items.push(p);groups[key].stock+=Number(p.stock||0);groups[key].sold+=Number(p.sold||0);return groups;},{})).map(g=>{const colors=[...new Set(g.items.map(item=>cleanText(item.color)).filter(color=>color&&color!=='-'))];const sizes=[...new Set(g.items.map(item=>cleanText(item.size)).filter(Boolean))];return {...g,buy:g.items[0]?.buy??0,price:g.items[0]?.price??0,sku:colors.length+' رنگ',colorSummary:colors.join('، ')||'رنگ ثبت نشده',sizeSummary:sizes.join('، ')||'سایز ثبت نشده'};}):products;
+ const displayProducts=groupVariants?Object.values(products.reduce((groups,p)=>{const category=productBase(p)||'متفرقه';const variant=productVariant(p);const key=category+'::'+variant;if(!groups[key])groups[key]={...p,id:key,ids:[],category,variant,sku:'',color:'رنگ‌های مختلف',size:'',stock:0,sold:0,items:[]};groups[key].ids.push(p.id);groups[key].items.push(p);groups[key].stock+=Number(p.stock||0);groups[key].sold+=Number(p.sold||0);return groups;},{})).map(g=>{const colors=[...new Set(g.items.map(item=>cleanText(item.color)).filter(color=>color&&color!=='-'))];const sizes=[...new Set(g.items.map(item=>cleanText(item.size)).filter(Boolean))];return {...g,buy:g.items[0]?.buy??0,price:g.items[0]?.price??0,sku:colors.length+' رنگ',colorSummary:colors.join('، ')||'رنگ ثبت نشده',sizeSummary:sizes.join('، ')||'سایز ثبت نشده'};}).filter(g=>g.stock>0):products;
  return displayProducts.length===0?<Empty icon={Package} title="کالایی پیدا نشد" text="جست‌وجو را تغییر بده یا کالای جدید اضافه کن."/>:<div className="table-wrap"><table><thead><tr><th>سرفصل / جنس</th><th>مدل / انتخابی</th><th>سایزها</th><th>موجودی کل</th><th>قیمت فروش</th>{showSold&&<th>تعداد فروش</th>}<th>وضعیت</th><th>جزئیات / عملیات</th></tr></thead><tbody>{displayProducts.map(p=><React.Fragment key={p.id}><tr><td><div className="table-product"><div className="product-thumb"><Shirt size={18}/></div><b>{productBase(p)}</b></div><small>{p.sku}</small></td><td>{productVariant(p)}</td><td>{groupVariants?'همه سایزها':(p.color+' / ')} {p.size}</td><td><b>{num(p.stock)}</b> عدد</td><td className="gold-text">{money(p.price)}</td>{showSold&&<td>{num(p.sold)}</td>}<td><span className={p.stock<=3?'pill-red':p.stock<=5?'pill-yellow':'pill-green'}>{p.stock<=3?'رو به اتمام':p.stock<=5?'کم‌موجودی':'موجود'}</span></td><td><div className="inline-actions">{groupVariants&&<button className="btn btn-ghost" type="button" onClick={()=>setExpandedGroups(prev=>({...prev,[p.id]:!prev[p.id]}))}>{expandedGroups[p.id]?'بستن جزئیات':'رنگ و سایزها'}</button>}<button className="btn btn-ghost" type="button" onClick={()=>onEditPrice?.(p)}><Pencil size={14}/> اصلاح قیمت</button>{onDelete&&<button className="row-delete" type="button" onClick={()=>onDelete(groupVariants?(p.ids||[p.id]):p.id)} title={groupVariants?'حذف همه رنگ‌های این مدل':'حذف کالا'} aria-label={groupVariants?'حذف همه رنگ‌های این مدل':'حذف کالا'}><Trash2 size={16}/></button>}</div></td></tr>{groupVariants&&expandedGroups[p.id]&&<tr className="inventory-detail-row"><td colSpan={showSold?8:7}><div className="inventory-detail"><div className="inventory-detail-heading"><b>رنگ‌ها و سایزهای موجود این مدل</b><span>موجودی کل: {num(p.stock)} عدد</span></div><div className="inventory-detail-colors"><span>رنگ‌های ثبت‌شده: {p.colorSummary}</span></div><div className="table-wrap"><table><thead><tr><th>رنگ</th><th>سایز</th><th>تعداد باقی‌مانده</th><th>قیمت فروش</th></tr></thead><tbody>{p.items.filter(item=>Number(item.stock)>0).slice().sort((a,b)=>String(a.color||'').localeCompare(String(b.color||''),'fa')||String(a.size||'').localeCompare(String(b.size||''),'fa',{numeric:true})).map((item,index)=><tr key={item.id||index}><td>{item.color||'ثبت نشده'}</td><td>{item.size||'ثبت نشده'}</td><td><b>{num(item.stock)}</b> عدد</td><td className="gold-text">{money(item.price)}</td></tr>)}</tbody></table></div></div></td></tr>}</React.Fragment>)}</tbody></table></div>}
 
 function Empty({icon:Icon,title,text}){return <div className="empty"><div><Icon size={24}/></div><b>{title}</b><p>{text}</p></div>}
