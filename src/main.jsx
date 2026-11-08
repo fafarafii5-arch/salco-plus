@@ -114,6 +114,7 @@ function productVariant(p){
   return 'کت و شلوار یقه آرشال';
  }
  if(c==='کمربند' && /^VIP$/i.test(n)) return 'کمربند VIP';
+ if(c==='سلانیک') n=n.replace(/^یقه\s+گرد$/,'یقه‌گرد');
  if(c==='اکسسوری'){
   // Normalize legacy naming variants for cufflinks and matching sets.
   if(/^کروات$/i.test(n)) return 'کراوات';
