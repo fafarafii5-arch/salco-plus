@@ -41,7 +41,7 @@ function JalaliDatePicker({value,onChange,label='تاریخ'}) {
 }
 
 const productTaxonomy = {
- 'کت شلوار': ['کت شلوار ساده','کت شلوار کلاسیک','کت شلوار دامادی','کت شلوار دبل برست','کت تک ساده','کت تک چهارخونه','کت تک دبل برست','کت و شلوار یقه آرشال','کت ژیله‌دار','کت دبل فیس','جلیقه دبل فیس'],
+ 'کت شلوار': ['کت شلوار ساده','کت شلوار کلاسیک','کت شلوار دامادی','کت شلوار دبل برست','کت شلوار دبل برست دیپلمات','کت تک ساده','کت تک چهارخونه','کت تک دبل برست','کت و شلوار یقه آرشال','کت ژیله‌دار','کت دبل فیس','کت دبل فیس دیپلمات','کت دبل فیس لیزری','جلیقه دبل فیس'],
  'شلوار': ['ساده','پارچه‌ای','پارچه‌ای کمر انگلیسی دیپلمات نیم‌بگ مک‌کنزی','پارچه‌ای کمر انگلیسی نیم‌بگ مک‌کنزی لینن','پارچه‌ای کمرکش نیم‌بگ مک‌کنزی','جین','جین بگ (Black Denim)','جین راسته (Alexander McQueen)','کتان هنسل','کتان کمربنددار'],
  'پیراهن': ['ساده','VIP','جعبه‌ای','دیپلمات','آستین کوتاه'],
  'کفش': ['ساده','مجلسی بنددار','مجلسی','بنددار','اسپرت','ونس','کالج','نیم‌بوت'],
@@ -90,46 +90,46 @@ function productColorValue(p){
 }
 function saleVariantKey(value){return normalizeProductText(value).replace(/نیم\s*بگ/g,'بگ').replace(/\s+/g,' ').trim();}
 function productVariant(p){
- let n=cleanText(p.variant || p.name);
- const c=cleanText(p.category).replace(/[ي]/g,'ی').replace(/[ك]/g,'ک');
- const color=productColorValue(p);
- // Strip category prefix from both explicit variants and legacy names.
- const prefixes=[c,'کت و شلوار','کت‌وشلوار','کت شلوار'].filter(Boolean);
- for(const prefix of prefixes){
-  if(n.toLocaleLowerCase('fa').startsWith(prefix.toLocaleLowerCase('fa'))){
-   n=cleanText(n.slice(prefix.length));
-  }
- }
- // Color belongs to its own field, not to the model selector.
- if(color && color!=='-' && color!=='سایر'){
-  const normalizedN=n.replace(/[ي]/g,'ی').replace(/[ك]/g,'ک').toLocaleLowerCase('fa');
-  const normalizedColor=color.toLocaleLowerCase('fa');
-  if(normalizedN.endsWith(normalizedColor)){
-   n=cleanText(n.slice(0,n.length-color.length).replace(/[،,_-]+$/,''));
-  }
- }
- n=cleanText(n).replace(/[ي]/g,'ی').replace(/[ك]/g,'ک');
- // Canonicalize legacy Arshal labels into one single catalog model.
- if(c==='کت شلوار' && /^(یقه\s*آرشال|کت\s*و\s*شلوار\s*یقه\s*آرشال|کت\s*شلوار\s*یقه\s*آرشال)$/i.test(n)){
-  return 'کت و شلوار یقه آرشال';
- }
- if(c==='کمربند' && /^VIP$/i.test(n)) return 'کمربند VIP';
- if(c==='سلانیک') n=n.replace(/^یقه\s+گرد$/,'یقه‌گرد');
- if(c==='اکسسوری'){
-  // Normalize legacy naming variants for cufflinks and matching sets.
-  if(/^کروات$/i.test(n)) return 'کراوات';
-  if(/^دکمه\\s*سرآستین\\s*تک$/i.test(n)) return 'دکمه سردست تکی';
-  if(/^دکمه\\s*سرآستین$/i.test(n)) return 'دکمه سردست';
-  if(/^ست\\s*گیره\\s*و\\s*دکمه\\s*سرآستین$/i.test(n)) return 'ست گیره کراوات و دکمه سردست';
+ let n=normalizeProductText(p?.variant || p?.name || '');
+ const c=productBase(p), color=productColorValue(p);
+ const prefixes=[c,'کت و شلوار','کت‌وشلوار','کت شلوار','شلوار'].filter(Boolean).sort((x,y)=>y.length-x.length);
+ for(const prefix of prefixes){const px=normalizeProductText(prefix);if(n.toLocaleLowerCase('fa').startsWith(px.toLocaleLowerCase('fa'))){n=normalizeProductText(n.slice(prefix.length));break;}}
+ if(color){const nn=normalizeProductText(n).toLocaleLowerCase('fa'),cc=normalizeProductText(color).toLocaleLowerCase('fa');if(nn.endsWith(cc))n=normalizeProductText(n.slice(0,n.length-color.length));}
+ n=normalizeProductText(n);
+ if(c==='کت شلوار'){
+  if(/^یقه\s*آرشال$/.test(n))return 'کت و شلوار یقه آرشال';
+  if(/^دبل\s*برست$/.test(n))return 'کت شلوار دبل برست';
+  if(/^دبل\s*برست\s*سبز\s*دیپلمات$/.test(n))return 'کت شلوار دبل برست دیپلمات';
+  if(/^دبل\s*فیس$/.test(n))return 'کت دبل فیس';
+  if(/^دبل\s*فیس\s*دیپلمات$/.test(n))return 'کت دبل فیس دیپلمات';
+  if(/^دبل\s*فیس\s*لیزری$/.test(n))return 'کت دبل فیس لیزری';
+  if(/^ژیله.?دار$/.test(n))return 'کت ژیله‌دار';
+  if(/^کت\s*تک\s*چهارخونه$/.test(n))return 'کت تک چهارخونه';
+  if(/^کت\s*تک\s*دبل\s*برست$/.test(n))return 'کت تک دبل برست';
+  if(/^کت\s*تک$/.test(n))return 'کت تک ساده';
+  if(/^کت\s*دبل\s*برست(?:\s*طوسی\s*تیره)?$/.test(n))return 'کت شلوار دبل برست';
+  if(/^کت\s*دبل\s*فیس(?:\s*سورمه‌ای\s*برفی)?$/.test(n))return 'کت دبل فیس';
+  if(/^کت\s*دبل\s*فیس\s*دیپلمات$/.test(n))return 'کت دبل فیس دیپلمات';
+  if(/^کت\s*دبل\s*فیس\s*لیزری$/.test(n))return 'کت دبل فیس لیزری';
+  if(/^کت\s*شلوار\s*(.+)$/.test(n))n=normalizeProductText(n.replace(/^کت\s*شلوار\s*/,''));
+  if(n==='ساده')return 'کت شلوار ساده';
+  if(n==='کلاسیک')return 'کت شلوار کلاسیک';
+  if(n==='دامادی')return 'کت شلوار دامادی';
+  if(n==='چهارخونه')return 'کت تک چهارخونه';
+  return n||'کت شلوار ساده';
  }
  if(c==='شلوار'){
-  // Canonicalize legacy pants variants; color is stored/displayed separately.
   n=n.replace(/\s*\([^)]*\)\s*$/,'').trim();
-  if(/کتان/.test(n)){
-   if(/هنسل/.test(n)) return 'کتان هنسل';
-   if(/کمربند/.test(n)) return 'کتان کمربنددار';
-  }
-  if(/^جین\s*راسته$/i.test(n) || /^جین\s*راسته\s*Alexander McQueen$/i.test(n)) return 'جین راسته (Alexander McQueen)';
+  if(/کتان/.test(n)){if(/هنسل/.test(n))return 'کتان هنسل';if(/کمربند/.test(n))return 'کتان کمربنددار';}
+  if(/^جین\s*راسته(?:\s*Alexander McQueen)?$/i.test(n))return 'جین راسته (Alexander McQueen)';
+ }
+ if(c==='کمربند'&&/^VIP$/i.test(n))return 'کمربند VIP';
+ if(c==='سلانیک')n=n.replace(/^یقه\s+گرد$/,'یقه‌گرد');
+ if(c==='اکسسوری'){
+  if(/^کروات$/i.test(n))return 'کراوات';
+  if(/^دکمه\s*سرآستین\s*تک$/.test(n))return 'دکمه سردست تکی';
+  if(/^دکمه\s*سرآستین$/.test(n))return 'دکمه سردست';
+  if(/^ست\s*گیره\s*و\s*دکمه\s*سرآستین$/.test(n))return 'ست گیره کراوات و دکمه سردست';
  }
  return n||'ساده';
 }
@@ -453,7 +453,7 @@ function App(){
      <button type="button" className="btn btn-ghost" onClick={()=>{setPriceDrafts({});setPriceSearch('');setPriceOnlyUnpriced(false);if(session)loadRemote(session)}}><ArrowDownRight size={15}/> تازه‌سازی کالاها</button>
    </div>
    {products.length===0?<Empty icon={Tags} title="کالایی برای قیمت‌گذاری نیست" text="ابتدا مطمئن شو کالاها از پایگاه داده بارگذاری شده‌اند."/>:<div className="pricing-list">
-   {Object.values(products.filter(p=>([p.name,p.category,p.variant,p.color,p.size,p.sku].join(' ').toLocaleLowerCase('fa')).includes(priceSearch.trim().toLocaleLowerCase('fa'))&&(!priceOnlyUnpriced||Number(p.price)<=0)).reduce((groups,p)=>{const model=productVariant(p);const key=cleanText(p.category)+'::'+model; if(!groups[key])groups[key]={key,category:cleanText(p.category)||'متفرقه',model,items:[]};groups[key].items.push(p);return groups;},{})).map(group=>{const first=group.items[0];const buyDraft=priceDrafts['group:'+group.key]||{};const buy=buyDraft.buy??String(first.buy??0);const price=buyDraft.price??String(first.price??0);const missing=Number(price)<=0||Number(buy)<=0;const saving=group.items.some(p=>savingPriceId===p.id);return <article className="pricing-card pricing-group-card" key={group.key}>
+   {Object.values(products.filter(p=>([p.name,p.category,p.variant,p.color,p.size,p.sku].join(' ').toLocaleLowerCase('fa')).includes(priceSearch.trim().toLocaleLowerCase('fa'))&&(!priceOnlyUnpriced||Number(p.price)<=0)).reduce((groups,p)=>{const model=productVariant(p);const category=productBase(p);const key=category+'::'+model; if(!groups[key])groups[key]={key,category:category||'متفرقه',model,items:[]};groups[key].items.push(p);return groups;},{})).map(group=>{const first=group.items[0];const buyDraft=priceDrafts['group:'+group.key]||{};const buy=buyDraft.buy??String(first.buy??0);const price=buyDraft.price??String(first.price??0);const missing=Number(price)<=0||Number(buy)<=0;const saving=group.items.some(p=>savingPriceId===p.id);return <article className="pricing-card pricing-group-card" key={group.key}>
      <div className="pricing-card-head"><div className="pricing-product"><b>{group.category} {group.model!=='ساده'?group.model:''}</b><small>{group.items.length} رنگ / کالا · {group.items.map(p=>cleanText(p.color)||'بدون رنگ').filter((c,i,a)=>a.indexOf(c)===i).join('، ')}</small></div><span className="pricing-stock">{num(group.items.reduce((n,p)=>n+Number(p.stock||0),0))} عدد</span></div>
      <div className="pricing-group-edit"><div className="pricing-fields pricing-fields-single"><label>قیمت فروش کل مدل <small>(تومان)</small><input className="price-cell-input" aria-label={'قیمت فروش '+group.category+' '+group.model} type="text" inputMode="numeric" min="0" value={price} onChange={e=>setPriceDrafts(prev=>({...prev,['group:'+group.key]:{price:formatDigits(e.target.value)}}))}/></label></div>
        <div className="pricing-card-footer"><span className={missing?'pill-yellow':'pill-green'}>{missing?'نیازمند قیمت':'قیمت‌گذاری شده'}</span><button className="btn btn-gold" type="button" disabled={saving||!buyDraft.price} onClick={async()=>{try{setSavingPriceId(first.id);const savedValues={price:numericValue(price)};for(const p of group.items){await updateProductPrices(p.id,savedValues);}setProducts(prev=>prev.map(item=>group.items.some(p=>String(p.id)===String(item.id))?{...item,...savedValues}:item));setPriceDrafts(prev=>{const next={...prev};delete next['group:'+group.key];return next;});toast('قیمت برای همه رنگ‌های '+group.category+' '+group.model+' ذخیره شد.');}catch(err){toast(err.message||'ذخیره قیمت ناموفق بود.');}finally{setSavingPriceId(null);}}}>{saving?'در حال ذخیره…':'ذخیره قیمت'}</button></div>
@@ -506,8 +506,8 @@ function App(){
 function Stat({icon:Icon,title,value,sub,trend,warn}){return <div className="stat-card"><div className="stat-top"><span>{title}</span><div className="stat-icon"><Icon size={19}/></div></div><strong className="stat-value">{value}</strong><div className="stat-bottom"><span>{sub}</span>{trend&&<em className={warn?'warn':''}>{trend}</em>}</div></div>}
 function ProductTable({products,onDelete,showSold=false,onEditPrice,groupVariants=false}){
  const [expandedGroups,setExpandedGroups]=useState({});
- const displayProducts=groupVariants?Object.values(products.reduce((groups,p)=>{const category=cleanText(p.category)||'متفرقه';const variant=p.variant||productVariant(p);const key=category+'::'+variant;if(!groups[key])groups[key]={...p,id:key,ids:[],category,variant,sku:'',color:'رنگ‌های مختلف',size:'',stock:0,sold:0,items:[]};groups[key].ids.push(p.id);groups[key].items.push(p);groups[key].stock+=Number(p.stock||0);groups[key].sold+=Number(p.sold||0);return groups;},{})).map(g=>{const colors=[...new Set(g.items.map(item=>cleanText(item.color)).filter(color=>color&&color!=='-'))];const sizes=[...new Set(g.items.map(item=>cleanText(item.size)).filter(Boolean))];return {...g,buy:g.items[0]?.buy??0,price:g.items[0]?.price??0,sku:colors.length+' رنگ',colorSummary:colors.join('، ')||'رنگ ثبت نشده',sizeSummary:sizes.join('، ')||'سایز ثبت نشده'};}):products;
- return displayProducts.length===0?<Empty icon={Package} title="کالایی پیدا نشد" text="جست‌وجو را تغییر بده یا کالای جدید اضافه کن."/>:<div className="table-wrap"><table><thead><tr><th>سرفصل / جنس</th><th>مدل / انتخابی</th><th>سایزها</th><th>موجودی کل</th><th>قیمت فروش</th>{showSold&&<th>تعداد فروش</th>}<th>وضعیت</th><th>جزئیات / عملیات</th></tr></thead><tbody>{displayProducts.map(p=><React.Fragment key={p.id}><tr><td><div className="table-product"><div className="product-thumb"><Shirt size={18}/></div><b>{p.category}</b></div><small>{p.sku}</small></td><td>{p.variant||productVariant(p)}</td><td>{groupVariants?'همه سایزها':(p.color+' / ')} {p.size}</td><td><b>{num(p.stock)}</b> عدد</td><td className="gold-text">{money(p.price)}</td>{showSold&&<td>{num(p.sold)}</td>}<td><span className={p.stock<=3?'pill-red':p.stock<=5?'pill-yellow':'pill-green'}>{p.stock<=3?'رو به اتمام':p.stock<=5?'کم‌موجودی':'موجود'}</span></td><td><div className="inline-actions">{groupVariants&&<button className="btn btn-ghost" type="button" onClick={()=>setExpandedGroups(prev=>({...prev,[p.id]:!prev[p.id]}))}>{expandedGroups[p.id]?'بستن جزئیات':'رنگ و سایزها'}</button>}<button className="btn btn-ghost" type="button" onClick={()=>onEditPrice?.(p)}><Pencil size={14}/> اصلاح قیمت</button>{onDelete&&<button className="row-delete" type="button" onClick={()=>onDelete(groupVariants?(p.ids||[p.id]):p.id)} title={groupVariants?'حذف همه رنگ‌های این مدل':'حذف کالا'} aria-label={groupVariants?'حذف همه رنگ‌های این مدل':'حذف کالا'}><Trash2 size={16}/></button>}</div></td></tr>{groupVariants&&expandedGroups[p.id]&&<tr className="inventory-detail-row"><td colSpan={showSold?8:7}><div className="inventory-detail"><div className="inventory-detail-heading"><b>رنگ‌ها و سایزهای موجود این مدل</b><span>موجودی کل: {num(p.stock)} عدد</span></div><div className="inventory-detail-colors"><span>رنگ‌های ثبت‌شده: {p.colorSummary}</span></div><div className="table-wrap"><table><thead><tr><th>رنگ</th><th>سایز</th><th>تعداد باقی‌مانده</th><th>قیمت فروش</th></tr></thead><tbody>{p.items.filter(item=>Number(item.stock)>0).slice().sort((a,b)=>String(a.color||'').localeCompare(String(b.color||''),'fa')||String(a.size||'').localeCompare(String(b.size||''),'fa',{numeric:true})).map((item,index)=><tr key={item.id||index}><td>{item.color||'ثبت نشده'}</td><td>{item.size||'ثبت نشده'}</td><td><b>{num(item.stock)}</b> عدد</td><td className="gold-text">{money(item.price)}</td></tr>)}</tbody></table></div></div></td></tr>}</React.Fragment>)}</tbody></table></div>}
+ const displayProducts=groupVariants?Object.values(products.reduce((groups,p)=>{const category=productBase(p)||'متفرقه';const variant=productVariant(p);const key=category+'::'+variant;if(!groups[key])groups[key]={...p,id:key,ids:[],category,variant,sku:'',color:'رنگ‌های مختلف',size:'',stock:0,sold:0,items:[]};groups[key].ids.push(p.id);groups[key].items.push(p);groups[key].stock+=Number(p.stock||0);groups[key].sold+=Number(p.sold||0);return groups;},{})).map(g=>{const colors=[...new Set(g.items.map(item=>cleanText(item.color)).filter(color=>color&&color!=='-'))];const sizes=[...new Set(g.items.map(item=>cleanText(item.size)).filter(Boolean))];return {...g,buy:g.items[0]?.buy??0,price:g.items[0]?.price??0,sku:colors.length+' رنگ',colorSummary:colors.join('، ')||'رنگ ثبت نشده',sizeSummary:sizes.join('، ')||'سایز ثبت نشده'};}):products;
+ return displayProducts.length===0?<Empty icon={Package} title="کالایی پیدا نشد" text="جست‌وجو را تغییر بده یا کالای جدید اضافه کن."/>:<div className="table-wrap"><table><thead><tr><th>سرفصل / جنس</th><th>مدل / انتخابی</th><th>سایزها</th><th>موجودی کل</th><th>قیمت فروش</th>{showSold&&<th>تعداد فروش</th>}<th>وضعیت</th><th>جزئیات / عملیات</th></tr></thead><tbody>{displayProducts.map(p=><React.Fragment key={p.id}><tr><td><div className="table-product"><div className="product-thumb"><Shirt size={18}/></div><b>{p.category}</b></div><small>{p.sku}</small></td><td>{productVariant(p)}</td><td>{groupVariants?'همه سایزها':(p.color+' / ')} {p.size}</td><td><b>{num(p.stock)}</b> عدد</td><td className="gold-text">{money(p.price)}</td>{showSold&&<td>{num(p.sold)}</td>}<td><span className={p.stock<=3?'pill-red':p.stock<=5?'pill-yellow':'pill-green'}>{p.stock<=3?'رو به اتمام':p.stock<=5?'کم‌موجودی':'موجود'}</span></td><td><div className="inline-actions">{groupVariants&&<button className="btn btn-ghost" type="button" onClick={()=>setExpandedGroups(prev=>({...prev,[p.id]:!prev[p.id]}))}>{expandedGroups[p.id]?'بستن جزئیات':'رنگ و سایزها'}</button>}<button className="btn btn-ghost" type="button" onClick={()=>onEditPrice?.(p)}><Pencil size={14}/> اصلاح قیمت</button>{onDelete&&<button className="row-delete" type="button" onClick={()=>onDelete(groupVariants?(p.ids||[p.id]):p.id)} title={groupVariants?'حذف همه رنگ‌های این مدل':'حذف کالا'} aria-label={groupVariants?'حذف همه رنگ‌های این مدل':'حذف کالا'}><Trash2 size={16}/></button>}</div></td></tr>{groupVariants&&expandedGroups[p.id]&&<tr className="inventory-detail-row"><td colSpan={showSold?8:7}><div className="inventory-detail"><div className="inventory-detail-heading"><b>رنگ‌ها و سایزهای موجود این مدل</b><span>موجودی کل: {num(p.stock)} عدد</span></div><div className="inventory-detail-colors"><span>رنگ‌های ثبت‌شده: {p.colorSummary}</span></div><div className="table-wrap"><table><thead><tr><th>رنگ</th><th>سایز</th><th>تعداد باقی‌مانده</th><th>قیمت فروش</th></tr></thead><tbody>{p.items.filter(item=>Number(item.stock)>0).slice().sort((a,b)=>String(a.color||'').localeCompare(String(b.color||''),'fa')||String(a.size||'').localeCompare(String(b.size||''),'fa',{numeric:true})).map((item,index)=><tr key={item.id||index}><td>{item.color||'ثبت نشده'}</td><td>{item.size||'ثبت نشده'}</td><td><b>{num(item.stock)}</b> عدد</td><td className="gold-text">{money(item.price)}</td></tr>)}</tbody></table></div></div></td></tr>}</React.Fragment>)}</tbody></table></div>}
 
 function Empty({icon:Icon,title,text}){return <div className="empty"><div><Icon size={24}/></div><b>{title}</b><p>{text}</p></div>}
 function Modal({title,close,children}){return <div className="modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)close()}}><section className="modal"><div className="modal-head"><h2>{title}</h2><button className="icon-btn" onClick={close}><X size={18}/></button></div>{children}</section></div>}
