@@ -84,8 +84,8 @@ function productBase(p){
 function productColorValue(p){
  const explicit=normalizeProductText(p?.color||'');
  if(explicit&&explicit!=='-'&&explicit!=='سایر') return explicit;
- const name=normalizeProductText(p?.variant||p?.name||'');
- const matches=productColorCatalog.filter(color=>name.endsWith(color)).sort((a,b)=>b.length-a.length);
+ const candidates=[p?.variant,p?.name].map(normalizeProductText).filter(Boolean);
+ const matches=productColorCatalog.filter(color=>candidates.some(name=>name.endsWith(color))).sort((a,b)=>b.length-a.length);
  return matches[0]||'';
 }
 function saleVariantKey(value){return normalizeProductText(value).replace(/نیم\s*بگ/g,'بگ').replace(/\s+/g,' ').trim();}
