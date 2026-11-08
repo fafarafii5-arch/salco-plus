@@ -92,6 +92,8 @@ function saleVariantKey(value){return normalizeProductText(value).replace(/نی�
 function productVariant(p){
  let n=normalizeProductText(p?.variant || p?.name || '');
  const c=productBase(p), color=productColorValue(p);
+ if(c==='کت شلوار' && /^دبل\\s*برست\\s*سبز\\s*دیپلمات$/.test(n)) return 'کت شلوار دبل برست دیپلمات';
+ if(c==='کت شلوار' && /^کت\\s*دبل\\s*فیس\\s*سورمه‌ای\\s*برفی$/.test(n)) return 'کت دبل فیس';
  const prefixes=[c,'کت و شلوار','کت‌وشلوار','کت شلوار','شلوار'].filter(Boolean).sort((x,y)=>y.length-x.length);
  for(const prefix of prefixes){const px=normalizeProductText(prefix);if(n.toLocaleLowerCase('fa').startsWith(px.toLocaleLowerCase('fa'))){n=normalizeProductText(n.slice(prefix.length));break;}}
  if(color){const nn=normalizeProductText(n).toLocaleLowerCase('fa'),cc=normalizeProductText(color).toLocaleLowerCase('fa');if(nn.endsWith(cc))n=normalizeProductText(n.slice(0,n.length-color.length));}
