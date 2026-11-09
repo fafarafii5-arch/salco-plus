@@ -499,7 +499,7 @@ function App(){
      <div className="pricing-group-edit">{colors.map(colorGroup=>{const key="color:"+group.key+"::"+colorGroup.color;const first=colorGroup.items[0];const draft=priceDrafts[key]||{};const price=draft.price??String(first.price??0);const missing=Number(price)<=0;const saving=colorGroup.items.some(p=>savingPriceId===p.id);return <div className="pricing-color-row" key={key}>
        <div className="pricing-fields pricing-fields-single"><label>قیمت فروش رنگ {colorGroup.color} <small>(تومان)</small><input className="price-cell-input" aria-label={"قیمت فروش "+group.category+" "+group.model+" "+colorGroup.color} type="text" inputMode="numeric" min="0" value={price} onChange={e=>setPriceDrafts(prev=>({...prev,[key]:{price:formatDigits(e.target.value)}}))}/></label></div>
        <div className="pricing-card-footer"><span className={missing?"pill-yellow":"pill-green"}>{missing?"نیازمند قیمت":"قیمت‌گذاری شده"}</span><button className="btn btn-gold" type="button" disabled={saving||!draft.price} onClick={async()=>{try{setSavingPriceId(first.id);const savedValues={price:numericValue(price)};for(const p of colorGroup.items)await updateProductPrices(p.id,savedValues);setProducts(prev=>prev.map(item=>colorGroup.items.some(p=>String(p.id)===String(item.id))?{...item,...savedValues}:item));setPriceDrafts(prev=>{const next={...prev};delete next[key];return next;});toast("قیمت رنگ "+colorGroup.color+" برای "+group.category+" "+group.model+" ذخیره شد.");}catch(err){toast(err.message||"ذخیره قیمت ناموفق بود.");}finally{setSavingPriceId(null);}}}>{saving?"در حال ذخیره…":"ذخیره قیمت این رنگ"}</button></div>
-     </div>})}
+     </div>})}</div>
    </article>})}
    </div>}
  </section>}
