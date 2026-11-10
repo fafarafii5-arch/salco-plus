@@ -432,11 +432,11 @@ function App(){
    if(!data?.invoice_no)throw new Error('شماره فاکتور برای ذخیره فروش دریافت نشد.');
    const saleId=data?.sale_id||data?.id||null;
    const sellerUpdate=saleId
-    ? supabase.from('sales').update({seller_name:saleForm.seller}).eq('branch_id',branch.id).eq('id',saleId)
-    : supabase.from('sales').update({seller_name:saleForm.seller}).eq('branch_id',branch.id).eq('invoice_no',data.invoice_no);
-   const {error:sellerError}=await sellerUpdate;
+    ? supabase.from('sales').update({seller_name:saleForm.seller}).eq('branch_id',branch.id).eq('id',saleId).select('id').single()
+    : supabase.from('sales').update({seller_name:saleForm.seller}).eq('branch_id',branch.id).eq('invoice_no',data.invoice_no).select('id').single();
+   const {data:savedSale,error:sellerError}=await sellerUpdate;
    if(sellerError)throw sellerError;
-   let cashEntry=null, persistedSaleId=saleId;
+   let cashEntry=null, persistedSaleId=saleId||savedSale?.id||null;
    if(isCredit){
     if(!persistedSaleId){
      const {data:found,error:findError}=await supabase.from('sales').select('id').eq('branch_id',branch.id).eq('invoice_no',data.invoice_no).single();
