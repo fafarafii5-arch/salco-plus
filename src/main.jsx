@@ -458,6 +458,7 @@ function App(){
    setProducts(prev=>prev.map(p=>String(p.id)===String(selectedSaleProduct.id)?{...p,stock:Math.max(0,Number(p.stock||0)-qty),sold:Number(p.sold||0)+qty}:p));
    setSales(prev=>[localSale,...prev]);
    if(cashEntry)setCash(prev=>[cashEntry,...prev]);
+   else if(!isCredit&&invoiceTotal>0)setCash(prev=>[{id:'pending-'+localId,date:soldAt,type:'دریافت',title:'دریافت فروش '+data.invoice_no,amount:invoiceTotal,payment:saleForm.payment},...prev]);
    setInvoice(null);
    setSaleForm({productId:'',category:'',variant:'',color:'',qty:1,customer:'',seller:'فائزه رفیع‌زاده',discount:0,payment:'کارت‌خوان',installmentCount:2,downPayment:0,firstDueDate:new Date().toISOString().slice(0,10)});
    setPage('داشبورد');
