@@ -404,7 +404,67 @@ function App(){
  
  const addCustomProductOption=(kind,value)=>{const v=cleanText(value);if(!v)return;setCustomProductOptions(prev=>{if(kind==='model'){const list=prev.models?.[form.category]||[];return {...prev,models:{...prev.models,[form.category]:list.some(x=>saleVariantKey(x)===saleVariantKey(v))?list:[...list,v]}};}const key=kind==='category'?'categories':kind==='size'?'sizes':'colors';const list=prev[key]||[];return list.some(x=>saleVariantKey(x)===saleVariantKey(v))?prev:{...prev,[key]:[...list,v]};});if(kind==='category')setForm(prev=>({...prev,category:v,variant:'ساده',name:v+' ساده'}));if(kind==='model')setForm(prev=>({...prev,variant:v,name:prev.category+' '+v}));if(kind==='size')setForm(prev=>({...prev,size:v}));if(kind==='color')setForm(prev=>({...prev,color:v}));setNewProductOption(prev=>({...prev,[kind]:''}));};
  const addProduct=async e=>{e.preventDefault();try{if(!branch)throw new Error('شعبه هنوز بارگذاری نشده است.');const productName=[form.category,form.variant&&form.variant!=='ساده'?form.variant:'',form.color&&form.color!=='-'?form.color:''].filter(Boolean).join(' ');const productSku='SAL-'+Date.now().toString(36).toUpperCase();const p=await createProduct(branch.id,{...form,stock:numericValue(form.stock),buy:0,price:numericValue(form.price),name:productName,sku:productSku,imageUrl:form.imageUrl});setProducts([p,...products]);setShowProduct(false);setForm({name:'',sku:'',category:'کت شلوار',variant:'کت شلوار ساده',size:'50',color:'مشکی',stock:'1',price:'',imageUrl:''});toast('کالا در پایگاه داده ذخیره شد.');}catch(err){toast(err.message||'ذخیره کالا ناموفق بود.');}};
- const addSale=async e=>{e.preventDefault();if(!branch||!session){toast('ابتدا وارد حساب کاربری شوید.');return;}if(!selectedSaleProduct){toast('لطفاً کالای دارای موجودی را انتخاب کنید.');return;}const qty=Number(saleForm.qty);const discount=Number(saleForm.discount)||0;const downPayment=Number(saleForm.downPayment)||0;const isGift=saleForm.payment==='هدیه';if(!Number.isInteger(qty)||qty<1){toast('تعداد باید حداقل ۱ عدد باشد.');return;}if(qty>Number(selectedSaleProduct.stock||0)){toast('موجودی کافی نیست.');return;}if(isGift&&discount>0){toast('برای هدیه، تخفیف جداگانه وارد نکنید.');return;}if(discount<0||discount>(Number(selectedSaleProduct.price)||0)*qty){toast('مبلغ تخفیف معتبر نیست.');return;}try{setDataLoading(true);const soldAt=new Date(saleDate+'T12:00:00').toISOString();const {data,error}=await supabase.rpc('register_sale',{p_branch_id:branch.id,p_product_id:selectedSaleProduct.id,p_quantity:qty,p_gift_quantity:0,p_sold_at:soldAt,p_discount:isGift?0:discount,p_customer_name:saleForm.customer.trim()||null,p_payment_method:saleForm.payment});if(error)throw error;if(!data?.invoice_no)throw new Error('شماره فاکتور برای ذخیره فروشنده دریافت نشد.');const {error:sellerError}=await supabase.from('sales').update({seller_name:saleForm.seller}).eq('branch_id',branch.id).eq('invoice_no',data.invoice_no);if(sellerError)throw sellerError;const invoiceTotal=isGift?0:Math.max(0,(Number(selectedSaleProduct.price)||0)*qty-discount);if(saleForm.payment==='اعتباری'){if(!Number.isFinite(downPayment)||downPayment<0||downPayment>invoiceTotal)throw new Error('پیش‌پرداخت باید بین صفر و مبلغ نهایی فاکتور باشد.');const installmentBalance=Math.max(0,invoiceTotal-downPayment);const count=Number(saleForm.installmentCount);if(!Number.isInteger(count)||count<1||count>36)throw new Error('تعداد اقساط باید بین ۱ تا ۳۶ باشد.');if(!saleForm.firstDueDate)throw new Error('تاریخ سررسید قسط اول را انتخاب کنید.');let saleRow=data?.sale_id||data?.id?{id:data.sale_id||data.id}:null;if(!saleRow){const {data:found,error:findError}=await supabase.from('sales').select('id').eq('branch_id',branch.id).eq('invoice_no',data?.invoice_no).maybeSingle();if(findError)throw findError;if(!found)throw new Error('فروش ثبت شد اما شناسه فاکتور برای ایجاد اقساط پیدا نشد.');saleRow=found;}const base=Math.floor((installmentBalance/count)*100)/100;const rows=Array.from({length:count},(_,i)=>{const due=new Date(saleForm.firstDueDate+'T12:00:00');due.setMonth(due.getMonth()+i);return {branch_id:branch.id,sale_id:saleRow.id,installment_no:i+1,due_date:due.toISOString().slice(0,10),amount:i===count-1?Math.round((installmentBalance-base*(count-1))*100)/100:base,amount_paid:0,status:'pending'};});const {error:installmentError}=await supabase.from('sale_installments').insert(rows);if(installmentError)throw installmentError;if(downPayment>0){const {error:paidError}=await supabase.from('sales').update({amount_paid:downPayment}).eq('branch_id',branch.id).eq('id',saleRow.id);if(paidError)throw paidError;await createCashTransaction(branch.id,session.user.id,{type:'دریافت',amount:downPayment,saleId:saleRow.id,title:'پیش‌پرداخت فروش اقساطی · فاکتور '+data.invoice_no});}}await loadRemote(session);setInvoice(null);setSaleForm({productId:'',category:'',variant:'',color:'',qty:1,customer:'',seller:'فائزه رفیع‌زاده',discount:0,payment:'کارت‌خوان',installmentCount:2,downPayment:0,firstDueDate:new Date().toISOString().slice(0,10)});setPage('داشبورد');toast('ثبت انجام شد.');}catch(err){toast(err.message||'ثبت فروش انجام نشد.');}finally{setDataLoading(false);}};
+ const addSale=async e=>{
+  e.preventDefault();
+  if(!branch||!session){toast('ابتدا وارد حساب کاربری شوید.');return;}
+  if(!selectedSaleProduct){toast('لطفاً کالای دارای موجودی را انتخاب کنید.');return;}
+  const qty=Number(saleForm.qty), discount=Number(saleForm.discount)||0, downPayment=Number(saleForm.downPayment)||0;
+  const isGift=saleForm.payment==='هدیه', isCredit=saleForm.payment==='اعتباری';
+  const invoiceTotal=isGift?0:Math.max(0,(Number(selectedSaleProduct.price)||0)*qty-discount);
+  if(!Number.isInteger(qty)||qty<1){toast('تعداد باید حداقل ۱ عدد باشد.');return;}
+  if(qty>Number(selectedSaleProduct.stock||0)){toast('موجودی کافی نیست.');return;}
+  if(isGift&&discount>0){toast('برای هدیه، تخفیف جداگانه وارد نکنید.');return;}
+  if(discount<0||discount>(Number(selectedSaleProduct.price)||0)*qty){toast('مبلغ تخفیف معتبر نیست.');return;}
+  let installmentRows=[];
+  if(isCredit){
+   if(!Number.isFinite(downPayment)||downPayment<0||downPayment>invoiceTotal){toast('پیش‌پرداخت باید بین صفر و مبلغ نهایی فاکتور باشد.');return;}
+   const count=Number(saleForm.installmentCount);
+   if(!Number.isInteger(count)||count<1||count>36){toast('تعداد اقساط باید بین ۱ تا ۳۶ باشد.');return;}
+   if(!saleForm.firstDueDate){toast('تاریخ سررسید قسط اول را انتخاب کنید.');return;}
+   const balance=Math.max(0,invoiceTotal-downPayment), base=Math.floor((balance/count)*100)/100;
+   installmentRows=Array.from({length:count},(_,i)=>{const due=new Date(saleForm.firstDueDate+'T12:00:00');due.setMonth(due.getMonth()+i);return {installment_no:i+1,due_date:due.toISOString().slice(0,10),amount:i===count-1?Math.round((balance-base*(count-1))*100)/100:base,amount_paid:0,status:'pending'};});
+  }
+  try{
+   setDataLoading(true);
+   const soldAt=new Date(saleDate+'T12:00:00').toISOString();
+   const {data,error}=await supabase.rpc('register_sale',{p_branch_id:branch.id,p_product_id:selectedSaleProduct.id,p_quantity:qty,p_gift_quantity:0,p_sold_at:soldAt,p_discount:isGift?0:discount,p_customer_name:saleForm.customer.trim()||null,p_payment_method:saleForm.payment});
+   if(error)throw error;
+   if(!data?.invoice_no)throw new Error('شماره فاکتور برای ذخیره فروش دریافت نشد.');
+   const saleId=data?.sale_id||data?.id||null;
+   const sellerUpdate=saleId
+    ? supabase.from('sales').update({seller_name:saleForm.seller}).eq('branch_id',branch.id).eq('id',saleId)
+    : supabase.from('sales').update({seller_name:saleForm.seller}).eq('branch_id',branch.id).eq('invoice_no',data.invoice_no);
+   const {error:sellerError}=await sellerUpdate;
+   if(sellerError)throw sellerError;
+   let cashEntry=null, persistedSaleId=saleId;
+   if(isCredit){
+    if(!persistedSaleId){
+     const {data:found,error:findError}=await supabase.from('sales').select('id').eq('branch_id',branch.id).eq('invoice_no',data.invoice_no).single();
+     if(findError)throw findError;
+     persistedSaleId=found.id;
+    }
+    const rows=installmentRows.map(row=>({...row,branch_id:branch.id,sale_id:persistedSaleId}));
+    const {error:installmentError}=await supabase.from('sale_installments').insert(rows);
+    if(installmentError)throw installmentError;
+    if(downPayment>0){
+     const {error:paidError}=await supabase.from('sales').update({amount_paid:downPayment}).eq('branch_id',branch.id).eq('id',persistedSaleId);
+     if(paidError)throw paidError;
+     cashEntry=await createCashTransaction(branch.id,session.user.id,{type:'دریافت',amount:downPayment,saleId:persistedSaleId,title:'پیش‌پرداخت فروش اقساطی · فاکتور '+data.invoice_no});
+    }
+    setInstallments(prev=>[...installmentRows.map(row=>({...row,id:'pending-'+persistedSaleId+'-'+row.installment_no,branch_id:branch.id,sale_id:persistedSaleId})),...prev]);
+   }
+   const localId=persistedSaleId||data.invoice_no;
+   const localSale={id:localId,invoiceNo:data.invoice_no,date:soldAt,customerId:null,seller:saleForm.seller,product:selectedSaleProduct.name,items:[{id:'pending-'+localId,productId:selectedSaleProduct.id,productName:selectedSaleProduct.name,sku:selectedSaleProduct.sku,size:selectedSaleProduct.size,color:selectedSaleProduct.color,quantity:qty,unitPrice:Number(selectedSaleProduct.price)||0,discount,lineTotal:invoiceTotal,returnedQuantity:0,unitCost:Number(selectedSaleProduct.buy)||0}],qty,customer:saleForm.customer.trim()||'مشتری حضوری',total:invoiceTotal,cost:(Number(selectedSaleProduct.buy)||0)*qty,discount,payment:saleForm.payment};
+   setProducts(prev=>prev.map(p=>String(p.id)===String(selectedSaleProduct.id)?{...p,stock:Math.max(0,Number(p.stock||0)-qty),sold:Number(p.sold||0)+qty}:p));
+   setSales(prev=>[localSale,...prev]);
+   if(cashEntry)setCash(prev=>[cashEntry,...prev]);
+   setInvoice(null);
+   setSaleForm({productId:'',category:'',variant:'',color:'',qty:1,customer:'',seller:'فائزه رفیع‌زاده',discount:0,payment:'کارت‌خوان',installmentCount:2,downPayment:0,firstDueDate:new Date().toISOString().slice(0,10)});
+   setPage('داشبورد');
+   toast('فروش ثبت شد.');
+  }catch(err){toast(err.message||'ثبت فروش انجام نشد.');}
+  finally{setDataLoading(false);}
+ };
  const exchangeSale=sales.find(x=>String(x.id)===String(exchangeForm.saleId))||null;
  const exchangeSaleItem=exchangeSale?.items?.find(x=>String(x.id)===String(exchangeForm.saleItemId))||null;
  const exchangeNewProduct=products.find(x=>String(x.id)===String(exchangeForm.newProductId))||null;
