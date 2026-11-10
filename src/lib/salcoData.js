@@ -21,17 +21,8 @@ export async function getCurrentBranch() {
 export async function listProducts(branchId) {
   const { data, error } = await supabase.from('products').select('*').eq('branch_id', branchId).eq('is_active', true).order('created_at', { ascending: false });
   if (error) throw new Error('دریافت موجودی کالاها: ' + error.message);
-  const soldByProduct = {};
-  const { data: sales, error: salesError } = await supabase.from('sales').select('id').eq('branch_id', branchId).eq('status', 'completed');
-  if (salesError) throw new Error('دریافت فروش‌های تکمیل‌شده برای محاسبه موجودی: ' + salesError.message);
-  const saleIds = (sales || []).map(s => s.id);
-  for (let offset = 0; offset < saleIds.length; offset += 100) {
-    const batch = saleIds.slice(offset, offset + 100);
-    const { data: items, error: itemsError } = await supabase.from('sale_items').select('sale_id, product_id, quantity').in('sale_id', batch);
-    if (itemsError) throw new Error('دریافت اقلام فروش برای موجودی: ' + itemsError.message);
-    (items || []).forEach(item => { if (item.product_id) soldByProduct[item.product_id] = (soldByProduct[item.product_id] || 0) + Number(item.quantity || 0); });
-  }
-  return (data || []).map(p => ({ id: p.id, name: p.name, sku: p.sku, category: p.category || 'متفرقه', variant: p.variant || 'ساده', size: p.size || '-', color: p.color || '-', stock: p.stock_qty, initialStock: Number(p.initial_stock_qty ?? p.stock_qty), buy: Number(p.purchase_price), price: Number(p.sale_price), imageUrl: p.image_url || '', sold: soldByProduct[p.id] || 0 }));
+  // Sales are loaded once by listSales; do not rescan the complete sales history here.
+  return (data || []).map(p => ({ id: p.id, name: p.name, sku: p.sku, category: p.category || 'متفرقه', variant: p.variant || 'ساده', size: p.size || '-', color: p.color || '-', stock: p.stock_qty, initialStock: Number(p.initial_stock_qty ?? p.stock_qty), buy: Number(p.purchase_price), price: Number(p.sale_price), imageUrl: p.image_url || '', sold: 0 }));
 }
 
 export async function createProduct(branchId, product) {
@@ -68,23 +59,23 @@ export async function listSales(branchId) {
   const customerIds = [...new Set((sales || []).map(s => s.customer_id).filter(Boolean))];
   let items = [], customers = [], exchangeRows = [], productDetails = [];
   if (saleIds.length) {
-    const result = await supabase.from('sale_items').select('id, sale_id, product_id, product_name, sku, quantity, unit_price, discount, line_total, unit_cost').in('sale_id', saleIds);
-    if (result.error) throw new Error('دریافت ریز اقلام فاکتورها: ' + result.error.message);
-    items = result.data || [];
+    const [itemsResult, exchangesResult, customersResult] = await Promise.all([
+      supabase.from('sale_items').select('id, sale_id, product_id, product_name, sku, quantity, unit_price, discount, line_total, unit_cost').in('sale_id', saleIds),
+      supabase.from('sale_exchanges').select('original_sale_item_id, returned_quantity').in('original_sale_id', saleIds),
+      customerIds.length ? supabase.from('customers').select('id, full_name').in('id', customerIds) : Promise.resolve({ data: [], error: null }),
+    ]);
+    if (itemsResult.error) throw new Error('دریافت ریز اقلام فاکتورها: ' + itemsResult.error.message);
+    if (exchangesResult.error) throw new Error('دریافت سوابق تعویض: ' + exchangesResult.error.message);
+    if (customersResult.error) throw new Error('دریافت نام مشتریان فاکتورها: ' + customersResult.error.message);
+    items = itemsResult.data || [];
+    exchangeRows = exchangesResult.data || [];
+    customers = customersResult.data || [];
     const productIds = [...new Set(items.map(i => i.product_id).filter(Boolean))];
     if (productIds.length) {
       const productResult = await supabase.from('products').select('id, size, color').in('id', productIds);
       if (productResult.error) throw new Error('دریافت سایز و رنگ اقلام فروش: ' + productResult.error.message);
       productDetails = productResult.data || [];
     }
-    const exchanges = await supabase.from('sale_exchanges').select('original_sale_item_id, returned_quantity').in('original_sale_id', saleIds);
-    if (exchanges.error) throw new Error('دریافت سوابق تعویض: ' + exchanges.error.message);
-    exchangeRows = exchanges.data || [];
-  }
-  if (customerIds.length) {
-    const result = await supabase.from('customers').select('id, full_name').in('id', customerIds);
-    if (result.error) throw new Error('دریافت نام مشتریان فاکتورها: ' + result.error.message);
-    customers = result.data || [];
   }
   const customerById = Object.fromEntries(customers.map(c => [c.id, c.full_name]));
   const productById = Object.fromEntries(productDetails.map(p => [p.id, p]));
