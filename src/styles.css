@@ -2296,3 +2296,34 @@
    width:25px!important;height:25px!important;
  }
 }
+
+
+/* Weekly chart dates: large, high-contrast Persian numerals */
+.sales-manager-dashboard .sm-chart-date-pill{
+  x:calc(attr(x number));
+  fill:#17130d!important;
+  stroke:#c9a45a!important;
+  stroke-width:1.4!important;
+}
+.sales-manager-dashboard .sm-chart-label{
+  fill:#ffffff!important;
+  color:#ffffff!important;
+  font-size:18px!important;
+  font-weight:900!important;
+  font-family:inherit!important;
+  paint-order:stroke;
+  stroke:#17130d;
+  stroke-width:0.35px;
+}
+@media(max-width:700px){
+  .sales-manager-dashboard .sm-chart-label{
+    font-size:17px!important;
+    font-weight:900!important;
+    fill:#ffffff!important;
+  }
+  .sales-manager-dashboard .sm-chart-date-pill{
+    fill:#17130d!important;
+    stroke:#d6b56d!important;
+    stroke-width:1.5!important;
+  }
+}
