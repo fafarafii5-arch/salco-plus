@@ -2274,3 +2274,25 @@
    font-size:12px!important;
  }
 }
+
+
+/* Four-item mobile navigation after removing the duplicate Home shortcut */
+.sales-manager-dashboard .sm-bottom-nav{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+}
+.sales-manager-dashboard .sm-bottom-nav button{
+  min-width:0;
+}
+@media(max-width:700px){
+ .sales-manager-dashboard .sm-bottom-nav{
+   grid-template-columns:repeat(4,minmax(0,1fr))!important;
+   padding-inline:8px!important;
+ }
+ .sales-manager-dashboard .sm-bottom-nav button{
+   font-size:11px!important;
+   gap:5px!important;
+ }
+ .sales-manager-dashboard .sm-bottom-nav button svg{
+   width:25px!important;height:25px!important;
+ }
+}
