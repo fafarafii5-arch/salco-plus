@@ -575,10 +575,10 @@ function App(){
    <div className="sm-hero-content">
     <h2><BarChart3 size={22}/> خلاصه عملکرد فروش</h2>
     <div className="sm-kpi-grid">
-     <div className="sm-kpi"><Users size={27}/><span>مشتریان</span><b>{num(dashboardCustomers)}</b><small>این ماه</small></div>
-     <div className="sm-kpi"><ReceiptText size={27}/><span>فاکتورها</span><b>{num(dashboardMonthSales.length)}</b><small>این ماه</small></div>
-     <div className="sm-kpi"><ShoppingCart size={27}/><span>فروش روز انتخابی</span><b>{money(dashboardTodaySales.reduce((sum,s)=>sum+Number(s.total||0),0)).replace(' تومان','')}</b><small>{num(dashboardTodaySales.length)} فاکتور در این روز</small></div>
      <div className="sm-kpi"><CalendarDays size={27}/><span>فروش ماه جاری</span><b>{money(dashboardMonthSales.reduce((sum,s)=>sum+Number(s.total||0),0)).replace(' تومان','')}</b><small>تومان</small></div>
+     <div className="sm-kpi"><ShoppingCart size={27}/><span>فروش امروز</span><b>{money(dashboardTodaySales.reduce((sum,s)=>sum+Number(s.total||0),0)).replace(' تومان','')}</b><small>{num(dashboardTodaySales.length)} فاکتور</small></div>
+     <div className="sm-kpi"><ReceiptText size={27}/><span>فاکتورها</span><b>{num(dashboardMonthSales.length)}</b><small>این ماه</small></div>
+     <div className="sm-kpi"><Users size={27}/><span>مشتریان</span><b>{num(dashboardCustomers)}</b><small>این ماه</small></div>
     </div>
    </div>
   </section>
@@ -604,18 +604,18 @@ function App(){
    <div className="sm-section-title"><h2><Zap/> دسترسی سریع</h2><span>عملیات پرکاربرد فروشگاه</span></div>
    <div className="sm-quick-grid">
     <button onClick={()=>setPage('صندوق')}><Wallet/><span>صندوق</span></button>
-    <button onClick={()=>setPage('گزارش‌ها')}><ReceiptText/><span>گزارش فروش</span></button>
+    <button onClick={()=>setPage('فاکتورها')}><ReceiptText/><span>فاکتورها</span></button>
     <button onClick={()=>{setPage('مشتریان');if(branch)listCustomers(branch.id).then(setCustomers).catch(err=>toast(err.message||'بارگذاری مشتریان ناموفق بود.'));}}><Users/><span>مشتریان</span></button>
     <button onClick={()=>setPage('ثبت فروش')}><ShoppingCart/><span>ثبت فروش</span></button>
     <button onClick={()=>setPage('موجودی کالا')}><Package/><span>موجودی کالا</span></button>
    </div>
   </section>
   <nav className="sm-bottom-nav" aria-label="ناوبری اصلی">
-   <button onClick={()=>setPage('گزارش‌ها')}><BarChart3/><span>گزارش‌ها</span></button>
-   <button onClick={()=>setPage('ثبت فروش')}><ShoppingCart/><span>ثبت فروش</span></button>
+   <button onClick={()=>setPage('داشبورد')}><LayoutDashboard/><span>داشبورد</span></button>
+   <button onClick={()=>setPage('فاکتورها')}><FileText/><span>فاکتورها</span></button>
    <button className="sm-home-active" onClick={()=>setPage('داشبورد')}><Home/><span>خانه</span></button>
-   <button onClick={()=>setPage('موجودی کالا')}><Package/><span>موجودی کالا</span></button>
-   <button onClick={()=>setPage('صندوق')}><Wallet/><span>صندوق</span></button>
+   <button onClick={()=>setPage('ثبت فروش')}><Grid2X2/><span>عملیات</span></button>
+   <button onClick={()=>setPage('گزارش‌ها')}><BarChart3/><span>گزارش‌ها</span></button>
   </nav>
  </div>}
  {page==='قیمت‌گذاری کالاها'&&<section className="panel">
