@@ -2429,3 +2429,67 @@
     z-index:1!important;
   }
 }
+
+
+/* Dashboard KPI layout after removing the walk-in customer metric: use the freed space. */
+.sales-manager-dashboard .sm-kpi-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:0!important;
+  width:100%!important;
+}
+.sales-manager-dashboard .sm-kpi{
+  min-width:0!important;
+  padding:12px 8px!important;
+  gap:9px!important;
+}
+.sales-manager-dashboard .sm-kpi svg{
+  width:36px!important;
+  height:36px!important;
+  flex-basis:36px!important;
+}
+.sales-manager-dashboard .sm-kpi span{
+  font-size:clamp(12px,1.5vw,15px)!important;
+  line-height:1.5!important;
+  white-space:normal!important;
+}
+.sales-manager-dashboard .sm-kpi b{
+  width:100%!important;
+  font-size:clamp(16px,2.4vw,23px)!important;
+  line-height:1.45!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.sales-manager-dashboard .sm-kpi small{
+  font-size:clamp(11px,1.2vw,13px)!important;
+}
+@media(max-width:700px){
+  .sales-manager-dashboard .sm-kpi{
+    min-height:140px!important;
+    padding:10px 6px!important;
+    gap:8px!important;
+  }
+  .sales-manager-dashboard .sm-kpi svg{
+    width:34px!important;
+    height:34px!important;
+    flex-basis:34px!important;
+  }
+  .sales-manager-dashboard .sm-kpi span{
+    font-size:clamp(12px,3.4vw,14px)!important;
+  }
+  .sales-manager-dashboard .sm-kpi b{
+    font-size:clamp(15px,4.2vw,20px)!important;
+  }
+  .sales-manager-dashboard .sm-kpi small{
+    font-size:clamp(10px,3vw,12px)!important;
+  }
+}
+@media(max-width:390px){
+  .sales-manager-dashboard .sm-kpi{
+    min-height:136px!important;
+    padding-inline:4px!important;
+  }
+  .sales-manager-dashboard .sm-kpi b{
+    font-size:clamp(13px,3.8vw,16px)!important;
+  }
+}
