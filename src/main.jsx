@@ -580,8 +580,8 @@ function App(){
    </div>
   </section>
   <section className="sm-summary-row">
-   <button className="sm-summary-card" type="button" onClick={()=>setPage('گزارش‌ها')}><span className="sm-summary-icon"><BarChart3 size={28}/></span><span><small>مجموع فروش ۷ روز</small><b>{money(dashboardWeekTotal)}</b></span><ChevronLeft size={20}/></button>
-   <button className="sm-summary-card" type="button" onClick={()=>setPage('صندوق')}><span className="sm-summary-icon"><Wallet size={28}/></span><span><small>گردش صندوق</small><b>{money(cashBalance)}</b></span><ChevronLeft size={20}/></button>
+   <button className="sm-summary-card" type="button" onClick={()=>setPage('گزارش‌ها')}><span className="sm-summary-icon"><BarChart3 size={28}/></span><span><small>مجموع فروش ۷ روز</small><b>{money(dashboardWeekTotal).replace(' تومان','')}</b><em>تومان</em></span><ChevronLeft size={20}/></button>
+   <button className="sm-summary-card" type="button" onClick={()=>setPage('صندوق')}><span className="sm-summary-icon"><Wallet size={28}/></span><span><small>گردش صندوق</small><b>{money(cashBalance).replace(' تومان','')}</b><em>تومان</em></span><ChevronLeft size={20}/></button>
   </section>
   <section className="panel sm-chart-card">
    <div className="sm-section-title"><h2><BarChart3/> روند فروش ۷ روز اخیر</h2><span className="sm-chart-filter"><ChevronDown size={15}/> فروش روزانه</span></div>
