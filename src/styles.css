@@ -1439,6 +1439,11 @@
 .sm-chart-area{fill:url(#smChartGradient);fill:#b88a34;fill-opacity:.2}
 .sm-chart-line{fill:none;stroke:#edbd54;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px #dca83c99)}
 .sm-chart-point{fill:#fff3c7;stroke:#e8ad36;stroke-width:4;filter:drop-shadow(0 0 4px #efbd4e)}
+.sm-chart-point-group{cursor:pointer;outline:none;touch-action:manipulation}
+.sm-chart-hit-area{fill:transparent;stroke:transparent;pointer-events:all}
+.sm-chart-point-group:focus-visible .sm-chart-point,.sm-chart-point-group.is-selected .sm-chart-point{stroke:#fff;stroke-width:5;filter:drop-shadow(0 0 7px #f5d27b)}
+.sm-chart-selected-value{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding:12px 14px;border:1px solid #765b2d;border-radius:14px;background:linear-gradient(110deg,#211a0e,#15120d);color:#d9bd7c;font-size:13px}
+.sm-chart-selected-value b{color:#ffe09a;font-size:15px;font-weight:900;direction:rtl}
 .sm-chart-label{fill:#c9b99a;font-size:12px}
 .sm-chart-total{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:12px;border-top:1px solid #443a29;color:#bdb19a;font-size:12px}
 .sm-chart-total b{color:#e9c675;font-size:14px}
