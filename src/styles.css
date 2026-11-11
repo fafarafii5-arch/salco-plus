@@ -2429,3 +2429,40 @@
     z-index:1!important;
   }
 }
+
+
+/* Multi-item sales entry — Salco black & gold */
+.sales-entry-page{border:1px solid #8b6b35!important;border-radius:22px!important;background:radial-gradient(ellipse at 50% 0%,#211a0e 0%,#10100f 48%,#080808 100%)!important;box-shadow:0 12px 35px #0009,inset 0 1px #fff2;padding:clamp(15px,3vw,28px)!important}
+.sales-entry-page .panel-head h2{font-size:clamp(21px,4vw,28px)!important;color:#fff4df}
+.sales-entry-page .panel-head p,.sales-muted{color:#b5aa95!important}
+.sales-entry-form{display:grid;gap:16px}
+.sales-mode-tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sales-mode-tabs button{display:flex;justify-content:center;align-items:center;gap:9px;min-height:54px;border:1px solid #62502e;border-radius:14px;background:#171511;color:#eee1c7;font:700 15px inherit}
+.sales-mode-tabs button.active{background:linear-gradient(120deg,#ffe29a,#d69b2d);color:#1a1408;border-color:#ffe4a2;box-shadow:0 4px 18px #d7a53a33}
+.sales-entry-card{padding:18px;border:1px solid #765c2d;border-radius:17px;background:linear-gradient(145deg,#191816,#0d0d0c);box-shadow:inset 0 1px #ffffff12}
+.sales-entry-card h3{display:flex;align-items:center;gap:9px;margin:0 0 13px;color:#f5d58b;font-size:17px}
+.sales-entry-card h3 small{font-size:11px;color:#b9a16f;font-weight:500}
+.sales-entry-card .sales-muted{font-size:12px;margin:-5px 0 12px}
+.sales-entry-field{display:grid;gap:7px;min-width:0;color:#e9dfcb;font-size:13px}
+.sales-entry-field input,.sales-entry-field select{width:100%;min-width:0;min-height:47px;border:1px solid #514b40;border-radius:11px;background:#0b0b0b;color:#fff4df;padding:10px 13px;font:inherit;font-size:14px;outline:none}
+.sales-entry-field input:focus,.sales-entry-field select:focus{border-color:#d7ad59;box-shadow:0 0 0 3px #d7ad591c}
+.sales-selected-product{display:grid;grid-template-columns:1fr auto;gap:5px 10px;padding:12px;margin-top:11px;border:1px solid #4f4229;border-radius:11px;background:#211b10;color:#f1e2c2;font-size:12px}
+.sales-selected-product b{color:#ffdb8b}.sales-selected-product small{grid-column:1/-1;color:#b4a17a}
+.sales-add-row{display:grid;grid-template-columns:minmax(100px,.55fr) minmax(0,1fr);gap:11px;align-items:end;margin-top:12px}
+.sales-add-row .btn{min-height:47px;justify-content:center}
+.sales-cart-empty{min-height:105px;display:grid;place-content:center;justify-items:center;gap:9px;border:1px dashed #51452e;border-radius:13px;color:#a79a7f;font-size:13px}
+.sales-cart-list{display:grid}
+.sales-cart-row{display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid #3a3428;color:#f5ead4}
+.sales-cart-row>div{min-width:0}.sales-cart-row b{font-size:13px}.sales-cart-row small{display:block;color:#b4a78f;font-size:11px;margin-top:5px}
+.sales-cart-row>strong{white-space:nowrap;color:#f3d28a;font-size:13px}
+.sales-cart-qty{display:flex;align-items:center;gap:11px;margin-top:9px}
+.sales-cart-qty button{width:28px;height:28px;border:1px solid #806334;border-radius:8px;background:#211b11;color:#f8d98e;font-size:18px}
+.sales-cart-qty .sales-cart-remove{margin-right:7px;color:#d99b86;border-color:#654338}
+.sales-discount-field{margin-top:14px}
+.sales-total-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;color:#d4c8b0;font-size:13px;border-bottom:1px solid #393226}
+.sales-total-row b{color:#f3e4c5}
+.sales-grand-total{margin-top:7px;padding:14px;border:1px solid #98743b;border-radius:11px;background:#2a2112;color:#ffe6a6}
+.sales-grand-total b{font-size:18px;color:#ffdb83}
+.sales-installment-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:12px}
+.sales-submit-btn{min-height:58px;display:flex;justify-content:center;align-items:center;gap:12px;border-radius:14px!important;font-size:17px!important;box-shadow:0 7px 22px #c18c2b38}
+@media(max-width:600px){.sales-entry-card{padding:14px}.sales-mode-tabs button{font-size:13px;min-height:50px}.sales-add-row{grid-template-columns:.55fr 1fr}.sales-cart-row{gap:7px}.sales-cart-row>strong{font-size:11px}.sales-installment-grid{grid-template-columns:1fr}.sales-entry-page{padding:13px!important}}
