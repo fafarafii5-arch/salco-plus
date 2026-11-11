@@ -251,7 +251,8 @@ function App(){
  const [customProductOptions,setCustomProductOptions]=useState(()=>load('customProductOptions',{categories:[],models:{},sizes:[],colors:[]}));
  const [newProductOption,setNewProductOption]=useState({category:'',model:'',size:'',color:''});
  useEffect(()=>{try{localStorage.setItem('salco_customProductOptions',JSON.stringify(customProductOptions));}catch{}},[customProductOptions]);
- const [saleForm,setSaleForm]=useState({productId:'',category:'',variant:'',color:'',qty:1,customer:'',seller:'فائزه رفیع‌زاده',discount:0,payment:'کارت‌خوان',installmentCount:2,downPayment:0,firstDueDate:new Date().toISOString().slice(0,10)});\n const [saleCart,setSaleCart]=useState([]); const [saleSearch,setSaleSearch]=useState('');
+ const [saleForm,setSaleForm]=useState({productId:'',category:'',variant:'',color:'',qty:1,customer:'',seller:'فائزه رفیع‌زاده',discount:0,payment:'کارت‌خوان',installmentCount:2,downPayment:0,firstDueDate:new Date().toISOString().slice(0,10)});
+ const [saleCart,setSaleCart]=useState([]); const [saleSearch,setSaleSearch]=useState('');
  const [saleDate,setSaleDate]=useState(()=>isoLocal(new Date()));
  const [transferForm,setTransferForm]=useState({productId:'',recipient:'مکنزی',quantity:1,date:isoLocal(new Date()),note:''}); const [transferProductSearch,setTransferProductSearch]=useState('');
  const [incomingTransferForm,setIncomingTransferForm]=useState({productId:'',newProductName:'',quantity:1,sender:'',salePrice:'',date:isoLocal(new Date()),note:''}); const [incomingProductSearch,setIncomingProductSearch]=useState('');
