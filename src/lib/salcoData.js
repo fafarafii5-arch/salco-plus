@@ -155,3 +155,26 @@ export async function updateProductImage(productId, imageUrl) {
   if (error) throw error;
   return { id: data.id, imageUrl: data.image_url || '' };
 }
+
+export async function uploadProductImage(branchId, productId, file) {
+  if (!branchId || !productId || !file) throw new Error('کالا یا فایل تصویر مشخص نیست.');
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
+  if (!allowedTypes.includes(file.type)) throw new Error('فرمت تصویر باید JPG، PNG، WEBP یا AVIF باشد.');
+  if (file.size > 8 * 1024 * 1024) throw new Error('حجم تصویر نباید بیشتر از ۸ مگابایت باشد.');
+  const extension = ({'image/jpeg':'jpg','image/png':'png','image/webp':'webp','image/avif':'avif'})[file.type];
+  const path = String(branchId) + '/' + String(productId) + '/' + Date.now() + '-' + Math.random().toString(36).slice(2,9) + '.' + extension;
+  const bucket = supabase.storage.from('salco-product-images');
+  const { data: uploaded, error: uploadError } = await bucket.upload(path, file, {
+    cacheControl: '31536000',
+    contentType: file.type,
+    upsert: false,
+  });
+  if (uploadError) throw uploadError;
+  const { data: publicData } = bucket.getPublicUrl(uploaded.path);
+  try {
+    return await updateProductImage(productId, publicData.publicUrl);
+  } catch (error) {
+    await bucket.remove([uploaded.path]).catch(() => {});
+    throw error;
+  }
+}
