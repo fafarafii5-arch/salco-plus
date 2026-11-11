@@ -1533,3 +1533,9 @@
 .sales-manager-dashboard .sm-hero-content{direction:rtl}
 .sales-manager-dashboard .sm-kpi-grid{direction:ltr}
 .sales-manager-dashboard .sm-kpi{direction:rtl}
+
+.gallery-upload-button{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:42px;padding:9px 10px;border:1px dashed #b58a3b;border-radius:9px;background:linear-gradient(135deg,#292318,#171510);color:#f0cb75;font:inherit;font-size:12px;cursor:pointer;transition:background .15s,border-color .15s}
+.gallery-upload-button:hover{background:#332918;border-color:#edc35d}
+.gallery-upload-button input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.gallery-upload-button:focus-within{outline:2px solid #edc35d;outline-offset:2px}
+.gallery-upload-button.is-busy{opacity:.65;cursor:wait}
