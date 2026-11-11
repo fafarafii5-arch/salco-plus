@@ -605,7 +605,7 @@ function App(){
     {[42,86,130,174].map(y=><line key={y} x1="28" x2="672" y1={y} y2={y} className="sm-chart-gridline"/> )}
     <polygon points={'28,174 '+dashboardTrendLine+' 672,174'} className="sm-chart-area"/>
     <polyline points={dashboardTrendLine} className="sm-chart-line"/>
-    {dashboardTrendPoints.map(point=><g key={point.iso}><circle cx={point.x} cy={point.y} r={dashboardTrendRange===30?4:7} className="sm-chart-point"/>{point.showLabel&&<><rect x={point.x-18} y="187" width="36" height="25" rx="12.5" className="sm-chart-date-pill"/><text x={point.x} y="204" textAnchor="middle" dominantBaseline="middle" className="sm-chart-label">{point.label}</text></>}</g>)}
+    {dashboardTrendPoints.map(point=><g key={point.iso}><circle cx={point.x} cy={point.y} r={dashboardTrendRange===30?4:7} className="sm-chart-point"/>{point.showLabel&&<text x={point.x} y="204" textAnchor="middle" dominantBaseline="middle" className="sm-chart-label">{point.label}</text>}</g>)}
    </svg></div>
    <div className="sm-chart-total"><span>مجموع فروش {num(dashboardTrendRange)} روز</span><b>{money(dashboardTrendTotal)}</b></div>
   </section>
