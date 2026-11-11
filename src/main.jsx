@@ -363,6 +363,7 @@ function App(){
  const dashboardTrendLine=dashboardTrendPoints.map(point=>point.x+','+point.y).join(' ');
  const dashboardTrendTotal=dashboardTrendDays.reduce((sum,d)=>sum+d.total,0);
  const dashboardSelectedTrendPoint=dashboardTrendDays.find(day=>day.iso===dashboardSelectedTrendIso)||null;
+ const dashboardSelectedTrendChartPoint=dashboardTrendPoints.find(point=>point.iso===dashboardSelectedTrendIso)||null;
  const dashboardSellers=Object.values(dashboardMonthSales.reduce((groups,s)=>{const name=String(s.seller||'ثبت نشده').trim()||'ثبت نشده';if(!groups[name])groups[name]={name,total:0,invoices:0,qty:0};groups[name].total+=Number(s.total||0);groups[name].invoices+=1;groups[name].qty+=Number(s.qty||0);return groups;},{})).sort((a,b)=>b.total-a.total).slice(0,3);
  const dashboardStock=products.reduce((sum,p)=>sum+Number(p.stock||0),0);
  const dashboardWeekTotal=dashboardWeekDays.reduce((sum,d)=>sum+d.total,0);
@@ -607,8 +608,9 @@ function App(){
     <polygon points={'28,174 '+dashboardTrendLine+' 672,174'} className="sm-chart-area"/>
     <polyline points={dashboardTrendLine} className="sm-chart-line"/>
     {dashboardTrendPoints.map(point=><g key={point.iso} className={'sm-chart-point-group'+(dashboardSelectedTrendIso===point.iso?' is-selected':'')} onClick={()=>setDashboardSelectedTrendIso(point.iso)} role="button" tabIndex={0} aria-label={'فروش روز '+point.iso+': '+money(point.total)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setDashboardSelectedTrendIso(point.iso);}}}><circle cx={point.x} cy={point.y} r="16" className="sm-chart-hit-area"/><circle cx={point.x} cy={point.y} r={dashboardTrendRange===30?4:7} className="sm-chart-point"/>{point.showLabel&&<text x={point.x} y="204" textAnchor="middle" dominantBaseline="middle" className="sm-chart-label">{point.label}</text>}</g>)}
+    {dashboardSelectedTrendChartPoint&&<g className="sm-chart-date-tooltip" pointerEvents="none"><rect x={Math.max(4,Math.min(570,dashboardSelectedTrendChartPoint.x-63))} y={Math.max(3,dashboardSelectedTrendChartPoint.y-49)} width="126" height="31" rx="10"/><text x={Math.max(4,Math.min(570,dashboardSelectedTrendChartPoint.x-63))+63} y={Math.max(3,dashboardSelectedTrendChartPoint.y-49)+20} textAnchor="middle">{(()=>{const p=jalaliParts(dashboardSelectedTrendChartPoint.iso);return [p.year,p.month,p.day].map(v=>new Intl.NumberFormat('fa-IR',{useGrouping:false}).format(v)).join('/')})()}</text></g>}
    </svg></div>
-   {dashboardSelectedTrendPoint&&<div className="sm-chart-selected-value"><span><small>تاریخ شمسی: {(()=>{const p=jalaliParts(dashboardSelectedTrendPoint.iso);return [p.year,p.month,p.day].map(v=>new Intl.NumberFormat('fa-IR',{useGrouping:false}).format(v)).join('/')})()}</small><strong>مبلغ فروش این روز</strong></span><b>{money(dashboardSelectedTrendPoint.total)}</b></div>}
+   {dashboardSelectedTrendPoint&&<div className="sm-chart-selected-value"><strong>فروش این روز</strong><b>{money(dashboardSelectedTrendPoint.total)}</b></div>}
    <div className="sm-chart-total"><span>مجموع فروش {num(dashboardTrendRange)} روز</span><b>{money(dashboardTrendTotal)}</b></div>
   </section>
   <nav className="sm-bottom-nav" aria-label="ناوبری اصلی">
