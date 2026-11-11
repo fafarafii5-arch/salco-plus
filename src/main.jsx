@@ -562,10 +562,10 @@ function App(){
  {page==='داشبورد'&&<div className="sales-manager-dashboard" dir="rtl">
   <section className="sm-top">
    <button className="sm-menu" type="button" onClick={()=>setMobileOpen(true)} aria-label="باز کردن منو"><Menu size={29}/></button>
-   <div className="sm-brand-lockup"><img src={`${import.meta.env.BASE_URL}images/salco-logo.webp`} alt="SALCO+"/><span>مدیریت فروش و مشتریان</span></div>
+   <div className="sm-brand-lockup"><img src={`${import.meta.env.BASE_URL}images/salco-logo.webp`} alt="SALCO+"/></div>
   </section>
   <div className="sm-date-wrap">
-   <label className="sm-date-control"><CalendarDays size={20}/><span>{(()=>{const p=jalaliParts(reportDate);return new Intl.NumberFormat('fa-IR',{useGrouping:false}).format(p.day)+' '+jalaliMonthName(new Date(reportDate+'T12:00:00'))+' '+new Intl.NumberFormat('fa-IR',{useGrouping:false}).format(p.year);})()}</span><ChevronDown size={18}/><input aria-label="انتخاب تاریخ داشبورد" type="date" value={reportDate} onChange={e=>e.target.value&&setReportDate(e.target.value)}/></label>
+   <div className="sm-date-control"><CalendarDays size={20}/><JalaliDatePicker value={reportDate} onChange={setReportDate} label=""/></div>
    <button className="sm-refresh" type="button" onClick={()=>session&&loadRemote(session)} disabled={dataLoading} aria-label="تازه‌سازی"><RefreshCw size={17} className={dataLoading?'spin':''}/></button>
   </div>
   <section className="sm-hero-card">
