@@ -2213,3 +2213,39 @@
  }
  .sales-manager-dashboard .sm-date-control{position:relative}
 }
+
+
+/* Fine tune compact logo header and clean 7-day axis labels */
+@media(max-width:700px){
+ .sales-manager-dashboard .sm-top{
+   min-height:116px!important;
+   padding:4px 14px!important;
+   grid-template-columns:46px minmax(0,1fr) 46px!important;
+ }
+ .sales-manager-dashboard .sm-brand-lockup{
+   width:max-content!important;
+   max-width:100%!important;
+   justify-self:center!important;
+   margin:0 auto!important;
+   padding:0!important;
+   gap:0!important;
+ }
+ .sales-manager-dashboard .sm-brand-lockup img{
+   display:block!important;
+   width:132px!important;
+   height:108px!important;
+   max-width:100%!important;
+   object-fit:contain!important;
+ }
+ .sales-manager-dashboard .sm-chart-scroll{
+   padding:0 8px 2px!important;
+ }
+ .sales-manager-dashboard .sm-line-chart{
+   height:205px!important;
+ }
+ .sales-manager-dashboard .sm-chart-label{
+   font-size:13px!important;
+   font-weight:700!important;
+   letter-spacing:0!important;
+ }
+}
