@@ -612,10 +612,10 @@ function App(){
   </section>
   <nav className="sm-bottom-nav" aria-label="ناوبری اصلی">
    <button onClick={()=>setPage('گزارش‌ها')}><BarChart3/><span>گزارش‌ها</span></button>
-   <button onClick={()=>setPage('عملیات')}><Grid2X2/><span>عملیات</span></button>
+   <button onClick={()=>setPage('ثبت فروش')}><ShoppingCart/><span>ثبت فروش</span></button>
    <button className="sm-home-active" onClick={()=>setPage('داشبورد')}><Home/><span>خانه</span></button>
-   <button onClick={()=>setPage('فاکتورها')}><FileText/><span>فاکتورها</span></button>
-   <button onClick={()=>setPage('داشبورد')}><LayoutDashboard/><span>داشبورد</span></button>
+   <button onClick={()=>setPage('موجودی کالا')}><Package/><span>موجودی کالا</span></button>
+   <button onClick={()=>setPage('صندوق')}><Wallet/><span>صندوق</span></button>
   </nav>
  </div>}
  {page==='قیمت‌گذاری کالاها'&&<section className="panel">
