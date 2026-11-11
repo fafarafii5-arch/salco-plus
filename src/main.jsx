@@ -251,7 +251,9 @@ function App(){
  const [customProductOptions,setCustomProductOptions]=useState(()=>load('customProductOptions',{categories:[],models:{},sizes:[],colors:[]}));
  const [newProductOption,setNewProductOption]=useState({category:'',model:'',size:'',color:''});
  useEffect(()=>{try{localStorage.setItem('salco_customProductOptions',JSON.stringify(customProductOptions));}catch{}},[customProductOptions]);
- const [saleForm,setSaleForm]=useState({productId:'',category:'',variant:'',color:'',qty:1,customer:'',seller:'فائزه رفیع‌زاده',discount:0,payment:'کارت‌خوان',installmentCount:2,downPayment:0,firstDueDate:new Date().toISOString().slice(0,10)});
+ const [saleForm,setSaleForm]=useState({productId:'',category:'',variant:'',color:'',qty:1,customer:'',seller:'فائزه رفیع‌زاده',discount:0,payment:'کارت‌خوان',installmentCount:2,downPayment:0,downPaymentMethod:'کارت‌خوان',firstDueDate:new Date().toISOString().slice(0,10)});
+ const [saleCart,setSaleCart]=useState([]);
+ const [saleSearch,setSaleSearch]=useState('');
  const [saleDate,setSaleDate]=useState(()=>isoLocal(new Date()));
  const [transferForm,setTransferForm]=useState({productId:'',recipient:'مکنزی',quantity:1,date:isoLocal(new Date()),note:''}); const [transferProductSearch,setTransferProductSearch]=useState('');
  const [incomingTransferForm,setIncomingTransferForm]=useState({productId:'',newProductName:'',quantity:1,sender:'',salePrice:'',date:isoLocal(new Date()),note:''}); const [incomingProductSearch,setIncomingProductSearch]=useState('');
@@ -419,71 +421,75 @@ function App(){
  const sizeOptions=[...new Set(matchingSaleProducts.map(sizeKey))];
  const saleSize=saleForm.size&&sizeOptions.includes(saleForm.size)?saleForm.size:sizeOptions[0]||'';
  const sizedSaleProducts=matchingSaleProducts.filter(p=>sizeKey(p)===saleSize);
- const selectedSaleProduct=sizedSaleProducts.find(p=>String(p.id)===String(saleForm.productId))||sizedSaleProducts[0]||null;
- const saleDiscountProductRef=useRef(saleForm.productId);
- useEffect(()=>{if(saleDiscountProductRef.current!==saleForm.productId){saleDiscountProductRef.current=saleForm.productId;setSaleForm(prev=>({...prev,discount:0}));}},[saleForm.productId]);
+  const selectedSaleProduct=products.find(p=>String(p.id)===String(saleForm.productId)&&Number(p.stock)>0)||null;
+ const saleSubtotal=saleCart.reduce((sum,item)=>sum+item.unitPrice*item.quantity,0);
+ const saleDiscount=Number(saleForm.discount)||0;
+ const saleGrandTotal=saleForm.payment==='هدیه'?0:Math.max(0,saleSubtotal-saleDiscount);
+ const saleCartBalance=Math.max(0,saleGrandTotal-(Number(saleForm.downPayment)||0));
+ const addSaleCartItem=()=>{
+  if(!selectedSaleProduct){toast('ابتدا یک کالای دارای موجودی انتخاب کنید.');return;}
+  const qty=Number(saleForm.qty);
+  if(!Number.isInteger(qty)||qty<1||qty>Number(selectedSaleProduct.stock||0)){toast('تعداد انتخاب‌شده از موجودی کالا بیشتر است یا معتبر نیست.');return;}
+  setSaleCart(prev=>{
+   const found=prev.find(x=>String(x.productId)===String(selectedSaleProduct.id));
+   if(found){
+    if(found.quantity+qty>Number(selectedSaleProduct.stock||0)){toast('تعداد درخواستی از موجودی کالا بیشتر است.');return prev;}
+    return prev.map(x=>String(x.productId)===String(selectedSaleProduct.id)?{...x,quantity:x.quantity+qty}:x);
+   }
+   return [...prev,{productId:selectedSaleProduct.id,name:selectedSaleProduct.name,sku:selectedSaleProduct.sku,color:selectedSaleProduct.color,size:selectedSaleProduct.size,unitPrice:Number(selectedSaleProduct.price)||0,unitCost:Number(selectedSaleProduct.buy)||0,stock:Number(selectedSaleProduct.stock)||0,quantity:qty}];
+  });
+  setSaleForm(prev=>({...prev,qty:1}));
+ };
  
  const addCustomProductOption=(kind,value)=>{const v=cleanText(value);if(!v)return;setCustomProductOptions(prev=>{if(kind==='model'){const list=prev.models?.[form.category]||[];return {...prev,models:{...prev.models,[form.category]:list.some(x=>saleVariantKey(x)===saleVariantKey(v))?list:[...list,v]}};}const key=kind==='category'?'categories':kind==='size'?'sizes':'colors';const list=prev[key]||[];return list.some(x=>saleVariantKey(x)===saleVariantKey(v))?prev:{...prev,[key]:[...list,v]};});if(kind==='category')setForm(prev=>({...prev,category:v,variant:'ساده',name:v+' ساده'}));if(kind==='model')setForm(prev=>({...prev,variant:v,name:prev.category+' '+v}));if(kind==='size')setForm(prev=>({...prev,size:v}));if(kind==='color')setForm(prev=>({...prev,color:v}));setNewProductOption(prev=>({...prev,[kind]:''}));};
  const addProduct=async e=>{e.preventDefault();try{if(!branch)throw new Error('شعبه هنوز بارگذاری نشده است.');const productName=[form.category,form.variant&&form.variant!=='ساده'?form.variant:'',form.color&&form.color!=='-'?form.color:''].filter(Boolean).join(' ');const productSku='SAL-'+Date.now().toString(36).toUpperCase();const p=await createProduct(branch.id,{...form,stock:numericValue(form.stock),buy:0,price:numericValue(form.price),name:productName,sku:productSku,imageUrl:form.imageUrl});setProducts([p,...products]);setShowProduct(false);setForm({name:'',sku:'',category:'کت شلوار',variant:'کت شلوار ساده',size:'50',color:'مشکی',stock:'1',price:'',imageUrl:''});toast('کالا در پایگاه داده ذخیره شد.');}catch(err){toast(err.message||'ذخیره کالا ناموفق بود.');}};
  const addSale=async e=>{
   e.preventDefault();
   if(!branch||!session){toast('ابتدا وارد حساب کاربری شوید.');return;}
-  if(!selectedSaleProduct){toast('لطفاً کالای دارای موجودی را انتخاب کنید.');return;}
-  const qty=Number(saleForm.qty), discount=Number(saleForm.discount)||0, downPayment=Number(saleForm.downPayment)||0;
+  if(!saleCart.length){toast('حداقل یک کالا به فاکتور اضافه کنید.');return;}
   const isGift=saleForm.payment==='هدیه', isCredit=saleForm.payment==='اعتباری';
-  const invoiceTotal=isGift?0:Math.max(0,(Number(selectedSaleProduct.price)||0)*qty-discount);
-  if(!Number.isInteger(qty)||qty<1){toast('تعداد باید حداقل ۱ عدد باشد.');return;}
-  if(qty>Number(selectedSaleProduct.stock||0)){toast('موجودی کافی نیست.');return;}
-  if(isGift&&discount>0){toast('برای هدیه، تخفیف جداگانه وارد نکنید.');return;}
-  if(discount<0||discount>(Number(selectedSaleProduct.price)||0)*qty){toast('مبلغ تخفیف معتبر نیست.');return;}
-  let installmentRows=[];
+  const discount=isGift?0:saleDiscount, downPayment=isCredit?Number(saleForm.downPayment)||0:0;
+  if(discount<0||discount>saleSubtotal){toast('تخفیف باید بین صفر و جمع کالاها باشد.');return;}
+  if(isGift&&saleCart.some(item=>item.quantity<1)){toast('تعداد کالای هدیه معتبر نیست.');return;}
   if(isCredit){
-   if(!Number.isFinite(downPayment)||downPayment<0||downPayment>invoiceTotal){toast('پیش‌پرداخت باید بین صفر و مبلغ نهایی فاکتور باشد.');return;}
+   if(downPayment<0||downPayment>saleGrandTotal){toast('پیش‌پرداخت باید بین صفر و مبلغ نهایی فاکتور باشد.');return;}
    const count=Number(saleForm.installmentCount);
    if(!Number.isInteger(count)||count<1||count>36){toast('تعداد اقساط باید بین ۱ تا ۳۶ باشد.');return;}
-   if(!saleForm.firstDueDate){toast('تاریخ سررسید قسط اول را انتخاب کنید.');return;}
-   const balance=Math.max(0,invoiceTotal-downPayment), base=Math.floor((balance/count)*100)/100;
-   installmentRows=Array.from({length:count},(_,i)=>{const due=new Date(saleForm.firstDueDate+'T12:00:00');due.setMonth(due.getMonth()+i);return {installment_no:i+1,due_date:due.toISOString().slice(0,10),amount:i===count-1?Math.round((balance-base*(count-1))*100)/100:base,amount_paid:0,status:'pending'};});
+   if(saleCartBalance>0&&!saleForm.firstDueDate){toast('تاریخ سررسید قسط اول را انتخاب کنید.');return;}
+  }else if(downPayment!==0){toast('پیش‌پرداخت فقط برای فروش اقساطی مجاز است.');return;}
+  let installmentRows=[];
+  if(isCredit&&saleCartBalance>0){
+   const count=Number(saleForm.installmentCount), base=Math.floor((saleCartBalance/count)*100)/100;
+   installmentRows=Array.from({length:count},(_,i)=>{
+    const due=new Date(saleForm.firstDueDate+'T12:00:00'), day=due.getDate();
+    due.setDate(1);due.setMonth(due.getMonth()+i);
+    const lastDay=new Date(due.getFullYear(),due.getMonth()+1,0).getDate();
+    due.setDate(Math.min(day,lastDay));
+    return {installment_no:i+1,due_date:isoLocal(due),amount:i===count-1?Math.round((saleCartBalance-base*(count-1))*100)/100:base};
+   });
   }
   try{
    setDataLoading(true);
    const soldAt=new Date(saleDate+'T12:00:00').toISOString();
-   const {data,error}=await supabase.rpc('register_sale',{p_branch_id:branch.id,p_product_id:selectedSaleProduct.id,p_quantity:qty,p_gift_quantity:0,p_sold_at:soldAt,p_discount:isGift?0:discount,p_customer_name:saleForm.customer.trim()||null,p_payment_method:saleForm.payment});
+   const {data,error}=await supabase.rpc('register_sale_multi',{
+    p_branch_id:branch.id,
+    p_items:saleCart.map(item=>({product_id:item.productId,quantity:item.quantity})),
+    p_sold_at:soldAt,
+    p_discount:discount,
+    p_payment_method:saleForm.payment,
+    p_down_payment:downPayment,
+    p_down_payment_method:saleForm.downPaymentMethod||'کارت‌خوان',
+    p_installments:installmentRows,
+    p_seller_name:saleForm.seller,
+    p_customer_phone:saleForm.customer.trim()||null
+   });
    if(error)throw error;
    if(!data?.invoice_no)throw new Error('شماره فاکتور برای ذخیره فروش دریافت نشد.');
-   const saleId=data?.sale_id||data?.id||null;
-   const sellerUpdate=saleId
-    ? supabase.from('sales').update({seller_name:saleForm.seller}).eq('branch_id',branch.id).eq('id',saleId).select('id').single()
-    : supabase.from('sales').update({seller_name:saleForm.seller}).eq('branch_id',branch.id).eq('invoice_no',data.invoice_no).select('id').single();
-   const {data:savedSale,error:sellerError}=await sellerUpdate;
-   if(sellerError)throw sellerError;
-   let cashEntry=null, persistedSaleId=saleId||savedSale?.id||null;
-   if(isCredit){
-    if(!persistedSaleId){
-     const {data:found,error:findError}=await supabase.from('sales').select('id').eq('branch_id',branch.id).eq('invoice_no',data.invoice_no).single();
-     if(findError)throw findError;
-     persistedSaleId=found.id;
-    }
-    const rows=installmentRows.map(row=>({...row,branch_id:branch.id,sale_id:persistedSaleId}));
-    const {error:installmentError}=await supabase.from('sale_installments').insert(rows);
-    if(installmentError)throw installmentError;
-    if(downPayment>0){
-     const {error:paidError}=await supabase.from('sales').update({amount_paid:downPayment}).eq('branch_id',branch.id).eq('id',persistedSaleId);
-     if(paidError)throw paidError;
-     cashEntry=await createCashTransaction(branch.id,session.user.id,{type:'دریافت',amount:downPayment,saleId:persistedSaleId,title:'پیش‌پرداخت فروش اقساطی · فاکتور '+data.invoice_no});
-    }
-    setInstallments(prev=>[...installmentRows.map(row=>({...row,id:'pending-'+persistedSaleId+'-'+row.installment_no,branch_id:branch.id,sale_id:persistedSaleId})),...prev]);
-   }
-   const localId=persistedSaleId||data.invoice_no;
-   const localSale={id:localId,invoiceNo:data.invoice_no,date:soldAt,customerId:null,seller:saleForm.seller,product:selectedSaleProduct.name,items:[{id:'pending-'+localId,productId:selectedSaleProduct.id,productName:selectedSaleProduct.name,sku:selectedSaleProduct.sku,size:selectedSaleProduct.size,color:selectedSaleProduct.color,quantity:qty,unitPrice:Number(selectedSaleProduct.price)||0,discount,lineTotal:invoiceTotal,returnedQuantity:0,unitCost:Number(selectedSaleProduct.buy)||0}],qty,customer:saleForm.customer.trim()||'مشتری حضوری',total:invoiceTotal,cost:(Number(selectedSaleProduct.buy)||0)*qty,discount,payment:saleForm.payment};
-   setProducts(prev=>prev.map(p=>String(p.id)===String(selectedSaleProduct.id)?{...p,stock:Math.max(0,Number(p.stock||0)-qty),sold:Number(p.sold||0)+qty}:p));
-   setSales(prev=>[localSale,...prev]);
-   if(cashEntry)setCash(prev=>[cashEntry,...prev]);
-   else if(!isCredit&&invoiceTotal>0)setCash(prev=>[{id:'pending-'+localId,date:soldAt,type:'دریافت',title:'دریافت فروش '+data.invoice_no,amount:invoiceTotal,payment:saleForm.payment},...prev]);
-   setInvoice(null);
-   setSaleForm({productId:'',category:'',variant:'',color:'',qty:1,customer:'',seller:'فائزه رفیع‌زاده',discount:0,payment:'کارت‌خوان',installmentCount:2,downPayment:0,firstDueDate:new Date().toISOString().slice(0,10)});
-   setPage('داشبورد');
-   toast('فروش ثبت شد.');
+   await loadRemote(session);
+   setSaleCart([]);
+   setSaleSearch('');
+   setSaleForm({productId:'',category:'',variant:'',color:'',qty:1,customer:'',seller:'فائزه رفیع‌زاده',discount:0,payment:'کارت‌خوان',installmentCount:2,downPayment:0,downPaymentMethod:'کارت‌خوان',firstDueDate:new Date().toISOString().slice(0,10)});
+   toast('فاکتور '+data.invoice_no+' با موفقیت ثبت شد.');
   }catch(err){toast(err.message||'ثبت فروش انجام نشد.');}
   finally{setDataLoading(false);}
  };
@@ -638,7 +644,38 @@ function App(){
    </div>}
  </section>}
  {page==='موجودی کالا'&&<section className="panel"><div className="panel-head"><div><h2>فهرست کالاها</h2><p>مشخصات، سایز، رنگ، قیمت و تعداد موجودی</p></div><div className="inline-actions"><div className="searchbox"><Search size={16}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="جست‌وجوی کالا، کد یا رنگ..."/></div><div className="searchbox"><Search size={16}/><input value={categoryQuery} onChange={e=>setCategoryQuery(e.target.value)} placeholder="جست‌وجوی سرفصل یا مدل..."/></div><div className="searchbox"><Search size={16}/><input value={inventorySizeSearch} onChange={e=>setInventorySizeSearch(e.target.value)} placeholder="سایز؛ مثلاً ۵۰ یا XL"/></div><div className="searchbox"><Search size={16}/><input value={inventoryColorSearch} onChange={e=>setInventoryColorSearch(e.target.value)} placeholder="رنگ؛ مثلاً مشکی"/></div><button className="btn btn-gold" onClick={()=>setShowProduct(true)}><Plus size={16}/> افزودن کالا</button></div></div><ProductTable products={filteredProducts} groupVariants={!query.trim()&&!categoryQuery.trim()&&!inventorySizeSearch.trim()&&!inventoryColorSearch.trim()} onEditPrice={p=>setEditingPrice({id:p.id,ids:p.ids||[p.id],category:p.category,variant:p.variant||productVariant(p),color:p.color,size:p.size,price:formatDigits(p.price??0)})} onDelete={async ids=>{const idsToDelete=Array.isArray(ids)?ids:[ids];if(!confirm(idsToDelete.length>1?'همه رنگ‌ها و سایزهای این مدل از فهرست موجودی حذف شوند؟':'این کالا از فهرست موجودی حذف شود؟'))return;try{if(session){for(const id of idsToDelete)await deactivateProduct(id);}setProducts(prev=>prev.filter(p=>!idsToDelete.some(id=>String(id)===String(p.id))));toast('کالا از فهرست موجودی حذف شد.');}catch(err){toast(err.message||'حذف کالا ناموفق بود.');}}}/></section>}
- {page==='ثبت فروش'&&<section className="panel"><div className="panel-head"><div><h2>ثبت فاکتور فروش</h2><p>پس از ثبت، موجودی کالا و صندوق محلی به‌روزرسانی می‌شوند.</p></div></div><form className="form-grid" onSubmit={addSale}><label>جست‌وجوی سرفصل<input type="search" value={saleCategorySearch} onChange={e=>setSaleCategorySearch(e.target.value)} placeholder="نام سرفصل را جست‌وجو کن…"/></label><label>سرفصل جنس<select value={saleCategory} onChange={e=>{const category=e.target.value;const firstProduct=products.find(p=>productBase(p)===category);const firstVariant=firstProduct?productVariant(firstProduct):(productTaxonomy[category]||['ساده'])[0];setSaleForm({...saleForm,category,variant:firstVariant,color:firstProduct?colorKey(firstProduct):'',size:firstProduct?sizeKey(firstProduct):'',productId:firstProduct?String(firstProduct.id):'',discount:0});setSaleVariantSearch('');}}>{visibleInventoryCategories.map(c=><option key={c} value={c}>{c}</option>)}</select></label><label>جست‌وجوی مدل / انتخابی<input type="search" value={saleVariantSearch} onChange={e=>setSaleVariantSearch(e.target.value)} placeholder="مدل را جست‌وجو کن…"/></label><label>انتخابی / مدل<select value={saleVariant} onChange={e=>{const variant=e.target.value;const firstProduct=categoryProducts.find(p=>saleVariantKey(productVariant(p))===saleVariantKey(variant));setSaleForm({...saleForm,variant,color:firstProduct?colorKey(firstProduct):'',size:firstProduct?sizeKey(firstProduct):'',productId:firstProduct?String(firstProduct.id):'',discount:0});}}>{visibleVariantOptions.map(v=><option key={v} value={v}>{v}</option>)}</select></label><label>رنگ<select value={saleColor} onChange={e=>{const color=e.target.value;const firstProduct=variantProducts.find(p=>colorKey(p)===color);setSaleForm({...saleForm,color,size:firstProduct?sizeKey(firstProduct):'',productId:firstProduct?String(firstProduct.id):'',discount:0});}}>{colorOptions.map(c=><option key={c} value={c}>{c}</option>)}</select></label><label>سایز<select value={saleSize} onChange={e=>{const size=e.target.value;const firstProduct=matchingSaleProducts.find(p=>sizeKey(p)===size);setSaleForm({...saleForm,size,productId:firstProduct?String(firstProduct.id):'',discount:0});}}>{sizeOptions.map(size=><option key={size} value={size}>{size}</option>)}</select></label><JalaliDatePicker label="تاریخ فروش" value={saleDate} onChange={setSaleDate}/><label>تعداد<input type="number" min="1" value={saleForm.qty} onChange={e=>setSaleForm({...saleForm,qty:e.target.value})} required/></label><label>فروشنده<select value={saleForm.seller} onChange={e=>setSaleForm({...saleForm,seller:e.target.value})} required><option value="فائزه رفیع‌زاده">فائزه رفیع‌زاده</option></select></label><label>نام مشتری (اختیاری)<input value={saleForm.customer} onChange={e=>setSaleForm({...saleForm,customer:e.target.value})} placeholder="مشتری حضوری"/></label><label>تخفیف (تومان)<input type="text" inputMode="numeric" value={formatDigits(saleForm.discount)} onChange={e=>setSaleForm({...saleForm,discount:numericValue(e.target.value)})}/></label><label>روش پرداخت<select value={saleForm.payment} onChange={e=>setSaleForm({...saleForm,payment:e.target.value})}><option>کارت‌خوان</option><option>نقدی</option><option>کارت‌به‌کارت</option><option>اعتباری</option><option>هدیه</option></select></label>{saleForm.payment==="اعتباری"&&<><label>پیش‌پرداخت (تومان)<input type="text" inputMode="numeric" min="0" value={formatDigits(saleForm.downPayment)} onChange={e=>setSaleForm({...saleForm,downPayment:numericValue(e.target.value)})} required/></label><div className="form-total"><span>مانده قابل تقسیط</span><b>{money(Math.max(0,(Number(selectedSaleProduct?.price)||0)*Number(saleForm.qty||0)-(Number(saleForm.discount)||0)-(Number(saleForm.downPayment)||0)))}</b></div><label>تعداد اقساط<input type="number" min="1" max="36" value={saleForm.installmentCount} onChange={e=>setSaleForm({...saleForm,installmentCount:e.target.value})} required/></label><JalaliDatePicker label="تاریخ سررسید قسط اول" value={saleForm.firstDueDate} onChange={date=>setSaleForm({...saleForm,firstDueDate:date})}/></>}<div className="form-footer"><button className="btn btn-gold" type="submit">ثبت فروش</button></div></form></section>}
+ {page==='ثبت فروش'&&<section className="panel sales-entry-page" dir="rtl">
+ <div className="panel-head"><div><h2>ثبت فاکتور فروش</h2><p>فاکتور چندقلمی · مشتری حضوری و رهگذر</p></div><span className="mini-badge">SALCO⁺</span></div>
+ <form className="sales-entry-form" onSubmit={addSale}>
+  <section className="sales-entry-card"><h3>اطلاعات فاکتور</h3>
+   <div className="sales-entry-grid">
+    <label className="sales-entry-field">تاریخ فروش<JalaliDatePicker label="تاریخ فروش" value={saleDate} onChange={setSaleDate}/></label>
+    <label className="sales-entry-field">فروشنده<select value={saleForm.seller} onChange={e=>setSaleForm(v=>({...v,seller:e.target.value}))} required><option value="فائزه رفیع‌زاده">فائزه رفیع‌زاده</option></select></label>
+    <label className="sales-entry-field">شماره تماس پیگیری اقساط (اختیاری)<input inputMode="tel" placeholder="در صورت نیاز وارد کنید" value={saleForm.customer} onChange={e=>setSaleForm(v=>({...v,customer:e.target.value}))}/></label>
+    <label className="sales-entry-field">نوع پرداخت<select value={saleForm.payment} onChange={e=>setSaleForm(v=>({...v,payment:e.target.value,downPayment:e.target.value==='اعتباری'?v.downPayment:0}))}><option>کارت‌خوان</option><option>نقدی</option><option>کارت‌به‌کارت</option><option>اعتباری</option><option>هدیه</option></select></label>
+   </div>
+  </section>
+  <section className="sales-entry-card"><h3>انتخاب کالا</h3>
+   <label className="sales-entry-field">جست‌وجوی کالا<input type="search" value={saleSearch} onChange={e=>setSaleSearch(e.target.value)} placeholder="نام کالا، سرفصل، مدل، رنگ یا سایز..."/></label>
+   <label className="sales-entry-field">کالا از موجودی<select value={saleForm.productId} onChange={e=>{const p=products.find(x=>String(x.id)===String(e.target.value));setSaleForm(v=>({...v,productId:e.target.value,category:p?productBase(p):'',variant:p?productVariant(p):'',color:p?.color||'',qty:1}));}}><option value="">انتخاب کالا</option>{products.filter(p=>Number(p.stock)>0&&[p.name,p.sku,p.category,p.variant,p.color,p.size].join(' ').toLocaleLowerCase('fa').includes(saleSearch.trim().toLocaleLowerCase('fa'))).map(p=><option key={p.id} value={p.id}>{p.category} · {p.variant||productVariant(p)} · {p.color} · سایز {p.size} · {money(p.price)} · موجودی {num(p.stock)}</option>)}</select></label>
+   {selectedSaleProduct&&<div className="sales-selected-product"><b>{selectedSaleProduct.name}</b><span>{selectedSaleProduct.color} · سایز {selectedSaleProduct.size}</span><strong>{money(selectedSaleProduct.price)}</strong><small>موجودی: {num(selectedSaleProduct.stock)} عدد</small></div>}
+   <div className="sales-add-row"><label className="sales-entry-field">تعداد<input type="number" min="1" max={selectedSaleProduct?.stock||1} value={saleForm.qty} onChange={e=>setSaleForm(v=>({...v,qty:e.target.value}))}/></label><button className="btn btn-gold" type="button" onClick={addSaleCartItem}><Plus size={17}/> افزودن به فاکتور</button></div>
+  </section>
+  <section className="sales-entry-card"><h3>اقلام فاکتور <span className="mini-badge">{num(saleCart.length)} قلم</span></h3>
+   {saleCart.length===0?<div className="sales-cart-empty">هنوز کالایی به فاکتور اضافه نشده است.</div>:<div className="sales-cart-list">{saleCart.map(item=><article className="sales-cart-row" key={item.productId}><div><b>{item.name}</b><small>{item.color} · سایز {item.size} · {money(item.unitPrice)}</small><div className="sales-cart-qty"><button type="button" onClick={()=>setSaleCart(prev=>prev.map(x=>x.productId===item.productId?{...x,quantity:Math.max(1,x.quantity-1)}:x))}>−</button><b>{num(item.quantity)}</b><button type="button" onClick={()=>setSaleCart(prev=>prev.map(x=>x.productId===item.productId?{...x,quantity:Math.min(x.stock,x.quantity+1)}:x))}>+</button><button type="button" className="sales-cart-remove" onClick={()=>setSaleCart(prev=>prev.filter(x=>x.productId!==item.productId))}><Trash2 size={15}/></button></div></div><strong>{money(item.unitPrice*item.quantity)}</strong></article>)}</div>}
+   <label className="sales-entry-field sales-discount-field">تخفیف کل فاکتور (تومان)<input inputMode="numeric" value={formatDigits(saleForm.discount)} onChange={e=>setSaleForm(v=>({...v,discount:numericValue(e.target.value)}))} placeholder="۰"/></label>
+   <div className="sales-total-row"><span>جمع کالاها</span><b>{money(saleSubtotal)}</b></div><div className="sales-total-row sales-grand-total"><span>مبلغ نهایی</span><b>{money(saleGrandTotal)}</b></div>
+  </section>
+  {saleForm.payment==='اعتباری'&&<section className="sales-entry-card"><h3>پیش‌پرداخت و اقساط</h3>
+   <label className="sales-entry-field">مبلغ پیش‌پرداخت (تومان)<input inputMode="numeric" value={formatDigits(saleForm.downPayment)} onChange={e=>setSaleForm(v=>({...v,downPayment:numericValue(e.target.value)}))}/></label>
+   <label className="sales-entry-field">روش دریافت پیش‌پرداخت<select value={saleForm.downPaymentMethod||'کارت‌خوان'} onChange={e=>setSaleForm(v=>({...v,downPaymentMethod:e.target.value}))}><option>کارت‌خوان</option><option>نقدی</option><option>کارت‌به‌کارت</option></select></label>
+   <div className="sales-total-row"><span>مانده قابل تقسیط</span><b>{money(saleCartBalance)}</b></div>
+   <label className="sales-entry-field">تعداد اقساط<input type="number" min="1" max="36" value={saleForm.installmentCount} onChange={e=>setSaleForm(v=>({...v,installmentCount:e.target.value}))}/></label>
+   <label className="sales-entry-field">سررسید اولین قسط<JalaliDatePicker label="سررسید اولین قسط" value={saleForm.firstDueDate} onChange={date=>setSaleForm(v=>({...v,firstDueDate:date}))}/></label>
+  </section>}
+  <div className="sales-entry-submit"><button className="btn btn-gold" type="submit" disabled={dataLoading||!saleCart.length}>ثبت نهایی فاکتور</button></div>
+ </form>
+</section>}
  {page==='تعویض کالا'&&<><section className="panel"><div className="panel-head"><div><h2>ثبت تعویض کالا</h2><p>قیمت برگشتی از مبلغ واقعی فاکتور و قیمت جایگزین از قیمت روز کالا محاسبه می‌شود.</p></div><span className="mini-badge">EXCHANGE</span></div><form className="form-grid" onSubmit={submitExchange}>
  <JalaliDatePicker label="تاریخ فاکتور خرید" value={exchangeSaleDate} onChange={date=>{setExchangeSaleDate(date);setExchangeForm({...exchangeForm,saleId:'',saleItemId:'',returnQuantity:1});}}/>
  <JalaliDatePicker label="تاریخ انجام تعویض و دریافت/پرداخت اختلاف" value={exchangeDate} onChange={setExchangeDate}/>
