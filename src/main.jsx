@@ -241,7 +241,7 @@ function ProductIllustration({product}) {
  return <img className="product-photo" src={image} alt={product?.name||'تصویر نمایشی کالا'} loading="lazy"/>;
 }
 function App(){
- const [page,setPage]=useState('داشبورد'); const [weekReportSelectedDate,setWeekReportSelectedDate]=useState(''); const [gallerySearch,setGallerySearch]=useState(''); const [galleryUploading,setGalleryUploading]=useState({}); const [galleryDrafts,setGalleryDrafts]=useState({}); const [mobileOpen,setMobileOpen]=useState(false); const drawerTouchStart=useRef(null); const [reportDate,setReportDate]=useState(()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}); const [calendarOpen,setCalendarOpen]=useState(false); const [calendarMonth,setCalendarMonth]=useState(()=>{const d=new Date();const p=jalaliParts(isoLocal(d));return {year:p.year,month:p.month};});
+ const [page,setPage]=useState('داشبورد'); const [weekReportSelectedDate,setWeekReportSelectedDate]=useState(''); const [dashboardTrendRange,setDashboardTrendRange]=useState(7); const [gallerySearch,setGallerySearch]=useState(''); const [galleryUploading,setGalleryUploading]=useState({}); const [galleryDrafts,setGalleryDrafts]=useState({}); const [mobileOpen,setMobileOpen]=useState(false); const drawerTouchStart=useRef(null); const [reportDate,setReportDate]=useState(()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}); const [calendarOpen,setCalendarOpen]=useState(false); const [calendarMonth,setCalendarMonth]=useState(()=>{const d=new Date();const p=jalaliParts(isoLocal(d));return {year:p.year,month:p.month};});
  const [products,setProducts]=useState([]); const [sales,setSales]=useState([]); const [customers,setCustomers]=useState([]); const [cash,setCash]=useState([]);
  const [installments,setInstallments]=useState([]); const [installmentLoading,setInstallmentLoading]=useState(false);
  const [session,setSession]=useState(null); const [authLoading,setAuthLoading]=useState(true); const remoteLoadInFlight=useRef(false); const refreshQueued=useRef(false); const [authBusy,setAuthBusy]=useState(false); const [authEmail,setAuthEmail]=useState(()=>{try{return localStorage.getItem('salco_login_email')||''}catch{return ''}}); const [authPassword,setAuthPassword]=useState(''); const [branch,setBranch]=useState(null); const [dataLoading,setDataLoading]=useState(false);
@@ -357,6 +357,11 @@ function App(){
  const dashboardWeekMax=Math.max(1,...dashboardWeekDays.map(d=>d.total));
  const dashboardWeekPoints=dashboardWeekDays.map((day,i)=>({ ...day,x:28+i*107,y:174-(day.total/dashboardWeekMax)*132 }));
  const dashboardWeekLine=dashboardWeekPoints.map(point=>point.x+','+point.y).join(' ');
+ const dashboardTrendDays=Array.from({length:dashboardTrendRange},(_,i)=>{const d=new Date(dashboardSelectedDate+'T12:00:00');d.setDate(d.getDate()-(dashboardTrendRange-1-i));const iso=isoLocal(d);const daySales=sales.filter(s=>isoLocal(new Date(s.date))===iso);return {iso,label:new Intl.DateTimeFormat('fa-IR',{day:'numeric'}).format(d),total:daySales.reduce((sum,s)=>sum+Number(s.total||0),0),count:daySales.length};});
+ const dashboardTrendMax=Math.max(1,...dashboardTrendDays.map(d=>d.total));
+ const dashboardTrendPoints=dashboardTrendDays.map((day,i)=>({...day,x:28+(i*644/Math.max(1,dashboardTrendRange-1)),y:174-(day.total/dashboardTrendMax)*132,showLabel:dashboardTrendRange<=10||i%5===0||i===dashboardTrendRange-1}));
+ const dashboardTrendLine=dashboardTrendPoints.map(point=>point.x+','+point.y).join(' ');
+ const dashboardTrendTotal=dashboardTrendDays.reduce((sum,d)=>sum+d.total,0);
  const dashboardSellers=Object.values(dashboardMonthSales.reduce((groups,s)=>{const name=String(s.seller||'ثبت نشده').trim()||'ثبت نشده';if(!groups[name])groups[name]={name,total:0,invoices:0,qty:0};groups[name].total+=Number(s.total||0);groups[name].invoices+=1;groups[name].qty+=Number(s.qty||0);return groups;},{})).sort((a,b)=>b.total-a.total).slice(0,3);
  const dashboardStock=products.reduce((sum,p)=>sum+Number(p.stock||0),0);
  const dashboardWeekTotal=dashboardWeekDays.reduce((sum,d)=>sum+d.total,0);
@@ -595,14 +600,14 @@ function App(){
    <button className="sm-summary-card" type="button" onClick={()=>setPage('صندوق')}><span className="sm-summary-icon"><Wallet size={28}/></span><span><small>گردش صندوق</small><b>{money(cashBalance).replace(' تومان','')}</b><em>تومان</em></span><ChevronLeft size={20}/></button>
   </section>
   <section className="panel sm-chart-card">
-   <div className="sm-section-title"><h2><BarChart3/> روند فروش ۷ روز اخیر</h2><span className="sm-chart-filter"><ChevronDown size={15}/> فروش روزانه</span></div>
-   <div className="sm-chart-scroll"><svg className="sm-line-chart" viewBox="0 0 700 220" role="img" aria-label="نمودار خطی فروش هفت روز اخیر" preserveAspectRatio="none">
-    {[42,86,130,174].map(y=><line key={y} x1="28" x2="672" y1={y} y2={y} className="sm-chart-gridline"/>)}
-    <polygon points={'28,174 '+dashboardWeekLine+' 670,174'} className="sm-chart-area"/>
-    <polyline points={dashboardWeekLine} className="sm-chart-line"/>
-    {dashboardWeekPoints.map(point=><g key={point.iso}><circle cx={point.x} cy={point.y} r="7" className="sm-chart-point"/><rect x={point.x-18} y="187" width="36" height="25" rx="12.5" className="sm-chart-date-pill"/><text x={point.x} y="204" textAnchor="middle" dominantBaseline="middle" className="sm-chart-label">{point.label}</text></g>)}
+   <div className="sm-section-title"><h2><BarChart3/> روند فروش {num(dashboardTrendRange)} روز اخیر</h2><label className="sm-chart-filter" aria-label="انتخاب بازه نمودار"><select value={dashboardTrendRange} onChange={e=>setDashboardTrendRange(Number(e.target.value))} aria-label="بازه زمانی نمودار فروش"><option value={7}>۷ روزه</option><option value={10}>۱۰ روزه</option><option value={30}>۳۰ روزه</option></select><ChevronDown size={15}/></label></div>
+   <div className="sm-chart-scroll"><svg className="sm-line-chart" viewBox="0 0 700 220" role="img" aria-label={'نمودار خطی فروش '+dashboardTrendRange+' روز اخیر'} preserveAspectRatio="none">
+    {[42,86,130,174].map(y=><line key={y} x1="28" x2="672" y1={y} y2={y} className="sm-chart-gridline"/> )}
+    <polygon points={'28,174 '+dashboardTrendLine+' 672,174'} className="sm-chart-area"/>
+    <polyline points={dashboardTrendLine} className="sm-chart-line"/>
+    {dashboardTrendPoints.map(point=><g key={point.iso}><circle cx={point.x} cy={point.y} r={dashboardTrendRange===30?4:7} className="sm-chart-point"/>{point.showLabel&&<><rect x={point.x-18} y="187" width="36" height="25" rx="12.5" className="sm-chart-date-pill"/><text x={point.x} y="204" textAnchor="middle" dominantBaseline="middle" className="sm-chart-label">{point.label}</text></>}</g>)}
    </svg></div>
-   <div className="sm-chart-total"><span>مجموع فروش این ۷ روز</span><b>{money(dashboardWeekTotal)}</b></div>
+   <div className="sm-chart-total"><span>مجموع فروش {num(dashboardTrendRange)} روز</span><b>{money(dashboardTrendTotal)}</b></div>
   </section>
   <nav className="sm-bottom-nav" aria-label="ناوبری اصلی">
    <button onClick={()=>setPage('انتقال کالا')}><ArrowLeftRight/><span>انتقال کالا</span></button>
