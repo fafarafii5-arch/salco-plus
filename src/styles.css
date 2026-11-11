@@ -1527,3 +1527,9 @@
  .sm-kpi{padding:10px 15px}
  .sm-kpi b{font-size:22px}
 }
+
+/* Match reference direction: product visual left, data right */
+.sales-manager-dashboard .sm-hero-card{direction:ltr}
+.sales-manager-dashboard .sm-hero-content{direction:rtl}
+.sales-manager-dashboard .sm-kpi-grid{direction:ltr}
+.sales-manager-dashboard .sm-kpi{direction:rtl}
