@@ -1610,3 +1610,42 @@
  .sales-manager-dashboard .sm-hero-card{display:block}
  .sales-manager-dashboard .sm-hero-content{width:100%;padding:22px 18px}
 }
+
+/* Final mobile proportions aligned to the approved SALCO dashboard reference */
+@media(max-width:700px){
+ .main:has(.sales-manager-dashboard)>.content{
+   padding:0 12px calc(132px + env(safe-area-inset-bottom));
+ }
+ .sales-manager-dashboard{gap:13px}
+ .sales-manager-dashboard .sm-hero-card{
+   min-height:248px;
+   border-radius:28px;
+   background:radial-gradient(ellipse at 8% 100%,#5a411b 0%,#21190e 34%,#090909 82%);
+ }
+ .sales-manager-dashboard .sm-hero-content{padding:20px 15px 18px}
+ .sales-manager-dashboard .sm-hero-content h2{margin-bottom:22px;font-size:20px}
+ .sales-manager-dashboard .sm-kpi-grid{min-height:155px}
+ .sales-manager-dashboard .sm-kpi{
+   justify-content:center;
+   gap:9px;
+   padding:6px 4px;
+ }
+ .sales-manager-dashboard .sm-kpi svg{width:32px;height:32px}
+ .sales-manager-dashboard .sm-kpi span{font-size:12px}
+ .sales-manager-dashboard .sm-kpi b{font-size:clamp(11px,3.1vw,17px)}
+ .sales-manager-dashboard .sm-kpi small{font-size:11px}
+ .sales-manager-dashboard .sm-summary-card{
+   min-height:116px;
+   padding:12px 10px;
+   border-radius:22px;
+ }
+ .sales-manager-dashboard .sm-chart-card{
+   min-height:350px;
+   padding:20px 15px 16px;
+   border-radius:28px;
+ }
+ .sales-manager-dashboard .sm-line-chart{height:245px}
+ .sales-manager-dashboard .sm-bottom-nav{
+   bottom:calc(8px + env(safe-area-inset-bottom));
+ }
+}
