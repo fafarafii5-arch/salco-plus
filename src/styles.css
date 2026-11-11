@@ -2262,18 +2262,14 @@
 .sales-manager-dashboard .sm-chart-label{
  fill:#f3d38b!important;
  font-family:inherit;
- font-size:13px!important;
- font-weight:800!important;
+ font-size:17px!important;
+ font-weight:900!important;
  letter-spacing:0!important;
 }
 @media(max-width:700px){
- .sales-manager-dashboard .sm-chart-date-pill{
-   fill:#211a0e;
-   stroke:#9b773a;
-   stroke-width:1.1;
- }
  .sales-manager-dashboard .sm-chart-label{
-   font-size:12px!important;
+   font-size:16px!important;
+   font-weight:900!important;
  }
 }
 
