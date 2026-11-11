@@ -1539,3 +1539,8 @@
 .gallery-upload-button input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 .gallery-upload-button:focus-within{outline:2px solid #edc35d;outline-offset:2px}
 .gallery-upload-button.is-busy{opacity:.65;cursor:wait}
+
+.gallery-draft-actions{display:flex;gap:7px}
+.gallery-draft-actions button{flex:1;min-width:0;padding:8px 6px;border:1px solid #a77b2f;border-radius:8px;background:#332817;color:#f2d17f;font:inherit;font-size:11px;cursor:pointer}
+.gallery-draft-actions button+button{background:transparent;color:#b9ad95;border-color:#51432a}
+.gallery-draft-actions button:disabled{opacity:.55;cursor:wait}
