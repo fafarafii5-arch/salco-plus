@@ -32,15 +32,33 @@
         var box = document.getElementById('startup-message');
         if (root && !root.hasChildNodes() && box) {
           box.style.display = 'block';
-          box.innerHTML = '<h1>SALCO⁺</h1><p>صفحه برنامه خالی مانده است؛ فایل اصلی برنامه اجرا نشده یا بارگذاری آن مسدود شده.</p><p>لطفاً از همین صفحه عکس بفرستید تا خطا را دقیق‌تر مشخص کنیم.</p>';
+          box.innerHTML = '<h1>SALCO⁺</h1><p>صفحه برنامه خالی مانده است؛ فایل اصلی برنامه اجرا نشده یا بارگذاری آن مسدود شده.</p><p>لطفاً از همین صفحه عکس بفرستید تا خطا دقیق‌تر مشخص کنیم.</p>';
         }
-      }, 8000);
+      }, 15000);
     </script>
   </head>
   <body>
     <div id="startup-message"><h1>SALCO⁺</h1><p>در حال بارگذاری برنامه…</p></div>
     <div id="root"></div>
     <noscript><div id="startup-message" style="display:block">برای اجرای برنامه، JavaScript باید در مرورگر فعال باشد.</div></noscript>
+    <script>
+      (function () {
+        var root = document.getElementById('root');
+        var box = document.getElementById('startup-message');
+        if (!root || !box || !window.MutationObserver) return;
+        var observer = new MutationObserver(function () {
+          if (root.hasChildNodes()) {
+            box.style.display = 'none';
+            observer.disconnect();
+          }
+        });
+        observer.observe(root, { childList: true, subtree: true });
+        if (root.hasChildNodes()) {
+          box.style.display = 'none';
+          observer.disconnect();
+        }
+      })();
+    </script>
     <script type="module" src="./src/main.jsx?v=20261108-5"></script>
   </body>
 </html>
