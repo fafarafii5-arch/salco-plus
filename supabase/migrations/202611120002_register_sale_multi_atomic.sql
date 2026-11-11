@@ -36,8 +36,9 @@ begin
   if v_user_id is null then raise exception 'ابتدا وارد حساب کاربری شوید.'; end if;
   if not private.is_branch_member(p_branch_id) then raise exception 'به این شعبه دسترسی ندارید.'; end if;
   if p_sold_at is null then raise exception 'تاریخ فروش الزامی است.'; end if;
-  if p_items is null or jsonb_typeof(p_items) is distinct from 'array' or jsonb_array_length(p_items) = 0 then raise exception 'حداقل یک کالا به فاکتور اضافه کنید.'; end if;
-  if jsonb_typeof(coalesce(p_installments,'[]'::jsonb)) <> 'array' then raise exception 'ساختار اقساط معتبر نیست.'; end if;
+  if p_items is null or jsonb_typeof(p_items) is distinct from 'array' then raise exception 'ساختار اقلام فاکتور معتبر نیست.'; end if;
+  if jsonb_array_length(p_items) = 0 then raise exception 'حداقل یک کالا به فاکتور اضافه کنید.'; end if;
+  if jsonb_typeof(coalesce(p_installments,'[]'::jsonb)) is distinct from 'array' then raise exception 'ساختار اقساط معتبر نیست.'; end if;
   if coalesce(p_discount,0) < 0 or coalesce(p_down_payment,0) < 0 then raise exception 'مبلغ تخفیف و پیش‌پرداخت نمی‌تواند منفی باشد.'; end if;
 
   v_payment := case p_payment_method
@@ -101,8 +102,8 @@ begin
       if v_balance>0 and jsonb_array_length(coalesce(p_installments,'[]'::jsonb))=0 then
         raise exception 'برای مانده فاکتور، برنامه اقساط ثبت نشده است.';
       end if;
-      select coalesce(sum((x->>'amount')::numeric),0) into v_installment_total
-      from jsonb_array_elements(coalesce(p_installments,'[]'::jsonb)) x;
+      select coalesce(sum((value->>'amount')::numeric),0) into v_installment_total
+      from jsonb_array_elements(coalesce(p_installments,'[]'::jsonb)) as e(value);
       if abs(v_installment_total-v_balance)>0.01 then raise exception 'جمع اقساط با مانده فاکتور برابر نیست.'; end if;
     else
       if coalesce(p_down_payment,0)<>0 or jsonb_array_length(coalesce(p_installments,'[]'::jsonb))>0 then
@@ -171,7 +172,7 @@ begin
     end loop;
   end if;
 
-  return jsonb_build_object('sale_id',v_sale_id,'invoice_no',v_invoice_no,'subtotal',v_subtotal,
+  return jsonb_build_object('sale_id',v_sale_id,'invoice_no',v_invoice_no,'subtotal',case when v_payment='gift' then 0 else v_subtotal end,
     'discount',case when v_payment='gift' then 0 else coalesce(p_discount,0) end,
     'total',v_total,'amount_paid',v_paid,'balance',v_total-v_paid,'items_count',v_count);
 end;
