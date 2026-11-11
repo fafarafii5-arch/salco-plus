@@ -590,7 +590,7 @@ function App(){
     {[42,86,130,174].map(y=><line key={y} x1="28" x2="672" y1={y} y2={y} className="sm-chart-gridline"/>)}
     <polygon points={'28,174 '+dashboardWeekLine+' 670,174'} className="sm-chart-area"/>
     <polyline points={dashboardWeekLine} className="sm-chart-line"/>
-    {dashboardWeekPoints.map(point=><g key={point.iso}><circle cx={point.x} cy={point.y} r="7" className="sm-chart-point"/><text x={point.x} y="205" textAnchor="middle" className="sm-chart-label">{point.label}</text></g>)}
+    {dashboardWeekPoints.map(point=><g key={point.iso}><circle cx={point.x} cy={point.y} r="7" className="sm-chart-point"/><rect x={point.x-18} y="187" width="36" height="25" rx="12.5" className="sm-chart-date-pill"/><text x={point.x} y="204" textAnchor="middle" dominantBaseline="middle" className="sm-chart-label">{point.label}</text></g>)}
    </svg></div>
    <div className="sm-chart-total"><span>مجموع فروش این ۷ روز</span><b>{money(dashboardWeekTotal)}</b></div>
   </section>
