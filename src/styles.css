@@ -1571,7 +1571,6 @@
 .sales-manager-dashboard .sm-chart-filter{display:flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid #765b2d;border-radius:22px;background:#17130d;color:#d9bd7c;font-size:14px}
 .sales-manager-dashboard .sm-line-chart{height:270px}
 .sales-manager-dashboard .sm-chart-total{display:none}
-.sales-manager-dashboard .sm-bottom-nav{display:flex}
 @media(max-width:700px){
  .sales-manager-dashboard{gap:13px;padding-bottom:0}
  .sales-manager-dashboard .sm-top{min-height:166px;margin:0 -12px;padding:8px 24px 5px;grid-template-columns:56px 1fr 56px}
@@ -1602,5 +1601,4 @@
  .sales-manager-dashboard .sm-section-title h2{font-size:20px}
  .sales-manager-dashboard .sm-chart-filter{font-size:13px;padding:8px 12px}
  .sales-manager-dashboard .sm-line-chart{height:260px}
- .sales-manager-dashboard .sm-bottom-nav{display:flex}
 }
