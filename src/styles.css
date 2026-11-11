@@ -2170,3 +2170,46 @@
    font-size:12px!important;
  }
 }
+
+
+/* Requested dashboard refinements: compact brand, compact KPI card, larger figures, Persian date picker */
+@media(max-width:700px){
+ .sales-manager-dashboard .sm-top{
+   min-height:112px!important;
+   padding-top:5px!important;
+   padding-bottom:5px!important;
+ }
+ .sales-manager-dashboard .sm-brand-lockup{gap:0!important}
+ .sales-manager-dashboard .sm-brand-lockup img{
+   width:168px!important;
+   height:82px!important;
+ }
+ .sales-manager-dashboard .sm-hero-content{padding:13px 11px 12px!important}
+ .sales-manager-dashboard .sm-hero-content h2{
+   margin-bottom:8px!important;
+   font-size:18px!important;
+ }
+ .sales-manager-dashboard .sm-kpi{min-height:118px!important;gap:5px!important}
+ .sales-manager-dashboard .sm-kpi svg{width:30px!important;height:30px!important;flex-basis:30px!important}
+ .sales-manager-dashboard .sm-kpi span{min-height:30px!important;font-size:11px!important}
+ .sales-manager-dashboard .sm-kpi b{
+   font-size:clamp(14px,4vw,18px)!important;
+   line-height:1.5!important;
+ }
+ .sales-manager-dashboard .sm-kpi small{font-size:11px!important}
+ .sales-manager-dashboard .sm-date-control{
+   display:flex;align-items:center;gap:10px;
+ }
+ .sales-manager-dashboard .sm-date-control>.jalali-date-field{flex:1;min-width:0}
+ .sales-manager-dashboard .sm-date-control>.jalali-date-field>label{display:block;margin:0}
+ .sales-manager-dashboard .sm-date-control .jalali-date-field input{
+   width:100%;min-width:0;padding:0;border:0;outline:0;
+   background:transparent;color:#fff6e7;text-align:center;
+   font:inherit;font-size:17px;font-weight:850;cursor:pointer;
+ }
+ .sales-manager-dashboard .sm-date-control .jalali-calendar{
+   position:absolute;z-index:100;top:calc(100% + 8px);right:0;left:0;
+   min-width:260px;
+ }
+ .sales-manager-dashboard .sm-date-control{position:relative}
+}
