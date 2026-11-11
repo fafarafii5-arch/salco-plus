@@ -31,13 +31,12 @@ declare
   v_line_discount numeric;
   v_allocated numeric := 0;
   v_count integer;
-  v_index integer := 0;
   v_installment_total numeric := 0;
 begin
   if v_user_id is null then raise exception 'ابتدا وارد حساب کاربری شوید.'; end if;
   if not private.is_branch_member(p_branch_id) then raise exception 'به این شعبه دسترسی ندارید.'; end if;
   if p_sold_at is null then raise exception 'تاریخ فروش الزامی است.'; end if;
-  if jsonb_typeof(p_items) <> 'array' or jsonb_array_length(p_items) = 0 then raise exception 'حداقل یک کالا به فاکتور اضافه کنید.'; end if;
+  if p_items is null or jsonb_typeof(p_items) is distinct from 'array' or jsonb_array_length(p_items) = 0 then raise exception 'حداقل یک کالا به فاکتور اضافه کنید.'; end if;
   if jsonb_typeof(coalesce(p_installments,'[]'::jsonb)) <> 'array' then raise exception 'ساختار اقساط معتبر نیست.'; end if;
   if coalesce(p_discount,0) < 0 or coalesce(p_down_payment,0) < 0 then raise exception 'مبلغ تخفیف و پیش‌پرداخت نمی‌تواند منفی باشد.'; end if;
 
@@ -57,14 +56,14 @@ begin
   if v_payment='credit' and v_down_method is null then raise exception 'روش دریافت پیش‌پرداخت معتبر نیست.'; end if;
 
   if exists (
-    select 1 from jsonb_array_elements(p_items) x
-    group by x->>'product_id' having count(*) > 1
+    select 1 from jsonb_array_elements(p_items) as e(value)
+    group by value->>'product_id' having count(*) > 1
   ) then raise exception 'هر کالا باید فقط یک ردیف در سبد داشته باشد.'; end if;
 
   -- Lock products in a stable order to prevent concurrent overselling/deadlocks.
   for v_item in
-    select distinct (x->>'product_id')::uuid as product_id
-    from jsonb_array_elements(p_items) x
+    select distinct (value->>'product_id')::uuid as product_id
+    from jsonb_array_elements(p_items) as e(value)
     order by 1
   loop
     perform 1 from public.products p
