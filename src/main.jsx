@@ -587,7 +587,7 @@ function App(){
    <button className="sm-summary-card" type="button" onClick={()=>setPage('صندوق')}><span className="sm-summary-icon"><Wallet size={28}/></span><span><small>گردش صندوق</small><b>{money(cashBalance)}</b></span><ChevronLeft size={20}/></button>
   </section>
   <section className="panel sm-chart-card">
-   <div className="sm-section-title"><h2><BarChart3/> روند فروش ۷ روز اخیر</h2><span>فروش روزانه</span></div>
+   <div className="sm-section-title"><h2><BarChart3/> روند فروش ۷ روز اخیر</h2><span className="sm-chart-filter"><ChevronDown size={15}/> فروش روزانه</span></div>
    <div className="sm-chart-scroll"><svg className="sm-line-chart" viewBox="0 0 700 220" role="img" aria-label="نمودار خطی فروش هفت روز اخیر" preserveAspectRatio="none">
     {[42,86,130,174].map(y=><line key={y} x1="28" x2="672" y1={y} y2={y} className="sm-chart-gridline"/>)}
     <polygon points={'28,174 '+dashboardWeekLine+' 670,174'} className="sm-chart-area"/>
@@ -595,20 +595,6 @@ function App(){
     {dashboardWeekPoints.map(point=><g key={point.iso}><circle cx={point.x} cy={point.y} r="7" className="sm-chart-point"/><text x={point.x} y="205" textAnchor="middle" className="sm-chart-label">{point.label}</text></g>)}
    </svg></div>
    <div className="sm-chart-total"><span>مجموع فروش این ۷ روز</span><b>{money(dashboardWeekTotal)}</b></div>
-  </section>
-  <section className="panel sm-ranking-card">
-   <div className="sm-section-title"><h2><UsersRound/> عملکرد فروشندگان</h2><button type="button" onClick={()=>setPage('گزارش‌ها')}>نمایش همه <ChevronLeft size={15}/></button></div>
-   {dashboardSellers.length===0?<Empty icon={Users} title="فروشی برای نمایش وجود ندارد" text="پس از ثبت فروش، عملکرد فروشندگان در این قسمت دیده می‌شود."/>:dashboardSellers.map((seller,index)=><div className="sm-seller-row" key={seller.name}><span className={'sm-rank sm-rank-'+index}>{num(index+1)}</span><div className="sm-seller-name"><b>{seller.name}</b><small>{num(seller.invoices)} فاکتور</small></div><div className="sm-seller-meter"><span style={{width:(seller.total/Math.max(1,dashboardSellers[0].total)*100)+'%'}}/></div><strong>{money(seller.total)}</strong></div>)}
-  </section>
-  <section className="panel sm-quick-card">
-   <div className="sm-section-title"><h2><Zap/> دسترسی سریع</h2><span>عملیات پرکاربرد فروشگاه</span></div>
-   <div className="sm-quick-grid">
-    <button onClick={()=>setPage('صندوق')}><Wallet/><span>صندوق</span></button>
-    <button onClick={()=>setPage('فاکتورها')}><ReceiptText/><span>فاکتورها</span></button>
-    <button onClick={()=>{setPage('مشتریان');if(branch)listCustomers(branch.id).then(setCustomers).catch(err=>toast(err.message||'بارگذاری مشتریان ناموفق بود.'));}}><Users/><span>مشتریان</span></button>
-    <button onClick={()=>setPage('ثبت فروش')}><ShoppingCart/><span>ثبت فروش</span></button>
-    <button onClick={()=>setPage('موجودی کالا')}><Package/><span>موجودی کالا</span></button>
-   </div>
   </section>
   <nav className="sm-bottom-nav" aria-label="ناوبری اصلی">
    <button onClick={()=>setPage('داشبورد')}><LayoutDashboard/><span>داشبورد</span></button>
