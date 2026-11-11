@@ -351,7 +351,7 @@ function App(){
  const dashboardMonth=dashboardSelectedDate.slice(0,7);
  const dashboardTodaySales=sales.filter(s=>isoLocal(new Date(s.date))===dashboardSelectedDate);
  const dashboardMonthSales=sales.filter(s=>isoLocal(new Date(s.date)).startsWith(dashboardMonth));
- const dashboardWeekDays=Array.from({length:7},(_,i)=>{const d=new Date(dashboardSelectedDate+'T12:00:00');d.setDate(d.getDate()-(6-i));const iso=isoLocal(d);const daySales=sales.filter(s=>isoLocal(new Date(s.date))===iso);return {iso,label:new Intl.DateTimeFormat('fa-IR',{day:'numeric',month:'short'}).format(d),total:daySales.reduce((sum,s)=>sum+Number(s.total||0),0),count:daySales.length};});
+ const dashboardWeekDays=Array.from({length:7},(_,i)=>{const d=new Date(dashboardSelectedDate+'T12:00:00');d.setDate(d.getDate()-(6-i));const iso=isoLocal(d);const daySales=sales.filter(s=>isoLocal(new Date(s.date))===iso);return {iso,label:new Intl.DateTimeFormat('fa-IR',{day:'numeric'}).format(d),total:daySales.reduce((sum,s)=>sum+Number(s.total||0),0),count:daySales.length};});
  const dashboardWeekMax=Math.max(1,...dashboardWeekDays.map(d=>d.total));
  const dashboardWeekPoints=dashboardWeekDays.map((day,i)=>({ ...day,x:28+i*107,y:174-(day.total/dashboardWeekMax)*132 }));
  const dashboardWeekLine=dashboardWeekPoints.map(point=>point.x+','+point.y).join(' ');
