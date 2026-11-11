@@ -2534,3 +2534,63 @@
 .sales-entry-submit{position:sticky;bottom:8px;z-index:5;padding:8px 0;background:linear-gradient(transparent,rgba(12,12,12,.96) 25%)}
 .sales-entry-submit .btn{width:100%;min-height:50px}
 @media(max-width:620px){.sales-entry-grid{grid-template-columns:1fr}.sales-entry-card{padding:14px}.sales-add-row{grid-template-columns:100px 1fr}.sales-cart-row{align-items:flex-start}}
+
+
+/* SALCO sales page — visual alignment with the supplied black & gold reference */
+.sales-entry-page{
+ --sales-gold:#f4c65a;--sales-gold-bright:#ffd86a;--sales-muted:#aaa;
+ max-width:920px;margin:0 auto;padding:clamp(14px,3vw,26px);
+ border:1px solid rgba(244,198,90,.16);border-radius:28px;
+ background:radial-gradient(ellipse at 50% -15%,rgba(193,137,35,.13),transparent 48%),linear-gradient(145deg,#111 0%,#080808 55%,#12100b 100%);
+ box-shadow:0 18px 55px rgba(0,0,0,.42),inset 0 1px rgba(255,255,255,.035)
+}
+.sales-hero{display:flex;align-items:center;justify-content:flex-start;gap:18px;margin:0 0 28px;padding:2px 2px 20px;border-bottom:1px solid rgba(244,198,90,.23)}
+.sales-hero>div:last-child{flex:1}
+.sales-hero h2{margin:0;color:#fff;font-size:clamp(24px,4vw,34px);font-weight:850;letter-spacing:-.5px}
+.sales-hero p{margin:7px 0 0;color:#aaa;font-size:clamp(13px,2vw,17px)}
+.sales-hero-icon{width:68px;height:68px;display:grid;place-items:center;flex:none;border:1px solid #b98b30;border-radius:17px;color:#ffcf58;background:linear-gradient(145deg,#30230b,#111);box-shadow:0 0 22px rgba(230,173,48,.13),inset 0 1px rgba(255,255,255,.1)}
+.sales-entry-form{gap:20px}
+.sales-entry-card{position:relative;gap:17px;padding:clamp(17px,3vw,26px);border:1px solid rgba(244,198,90,.68);border-radius:25px;background:linear-gradient(145deg,rgba(27,27,27,.98),rgba(12,12,12,.98));box-shadow:0 10px 28px rgba(0,0,0,.3),inset 0 1px rgba(255,255,255,.045)}
+.sales-entry-card h3{display:flex;align-items:center;gap:11px;color:#f5f2e9;font-size:clamp(17px,2.5vw,21px);font-weight:800}
+.sales-entry-card h3>svg{color:#f4c65a;stroke-width:2.2}
+.sales-entry-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.sales-entry-field{gap:9px;color:#e9e5dc;font-size:15px;font-weight:650}
+.sales-entry-field input,.sales-entry-field select,.sales-entry-field textarea,
+.sales-entry-page input,.sales-entry-page select{
+ min-height:52px;padding:12px 16px;border:1px solid rgba(180,180,180,.34);border-radius:17px;
+ color:#f6f3ed;background:linear-gradient(145deg,#111,#090909);font-size:15px;
+ box-shadow:inset 0 1px 4px rgba(0,0,0,.55);outline:none
+}
+.sales-entry-page input:focus,.sales-entry-page select:focus{border-color:#edbd4d;box-shadow:0 0 0 3px rgba(237,189,77,.12)}
+.sales-entry-page input::placeholder{color:#858585}
+.sales-entry-page select option{background:#151515;color:#fff}
+.sales-selected-product{padding:15px;border:1px solid rgba(244,198,90,.3);border-radius:15px;background:rgba(244,198,90,.055)}
+.sales-add-row{grid-template-columns:minmax(105px,.55fr) minmax(0,1.45fr);gap:14px}
+.sales-entry-page .btn-gold,.sales-entry-submit .btn{
+ min-height:58px;border:1px solid #ffda72;border-radius:17px;color:#171109;
+ background:linear-gradient(180deg,#ffdc79 0%,#efb83e 55%,#d99a20 100%);
+ box-shadow:0 5px 18px rgba(219,158,37,.2),inset 0 1px rgba(255,255,255,.5);
+ font-size:17px;font-weight:850;text-shadow:0 1px rgba(255,255,255,.25)
+}
+.sales-entry-page .btn-gold:hover,.sales-entry-submit .btn:hover{filter:brightness(1.07);transform:translateY(-1px)}
+.sales-cart-empty{padding:30px 15px;border:1px solid rgba(180,180,180,.2);border-radius:17px;background:rgba(255,255,255,.018);color:#aaa}
+.sales-cart-row{padding:15px 2px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sales-cart-row>strong,.sales-total-row b{color:#f5c85b}
+.sales-cart-qty button{width:34px;height:34px;border-color:rgba(244,198,90,.45);color:#f5d37a;background:rgba(244,198,90,.055);font-size:18px}
+.sales-cart-qty .sales-cart-remove{color:#f18e8e;border-color:rgba(241,142,142,.35)}
+.sales-total-row{padding:12px 4px;color:#e8e4dc}
+.sales-grand-total{margin-top:8px;padding:16px 13px;border:1px solid rgba(244,198,90,.65);border-radius:15px;background:rgba(244,198,90,.055);font-size:18px}
+.sales-grand-total b{font-size:21px}
+.sales-entry-submit{padding:12px 0 2px;background:linear-gradient(transparent,rgba(8,8,8,.96) 20%)}
+.sales-entry-submit .btn{width:100%;min-height:68px;font-size:22px}
+.sales-entry-page .mini-badge{border:1px solid rgba(244,198,90,.5);border-radius:20px;color:#f6cf6a;background:rgba(244,198,90,.08)}
+@media(max-width:620px){
+ .sales-entry-page{padding:13px;border-radius:20px}
+ .sales-entry-grid{grid-template-columns:1fr}
+ .sales-entry-card{padding:17px;border-radius:20px}
+ .sales-hero{margin-bottom:18px}
+ .sales-hero-icon{width:58px;height:58px}
+ .sales-add-row{grid-template-columns:minmax(85px,.55fr) minmax(0,1.45fr)}
+ .sales-entry-page .btn-gold{font-size:15px}
+ .sales-entry-submit .btn{min-height:62px;font-size:20px}
+}
