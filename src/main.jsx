@@ -244,7 +244,7 @@ function App(){
  const [page,setPage]=useState('داشبورد'); const [gallerySearch,setGallerySearch]=useState(''); const [galleryUploading,setGalleryUploading]=useState({}); const [galleryDrafts,setGalleryDrafts]=useState({}); const [mobileOpen,setMobileOpen]=useState(false); const [reportDate,setReportDate]=useState(()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}); const [calendarOpen,setCalendarOpen]=useState(false); const [calendarMonth,setCalendarMonth]=useState(()=>{const d=new Date();const p=jalaliParts(isoLocal(d));return {year:p.year,month:p.month};});
  const [products,setProducts]=useState([]); const [sales,setSales]=useState([]); const [customers,setCustomers]=useState([]); const [cash,setCash]=useState([]);
  const [installments,setInstallments]=useState([]); const [installmentLoading,setInstallmentLoading]=useState(false);
- const [session,setSession]=useState(null); const [authLoading,setAuthLoading]=useState(true); const remoteLoadInFlight=useRef(false); const [authBusy,setAuthBusy]=useState(false); const [authEmail,setAuthEmail]=useState(()=>{try{return localStorage.getItem('salco_login_email')||''}catch{return ''}}); const [authPassword,setAuthPassword]=useState(''); const [branch,setBranch]=useState(null); const [dataLoading,setDataLoading]=useState(false);
+ const [session,setSession]=useState(null); const [authLoading,setAuthLoading]=useState(true); const remoteLoadInFlight=useRef(false); const refreshQueued=useRef(false); const [authBusy,setAuthBusy]=useState(false); const [authEmail,setAuthEmail]=useState(()=>{try{return localStorage.getItem('salco_login_email')||''}catch{return ''}}); const [authPassword,setAuthPassword]=useState(''); const [branch,setBranch]=useState(null); const [dataLoading,setDataLoading]=useState(false);
  const [query,setQuery]=useState(''); const [categoryQuery,setCategoryQuery]=useState(''); const [inventorySizeSearch,setInventorySizeSearch]=useState(''); const [inventoryColorSearch,setInventoryColorSearch]=useState(''); const [saleCategorySearch,setSaleCategorySearch]=useState(''); const [saleVariantSearch,setSaleVariantSearch]=useState(''); const [notice,setNotice]=useState('');
  const [showProduct,setShowProduct]=useState(false); const [invoice,setInvoice]=useState(null); const [editingPrice,setEditingPrice]=useState(null); const [priceBusy,setPriceBusy]=useState(false); const [priceHistory,setPriceHistory]=useState(null); const [priceHistoryBusy,setPriceHistoryBusy]=useState(false); const [priceDrafts,setPriceDrafts]=useState({}); const [priceSearch,setPriceSearch]=useState(''); const [priceOnlyUnpriced,setPriceOnlyUnpriced]=useState(false); const [savingPriceId,setSavingPriceId]=useState(null); const [showSale,setShowSale]=useState(false); const [showCash,setShowCash]=useState(false); const [editingSale,setEditingSale]=useState(null); const [saleBusy,setSaleBusy]=useState(false);
  const [form,setForm]=useState({name:'',sku:'',category:'کت شلوار',variant:'کت شلوار ساده',size:'50',color:'',stock:'1',price:''});
@@ -294,7 +294,8 @@ function App(){
  },[]);
  const persist=(key,val,setter)=>{setter(val);};
  const loadRemote = async (activeSession) => {
-   if (!activeSession || !supabase || remoteLoadInFlight.current) return;
+   if (!activeSession || !supabase) return;
+   if (remoteLoadInFlight.current) { refreshQueued.current=true; return; }
    remoteLoadInFlight.current=true;
    setDataLoading(true);
    try {
@@ -306,7 +307,7 @@ function App(){
      setProducts(p.map(product=>({...product,sold:soldByProduct[product.id]||0})));
      setSales(ss); setCash(cc); setInstallments(ii.data||[]);
    } catch (err) { toast(err.message || 'خواندن اطلاعات از پایگاه داده ناموفق بود.'); }
-   finally { remoteLoadInFlight.current=false; setDataLoading(false); }
+   finally { remoteLoadInFlight.current=false; setDataLoading(false); if(refreshQueued.current){refreshQueued.current=false; Promise.resolve().then(()=>loadRemote(activeSession));} }
  };
  useEffect(() => {
    if (!supabase) { setAuthLoading(false); return; }
@@ -578,7 +579,7 @@ function App(){
   </section>
   <div className="sm-date-wrap">
    <div className="sm-date-control"><CalendarDays size={20}/><JalaliDatePicker value={reportDate} onChange={setReportDate} label=""/></div>
-   <button className="sm-refresh" type="button" onClick={()=>session&&loadRemote(session)} disabled={dataLoading} aria-label="تازه‌سازی"><RefreshCw size={17} className={dataLoading?'spin':''}/></button>
+   <button className="sm-refresh" type="button" onClick={()=>{if(!session){toast('نشست کاربری آماده نیست؛ دوباره وارد شو.');return;}refreshQueued.current=true;loadRemote(session);}} aria-label="تازه‌سازی"><RefreshCw size={17} className={dataLoading?'spin':''}/></button>
   </div>
   <section className="sm-hero-card">
    <div className="sm-hero-content">
