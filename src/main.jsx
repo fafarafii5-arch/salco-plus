@@ -358,7 +358,6 @@ function App(){
  const dashboardWeekPoints=dashboardWeekDays.map((day,i)=>({ ...day,x:28+i*107,y:174-(day.total/dashboardWeekMax)*132 }));
  const dashboardWeekLine=dashboardWeekPoints.map(point=>point.x+','+point.y).join(' ');
  const dashboardSellers=Object.values(dashboardMonthSales.reduce((groups,s)=>{const name=String(s.seller||'ثبت نشده').trim()||'ثبت نشده';if(!groups[name])groups[name]={name,total:0,invoices:0,qty:0};groups[name].total+=Number(s.total||0);groups[name].invoices+=1;groups[name].qty+=Number(s.qty||0);return groups;},{})).sort((a,b)=>b.total-a.total).slice(0,3);
- const dashboardCustomers=new Set(dashboardMonthSales.map(s=>s.customer).filter(n=>n&&n!=='مشتری حضوری')).size;
  const dashboardStock=products.reduce((sum,p)=>sum+Number(p.stock||0),0);
  const dashboardWeekTotal=dashboardWeekDays.reduce((sum,d)=>sum+d.total,0);
 
@@ -588,7 +587,6 @@ function App(){
      <div className="sm-kpi"><CalendarDays size={27}/><span>فروش ماه جاری</span><b>{money(dashboardMonthSales.reduce((sum,s)=>sum+Number(s.total||0),0)).replace(' تومان','')}</b><small>تومان</small></div>
      <div className="sm-kpi"><ShoppingCart size={27}/><span>فروش امروز</span><b>{money(dashboardTodaySales.reduce((sum,s)=>sum+Number(s.total||0),0)).replace(' تومان','')}</b><small>{num(dashboardTodaySales.length)} فاکتور</small></div>
      <div className="sm-kpi"><ReceiptText size={27}/><span>فاکتورها</span><b>{num(dashboardMonthSales.length)}</b><small>این ماه</small></div>
-     <div className="sm-kpi"><Users size={27}/><span>مشتریان</span><b>{num(dashboardCustomers)}</b><small>این ماه</small></div>
     </div>
    </div>
   </section>
