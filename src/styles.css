@@ -2405,3 +2405,27 @@
 .sales-manager-dashboard .sm-date-control .jalali-calendar{
   z-index:10000!important;
 }
+
+
+/* Drawer must cover every dashboard control, including high-z-index date widgets. */
+@media (max-width:850px){
+  .mobile-sidebar-backdrop{
+    z-index:1000!important;
+    background:rgba(0,0,0,.72)!important;
+  }
+  .sidebar.open{
+    z-index:1001!important;
+    right:0!important;
+    top:0!important;
+    bottom:0!important;
+    height:100dvh!important;
+    max-height:100dvh!important;
+  }
+  body:has(.sidebar.open) .sales-manager-dashboard .sm-date-wrap,
+  body:has(.sidebar.open) .sales-manager-dashboard .sm-date-control{
+    z-index:auto!important;
+  }
+  body:has(.sidebar.open) .sales-manager-dashboard .sm-date-control .jalali-calendar{
+    z-index:1!important;
+  }
+}
