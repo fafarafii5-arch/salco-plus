@@ -584,7 +584,7 @@ function App(){
    <div className="panel-head"><div><h2><Zap size={19}/> دسترسی سریع</h2><p>عملیات پرکاربرد فروشگاه</p></div></div>
    <div className="sales-manager-action-grid">
     <button onClick={()=>setPage('ثبت فروش')}><ShoppingCart/><span>ثبت فروش</span></button>
-    <button onClick={()=>setPage('فاکتورها')}><ReceiptText/><span>فاکتورها</span></button>
+    <button onClick={()=>setPage('گزارش‌ها')}><ReceiptText/><span>گزارش فروش</span></button>
     <button onClick={()=>{setPage('مشتریان');if(branch)listCustomers(branch.id).then(setCustomers).catch(err=>toast(err.message||'بارگذاری مشتریان ناموفق بود.'));}}><Users/><span>مشتریان</span></button>
     <button onClick={()=>setPage('موجودی کالا')}><Package/><span>موجودی کالا</span></button>
     <button onClick={()=>setPage('صندوق')}><Wallet/><span>صندوق</span></button>
