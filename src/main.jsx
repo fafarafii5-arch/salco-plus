@@ -241,7 +241,7 @@ function ProductIllustration({product}) {
  return <img className="product-photo" src={image} alt={product?.name||'تصویر نمایشی کالا'} loading="lazy"/>;
 }
 function App(){
- const [page,setPage]=useState('داشبورد'); const [weekReportSelectedDate,setWeekReportSelectedDate]=useState(''); const [dashboardTrendRange,setDashboardTrendRange]=useState(7); const [gallerySearch,setGallerySearch]=useState(''); const [galleryUploading,setGalleryUploading]=useState({}); const [galleryDrafts,setGalleryDrafts]=useState({}); const [mobileOpen,setMobileOpen]=useState(false); const drawerTouchStart=useRef(null); const [reportDate,setReportDate]=useState(()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}); const [calendarOpen,setCalendarOpen]=useState(false); const [calendarMonth,setCalendarMonth]=useState(()=>{const d=new Date();const p=jalaliParts(isoLocal(d));return {year:p.year,month:p.month};});
+ const [page,setPage]=useState('داشبورد'); const [weekReportSelectedDate,setWeekReportSelectedDate]=useState(''); const [dashboardTrendRange,setDashboardTrendRange]=useState(7); const [dashboardSelectedTrendIso,setDashboardSelectedTrendIso]=useState(''); const [gallerySearch,setGallerySearch]=useState(''); const [galleryUploading,setGalleryUploading]=useState({}); const [galleryDrafts,setGalleryDrafts]=useState({}); const [mobileOpen,setMobileOpen]=useState(false); const drawerTouchStart=useRef(null); const [reportDate,setReportDate]=useState(()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}); const [calendarOpen,setCalendarOpen]=useState(false); const [calendarMonth,setCalendarMonth]=useState(()=>{const d=new Date();const p=jalaliParts(isoLocal(d));return {year:p.year,month:p.month};});
  const [products,setProducts]=useState([]); const [sales,setSales]=useState([]); const [customers,setCustomers]=useState([]); const [cash,setCash]=useState([]);
  const [installments,setInstallments]=useState([]); const [installmentLoading,setInstallmentLoading]=useState(false);
  const [session,setSession]=useState(null); const [authLoading,setAuthLoading]=useState(true); const remoteLoadInFlight=useRef(false); const refreshQueued=useRef(false); const [authBusy,setAuthBusy]=useState(false); const [authEmail,setAuthEmail]=useState(()=>{try{return localStorage.getItem('salco_login_email')||''}catch{return ''}}); const [authPassword,setAuthPassword]=useState(''); const [branch,setBranch]=useState(null); const [dataLoading,setDataLoading]=useState(false);
@@ -362,6 +362,7 @@ function App(){
  const dashboardTrendPoints=dashboardTrendDays.map((day,i)=>({...day,x:28+(i*644/Math.max(1,dashboardTrendRange-1)),y:174-(day.total/dashboardTrendMax)*132,showLabel:dashboardTrendRange<=10||i%5===0||i===dashboardTrendRange-1}));
  const dashboardTrendLine=dashboardTrendPoints.map(point=>point.x+','+point.y).join(' ');
  const dashboardTrendTotal=dashboardTrendDays.reduce((sum,d)=>sum+d.total,0);
+ const dashboardSelectedTrendPoint=dashboardTrendDays.find(day=>day.iso===dashboardSelectedTrendIso)||null;
  const dashboardSellers=Object.values(dashboardMonthSales.reduce((groups,s)=>{const name=String(s.seller||'ثبت نشده').trim()||'ثبت نشده';if(!groups[name])groups[name]={name,total:0,invoices:0,qty:0};groups[name].total+=Number(s.total||0);groups[name].invoices+=1;groups[name].qty+=Number(s.qty||0);return groups;},{})).sort((a,b)=>b.total-a.total).slice(0,3);
  const dashboardStock=products.reduce((sum,p)=>sum+Number(p.stock||0),0);
  const dashboardWeekTotal=dashboardWeekDays.reduce((sum,d)=>sum+d.total,0);
@@ -605,8 +606,9 @@ function App(){
     {[42,86,130,174].map(y=><line key={y} x1="28" x2="672" y1={y} y2={y} className="sm-chart-gridline"/> )}
     <polygon points={'28,174 '+dashboardTrendLine+' 672,174'} className="sm-chart-area"/>
     <polyline points={dashboardTrendLine} className="sm-chart-line"/>
-    {dashboardTrendPoints.map(point=><g key={point.iso}><circle cx={point.x} cy={point.y} r={dashboardTrendRange===30?4:7} className="sm-chart-point"/>{point.showLabel&&<text x={point.x} y="204" textAnchor="middle" dominantBaseline="middle" className="sm-chart-label">{point.label}</text>}</g>)}
+    {dashboardTrendPoints.map(point=><g key={point.iso} className={'sm-chart-point-group'+(dashboardSelectedTrendIso===point.iso?' is-selected':'')} onClick={()=>setDashboardSelectedTrendIso(point.iso)} role="button" tabIndex={0} aria-label={'فروش روز '+point.iso+': '+money(point.total)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setDashboardSelectedTrendIso(point.iso);}}}><circle cx={point.x} cy={point.y} r="16" className="sm-chart-hit-area"/><circle cx={point.x} cy={point.y} r={dashboardTrendRange===30?4:7} className="sm-chart-point"/>{point.showLabel&&<text x={point.x} y="204" textAnchor="middle" dominantBaseline="middle" className="sm-chart-label">{point.label}</text>}</g>)}
    </svg></div>
+   {dashboardSelectedTrendPoint&&<div className="sm-chart-selected-value"><span>فروش روز {num(dashboardSelectedTrendPoint.label)}</span><b>{money(dashboardSelectedTrendPoint.total)}</b></div>}
    <div className="sm-chart-total"><span>مجموع فروش {num(dashboardTrendRange)} روز</span><b>{money(dashboardTrendTotal)}</b></div>
   </section>
   <nav className="sm-bottom-nav" aria-label="ناوبری اصلی">
