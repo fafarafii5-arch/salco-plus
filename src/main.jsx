@@ -359,7 +359,6 @@ function App(){
  const dashboardCustomers=new Set(dashboardMonthSales.map(s=>s.customer).filter(n=>n&&n!=='مشتری حضوری')).size;
  const dashboardStock=products.reduce((sum,p)=>sum+Number(p.stock||0),0);
  const dashboardWeekTotal=dashboardWeekDays.reduce((sum,d)=>sum+d.total,0);
- const dashboardHeroProduct=products.find(p=>p.imageUrl&&/کت|کت.?شلوار/.test(String(p.category||'')+' '+String(p.name||'')))||products.find(p=>/کت|کت.?شلوار/.test(String(p.category||'')+' '+String(p.name||'')));
 
 
  const nav=[['داشبورد',LayoutDashboard],['ثبت فروش',ShoppingCart],['تعویض کالا',ArrowLeftRight],['موجودی کالا',Package],['انتقال کالا',ArrowLeftRight],['قیمت‌گذاری کالاها',Tags],['گالری تصاویر کالاها',ImageIcon],['مشتریان',Users],['اقساط',Wallet],['صندوق',Wallet],['گزارش‌ها',BarChart3]];
@@ -571,7 +570,6 @@ function App(){
    <button className="sm-refresh" type="button" onClick={()=>session&&loadRemote(session)} disabled={dataLoading} aria-label="تازه‌سازی"><RefreshCw size={17} className={dataLoading?'spin':''}/></button>
   </div>
   <section className="sm-hero-card">
-   <div className="sm-hero-photo">{dashboardHeroProduct?<img src={dashboardHeroProduct.imageUrl||productIllustrationUrl(dashboardHeroProduct)} alt={dashboardHeroProduct.name}/>:<div className="sm-hero-monogram">SALCO⁺</div>}</div>
    <div className="sm-hero-content">
     <h2><BarChart3 size={22}/> خلاصه عملکرد فروش</h2>
     <div className="sm-kpi-grid">
