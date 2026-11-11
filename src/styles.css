@@ -1602,3 +1602,11 @@
  .sales-manager-dashboard .sm-chart-filter{font-size:13px;padding:8px 12px}
  .sales-manager-dashboard .sm-line-chart{height:260px}
 }
+
+/* Dashboard reference: hero card has no product photo */
+.sales-manager-dashboard .sm-hero-card{display:block}
+.sales-manager-dashboard .sm-hero-content{width:100%;max-width:100%;padding:22px 18px}
+@media(max-width:700px){
+ .sales-manager-dashboard .sm-hero-card{display:block}
+ .sales-manager-dashboard .sm-hero-content{width:100%;padding:22px 18px}
+}
