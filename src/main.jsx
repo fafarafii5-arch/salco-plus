@@ -353,9 +353,13 @@ function App(){
  const dashboardMonthSales=sales.filter(s=>isoLocal(new Date(s.date)).startsWith(dashboardMonth));
  const dashboardWeekDays=Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-(6-i));const iso=isoLocal(d);const daySales=sales.filter(s=>isoLocal(new Date(s.date))===iso);return {iso,label:new Intl.DateTimeFormat('fa-IR',{day:'numeric',month:'short'}).format(d),total:daySales.reduce((sum,s)=>sum+Number(s.total||0),0),count:daySales.length};});
  const dashboardWeekMax=Math.max(1,...dashboardWeekDays.map(d=>d.total));
- const dashboardSellers=Object.values(sales.reduce((groups,s)=>{const name=String(s.seller||'ثبت‌نشده').trim()||'ثبت‌نشده';if(!groups[name])groups[name]={name,total:0,invoices:0,qty:0};groups[name].total+=Number(s.total||0);groups[name].invoices+=1;groups[name].qty+=Number(s.qty||0);return groups;},{})).sort((a,b)=>b.total-a.total).slice(0,5);
+ const dashboardWeekPoints=dashboardWeekDays.map((day,i)=>({ ...day,x:28+i*107,y:174-(day.total/dashboardWeekMax)*132 }));
+ const dashboardWeekLine=dashboardWeekPoints.map(point=>point.x+','+point.y).join(' ');
+ const dashboardSellers=Object.values(dashboardMonthSales.reduce((groups,s)=>{const name=String(s.seller||'ثبت نشده').trim()||'ثبت نشده';if(!groups[name])groups[name]={name,total:0,invoices:0,qty:0};groups[name].total+=Number(s.total||0);groups[name].invoices+=1;groups[name].qty+=Number(s.qty||0);return groups;},{})).sort((a,b)=>b.total-a.total).slice(0,3);
  const dashboardCustomers=new Set(dashboardMonthSales.map(s=>s.customer).filter(n=>n&&n!=='مشتری حضوری')).size;
  const dashboardStock=products.reduce((sum,p)=>sum+Number(p.stock||0),0);
+ const dashboardWeekTotal=dashboardWeekDays.reduce((sum,d)=>sum+d.total,0);
+ const dashboardHeroProduct=products.find(p=>p.imageUrl&&/کت|کت.?شلوار/.test(String(p.category||'')+' '+String(p.name||'')))||products.find(p=>/کت|کت.?شلوار/.test(String(p.category||'')+' '+String(p.name||'')));
 
 
  const nav=[['داشبورد',LayoutDashboard],['ثبت فروش',ShoppingCart],['تعویض کالا',ArrowLeftRight],['موجودی کالا',Package],['انتقال کالا',ArrowLeftRight],['قیمت‌گذاری کالاها',Tags],['گالری تصاویر کالاها',ImageIcon],['مشتریان',Users],['اقساط',Wallet],['صندوق',Wallet],['گزارش‌ها',BarChart3]];
@@ -557,39 +561,62 @@ function App(){
  return <div className="app-shell"><aside className={'sidebar '+(mobileOpen?'open':'')}><div className="brand"><img className="salco-logo-sidebar" src={`${import.meta.env.BASE_URL}images/salco-logo.webp`} alt="لوگوی SALCO+" /><div className="brand-caption"><small>STORE MANAGEMENT</small></div><button className="close-nav" onClick={()=>setMobileOpen(false)}><X size={19}/></button></div><div className="branch"><span className="status-dot"/> {branch?.name || 'شعبه پلاس'} <small>{branch?.city || 'خرم‌آباد'}</small></div><div className="nav-label">منوی اصلی</div><nav>{nav.map(([label,Icon])=><button key={label} onClick={()=>{setPage(label);setMobileOpen(false);if(session&&label==='مشتریان'&&branch){listCustomers(branch.id).then(setCustomers).catch(err=>toast(err.message||'بارگذاری مشتریان ناموفق بود.'));}if(session&&label==='انتقال کالا'&&branch){supabase.from('inventory_transfers').select('id,product_id,recipient_branch,sender_branch,direction,quantity,transferred_at,note').eq('branch_id',branch.id).order('transferred_at',{ascending:false}).limit(50).then(({data,error})=>{if(!error)setTransfers(data||[]);});}}} className={page===label?'active':''}><Icon size={19}/><span>{label}</span></button>)}</nav><div className="sidebar-bottom"><div className="secure-icon"><ShieldCheck size={18}/></div><div><b>فضای مدیریت فروشگاه</b><small>{session?.user?.email || 'کاربر واردشده'}</small></div><button className="text-link" onClick={signOut}>خروج</button></div></aside>{mobileOpen&&<button type="button" className="mobile-sidebar-backdrop" aria-label="بستن منو" onClick={()=>setMobileOpen(false)}/>}<main className="main"><header className="topbar"><button className="menu-btn" onClick={()=>setMobileOpen(true)}><Menu/></button><img className="salco-logo-topbar" src={`${import.meta.env.BASE_URL}images/salco-logo.webp`} alt="لوگوی SALCO+" /><div className="breadcrumb">مدیریت فروشگاه <span>/</span> <b>{page}</b></div><div className="top-actions"><span className="today">{new Intl.DateTimeFormat('fa-IR',{weekday:'long',day:'numeric',month:'long'}).format(new Date())}</span><button className="icon-btn" title="به‌روزرسانی اطلاعات" onClick={()=>session&&loadRemote(session)} disabled={dataLoading}><RefreshCw size={18} className={dataLoading?'spin':''}/></button><button className="icon-btn" title="اعلان‌ها"><Bell size={18}/><i/></button><div className="avatar">س</div></div></header><div className="content"><div className={page==='داشبورد'?'page-heading dashboard-heading-hidden':'page-heading'}><div><div className="eyebrow">SALCO⁺ / MANAGEMENT</div>{page!=='داشبورد'&&<h1>{page}</h1>}<p>{page==='داشبورد'?'':'اطلاعات از پایگاه داده آنلاین خوانده می‌شوند؛ برای دریافت آخرین تغییرات، دکمه به‌روزرسانی را بزن.'}</p></div></div>
  {page==='گالری تصاویر کالاها'&&<section className="panel"><div className="panel-head"><div><h2>گالری تصاویر کالاها</h2><p>تصویر را انتخاب کن و به کالای مشخص وصل کن؛ تصویر در داشبورد و پرفروش‌ها هم استفاده می‌شود.</p></div><span className="mini-badge">{num(products.length)} کالا</span></div><div className="searchbox gallery-search"><Search size={16}/><input value={gallerySearch} onChange={e=>setGallerySearch(e.target.value)} placeholder="جست‌وجوی کالا یا رنگ..."/></div><div className="product-gallery-grid">{products.filter(p=>[p.name,p.category,p.color,p.size].join(' ').toLowerCase().includes(gallerySearch.toLowerCase())).map(p=><article className="gallery-product-card" key={p.id}><div className="gallery-product-image"><img src={p.imageUrl||productIllustrationUrl(p)} alt={p.name}/></div><b>{p.name}</b><small>{p.category} · {p.color} · {p.size}</small><div className="gallery-image-choices" role="group" aria-label={'تصاویر قابل انتخاب برای '+p.name}>{galleryImagesForProduct(p).length?galleryImagesForProduct(p).map(img=><button type="button" key={img.id} className={'gallery-image-choice '+(p.imageUrl===img.url?'active':'')} title={img.label} aria-label={img.label} onClick={async()=>{try{await updateProductImage(p.id,img.url);setProducts(prev=>prev.map(x=>String(x.id)===String(p.id)?{...x,imageUrl:img.url}:x));toast('تصویر به کالا متصل شد.');}catch(err){toast(err.message||'اتصال تصویر ناموفق بود.');}}}><img src={img.url} alt={img.label} loading="lazy"/></button>):<small className="gallery-no-matches">برای این دسته تصویر موجود نیست</small>}</div><button type="button" className="gallery-clear-image" onClick={async()=>{try{await updateProductImage(p.id,'');setProducts(prev=>prev.map(x=>String(x.id)===String(p.id)?{...x,imageUrl:''}:x));toast('تصویر کالا حذف شد.');}catch(err){toast(err.message||'حذف تصویر ناموفق بود.');}}}>حذف تصویر</button></article>)}</div></section>}
  {page==='داشبورد'&&<div className="sales-manager-dashboard" dir="rtl">
-  <section className="sales-manager-hero">
-   <div className="sales-manager-brand"><span className="sales-manager-kicker">SALCO⁺ / SALES MANAGEMENT</span><h2>داشبورد مدیر فروش</h2><p>نمای کلی عملکرد فروشگاه و تیم فروش</p></div>
-   <div className="sales-manager-date"><CalendarDays size={18}/><span>{new Intl.DateTimeFormat('fa-IR',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(new Date())}</span></div>
+  <section className="sm-top">
+   <button className="sm-notice" type="button" title="اعلان‌ها"><Bell size={22}/><i/></button>
+   <div className="sm-brand-lockup"><img src={`${import.meta.env.BASE_URL}images/salco-logo.webp`} alt="SALCO+"/><span>مدیریت فروش و مشتریان</span></div>
+   <button className="sm-menu" type="button" onClick={()=>setMobileOpen(true)} aria-label="باز کردن منو"><Menu size={29}/></button>
   </section>
-  <section className="sales-manager-kpis">
-   <article className="sales-manager-kpi sales-manager-kpi-featured"><div className="sales-manager-kpi-head"><span>فروش امروز</span><ShoppingCart size={21}/></div><strong>{money(dashboardTodaySales.reduce((sum,s)=>sum+Number(s.total||0),0))}</strong><small>{num(dashboardTodaySales.length)} فاکتور امروز</small></article>
-   <article className="sales-manager-kpi"><div className="sales-manager-kpi-head"><span>فروش ماه جاری</span><TrendingUp size={20}/></div><strong>{money(dashboardMonthSales.reduce((sum,s)=>sum+Number(s.total||0),0))}</strong><small>{num(dashboardMonthSales.length)} فاکتور در این ماه</small></article>
-   <article className="sales-manager-kpi"><div className="sales-manager-kpi-head"><span>مشتریان ماه</span><UsersRound size={20}/></div><strong>{num(dashboardCustomers)}</strong><small>مشتری دارای فاکتور</small></article>
-   <article className="sales-manager-kpi"><div className="sales-manager-kpi-head"><span>تعداد فاکتور</span><ReceiptText size={20}/></div><strong>{num(dashboardTodaySales.length)}</strong><small>ثبت‌شده در امروز</small></article>
-  </section>
-  <section className="sales-manager-secondary">
-   <button className="sales-manager-summary-card" onClick={()=>setPage('صندوق')}><span className="sales-manager-summary-icon"><Wallet size={22}/></span><span><small>مانده گردش صندوق</small><b>{money(cashBalance)}</b></span><ArrowUpLeft size={17}/></button>
-   <button className="sales-manager-summary-card" onClick={()=>setPage('موجودی کالا')}><span className="sales-manager-summary-icon"><Boxes size={22}/></span><span><small>تعداد موجودی کالا</small><b>{num(dashboardStock)} عدد</b></span><ArrowUpLeft size={17}/></button>
-  </section>
-  <section className="panel sales-manager-chart-panel">
-   <div className="panel-head"><div><h2><TrendingUp size={19}/> روند فروش ۷ روز اخیر</h2><p>مجموع مبلغ فاکتورهای ثبت‌شده در هر روز</p></div><span className="mini-badge">۷ روز</span></div>
-   <div className="sales-manager-chart" role="img" aria-label="نمودار فروش هفت روز اخیر">{dashboardWeekDays.map(day=><div className="sales-manager-chart-column" key={day.iso}><strong>{day.total?num(Math.round(day.total/1000000))+'م':'—'}</strong><div className="sales-manager-bar-track"><span style={{height:(day.total?Math.max(5,day.total/dashboardWeekMax*100):2)+'%'}}/></div><small>{day.label}</small></div>)}</div>
-   <div className="sales-manager-chart-foot"><span>مجموع فروش این ۷ روز</span><b>{money(dashboardWeekDays.reduce((sum,d)=>sum+d.total,0))}</b></div>
-  </section>
-  <section className="panel sales-manager-sellers">
-   <div className="panel-head"><div><h2><Trophy size={19}/> عملکرد فروشندگان</h2><p>رتبه‌بندی بر اساس مبلغ فروش ثبت‌شده</p></div><span className="mini-badge">{num(dashboardSellers.length)} فروشنده</span></div>
-   {dashboardSellers.length===0?<Empty icon={Users} title="فروشی برای رتبه‌بندی وجود ندارد" text="پس از ثبت فروش با نام فروشنده، عملکرد تیم اینجا نمایش داده می‌شود."/>:dashboardSellers.map((seller,index)=><div className="sales-manager-seller-row" key={seller.name}><span className={'sales-manager-rank rank-'+(index+1)}>{num(index+1)}</span><div className="sales-manager-seller-main"><b>{seller.name}</b><div className="sales-manager-seller-progress"><span style={{width:(seller.total/Math.max(1,dashboardSellers[0].total)*100)+'%'}}/></div><small>{num(seller.invoices)} فاکتور · {num(seller.qty)} قلم</small></div><strong>{money(seller.total)}</strong></div>)}
-  </section>
-  <section className="panel sales-manager-actions">
-   <div className="panel-head"><div><h2><Zap size={19}/> دسترسی سریع</h2><p>عملیات پرکاربرد فروشگاه</p></div></div>
-   <div className="sales-manager-action-grid">
-    <button onClick={()=>setPage('ثبت فروش')}><ShoppingCart/><span>ثبت فروش</span></button>
-    <button onClick={()=>setPage('گزارش‌ها')}><ReceiptText/><span>گزارش فروش</span></button>
-    <button onClick={()=>{setPage('مشتریان');if(branch)listCustomers(branch.id).then(setCustomers).catch(err=>toast(err.message||'بارگذاری مشتریان ناموفق بود.'));}}><Users/><span>مشتریان</span></button>
-    <button onClick={()=>setPage('موجودی کالا')}><Package/><span>موجودی کالا</span></button>
-    <button onClick={()=>setPage('صندوق')}><Wallet/><span>صندوق</span></button>
+  <div className="sm-date-wrap">
+   <label className="sm-date-control"><CalendarDays size={20}/><span>{(()=>{const p=jalaliParts(reportDate);return new Intl.NumberFormat('fa-IR',{useGrouping:false}).format(p.day)+' '+jalaliMonthName(new Date(reportDate+'T12:00:00'))+' '+new Intl.NumberFormat('fa-IR',{useGrouping:false}).format(p.year);})()}</span><ChevronDown size={18}/><input aria-label="انتخاب تاریخ داشبورد" type="date" value={reportDate} onChange={e=>e.target.value&&setReportDate(e.target.value)}/></label>
+   <button className="sm-refresh" type="button" onClick={()=>session&&loadRemote(session)} disabled={dataLoading} aria-label="تازه‌سازی"><RefreshCw size={17} className={dataLoading?'spin':''}/></button>
+  </div>
+  <section className="sm-hero-card">
+   <div className="sm-hero-photo">{dashboardHeroProduct?<img src={dashboardHeroProduct.imageUrl||productIllustrationUrl(dashboardHeroProduct)} alt={dashboardHeroProduct.name}/>:<div className="sm-hero-monogram">SALCO⁺</div>}</div>
+   <div className="sm-hero-content">
+    <h2><BarChart3 size={22}/> خلاصه عملکرد فروش</h2>
+    <div className="sm-kpi-grid">
+     <div className="sm-kpi"><Users size={27}/><span>مشتریان</span><b>{num(dashboardCustomers)}</b><small>این ماه</small></div>
+     <div className="sm-kpi"><ReceiptText size={27}/><span>فاکتورها</span><b>{num(dashboardMonthSales.length)}</b><small>این ماه</small></div>
+     <div className="sm-kpi"><ShoppingCart size={27}/><span>فروش امروز</span><b>{money(dashboardTodaySales.reduce((sum,s)=>sum+Number(s.total||0),0)).replace(' تومان','')}</b><small>{num(dashboardTodaySales.length)} فاکتور</small></div>
+     <div className="sm-kpi"><CalendarDays size={27}/><span>فروش ماه جاری</span><b>{money(dashboardMonthSales.reduce((sum,s)=>sum+Number(s.total||0),0)).replace(' تومان','')}</b><small>تومان</small></div>
+    </div>
    </div>
   </section>
+  <section className="sm-summary-row">
+   <button className="sm-summary-card" type="button" onClick={()=>setPage('گزارش‌ها')}><span className="sm-summary-icon"><BarChart3 size={28}/></span><span><small>مجموع فروش ۷ روز</small><b>{money(dashboardWeekTotal)}</b></span><ChevronLeft size={20}/></button>
+   <button className="sm-summary-card" type="button" onClick={()=>setPage('صندوق')}><span className="sm-summary-icon"><Wallet size={28}/></span><span><small>گردش صندوق</small><b>{money(cashBalance)}</b></span><ChevronLeft size={20}/></button>
+  </section>
+  <section className="panel sm-chart-card">
+   <div className="sm-section-title"><h2><BarChart3/> روند فروش ۷ روز اخیر</h2><span>فروش روزانه</span></div>
+   <div className="sm-chart-scroll"><svg className="sm-line-chart" viewBox="0 0 700 220" role="img" aria-label="نمودار خطی فروش هفت روز اخیر" preserveAspectRatio="none">
+    {[42,86,130,174].map(y=><line key={y} x1="28" x2="672" y1={y} y2={y} className="sm-chart-gridline"/>)}
+    <polygon points={'28,174 '+dashboardWeekLine+' 670,174'} className="sm-chart-area"/>
+    <polyline points={dashboardWeekLine} className="sm-chart-line"/>
+    {dashboardWeekPoints.map(point=><g key={point.iso}><circle cx={point.x} cy={point.y} r="7" className="sm-chart-point"/><text x={point.x} y="205" textAnchor="middle" className="sm-chart-label">{point.label}</text></g>)}
+   </svg></div>
+   <div className="sm-chart-total"><span>مجموع فروش این ۷ روز</span><b>{money(dashboardWeekTotal)}</b></div>
+  </section>
+  <section className="panel sm-ranking-card">
+   <div className="sm-section-title"><h2><UsersRound/> عملکرد فروشندگان</h2><button type="button" onClick={()=>setPage('گزارش‌ها')}>نمایش همه <ChevronLeft size={15}/></button></div>
+   {dashboardSellers.length===0?<Empty icon={Users} title="فروشی برای نمایش وجود ندارد" text="پس از ثبت فروش، عملکرد فروشندگان در این قسمت دیده می‌شود."/>:dashboardSellers.map((seller,index)=><div className="sm-seller-row" key={seller.name}><span className={'sm-rank sm-rank-'+index}>{num(index+1)}</span><div className="sm-seller-name"><b>{seller.name}</b><small>{num(seller.invoices)} فاکتور</small></div><div className="sm-seller-meter"><span style={{width:(seller.total/Math.max(1,dashboardSellers[0].total)*100)+'%'}}/></div><strong>{money(seller.total)}</strong></div>)}
+  </section>
+  <section className="panel sm-quick-card">
+   <div className="sm-section-title"><h2><Zap/> دسترسی سریع</h2><span>عملیات پرکاربرد فروشگاه</span></div>
+   <div className="sm-quick-grid">
+    <button onClick={()=>setPage('صندوق')}><Wallet/><span>صندوق</span></button>
+    <button onClick={()=>setPage('گزارش‌ها')}><ReceiptText/><span>گزارش فروش</span></button>
+    <button onClick={()=>{setPage('مشتریان');if(branch)listCustomers(branch.id).then(setCustomers).catch(err=>toast(err.message||'بارگذاری مشتریان ناموفق بود.'));}}><Users/><span>مشتریان</span></button>
+    <button onClick={()=>setPage('ثبت فروش')}><ShoppingCart/><span>ثبت فروش</span></button>
+    <button onClick={()=>setPage('موجودی کالا')}><Package/><span>موجودی کالا</span></button>
+   </div>
+  </section>
+  <nav className="sm-bottom-nav" aria-label="ناوبری اصلی">
+   <button onClick={()=>setPage('گزارش‌ها')}><BarChart3/><span>گزارش‌ها</span></button>
+   <button onClick={()=>setPage('عملیات')}><Grid2X2/><span>عملیات</span></button>
+   <button className="sm-home-active" onClick={()=>setPage('داشبورد')}><Home/><span>خانه</span></button>
+   <button onClick={()=>setPage('فاکتورها')}><FileText/><span>فاکتورها</span></button>
+   <button onClick={()=>setPage('داشبورد')}><LayoutDashboard/><span>داشبورد</span></button>
+  </nav>
  </div>}
  {page==='قیمت‌گذاری کالاها'&&<section className="panel">
    <div className="panel-head"><div><h2>قیمت‌گذاری کالاها</h2><p>برای هر رنگ، قیمت فروش مستقل تعیین کن؛ قیمت برای تمام سایزهای همان رنگ ذخیره می‌شود.</p></div><span className="mini-badge">{num(products.length)} کالا</span></div>
