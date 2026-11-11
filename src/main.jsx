@@ -608,7 +608,7 @@ function App(){
     <polyline points={dashboardTrendLine} className="sm-chart-line"/>
     {dashboardTrendPoints.map(point=><g key={point.iso} className={'sm-chart-point-group'+(dashboardSelectedTrendIso===point.iso?' is-selected':'')} onClick={()=>setDashboardSelectedTrendIso(point.iso)} role="button" tabIndex={0} aria-label={'فروش روز '+point.iso+': '+money(point.total)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setDashboardSelectedTrendIso(point.iso);}}}><circle cx={point.x} cy={point.y} r="16" className="sm-chart-hit-area"/><circle cx={point.x} cy={point.y} r={dashboardTrendRange===30?4:7} className="sm-chart-point"/>{point.showLabel&&<text x={point.x} y="204" textAnchor="middle" dominantBaseline="middle" className="sm-chart-label">{point.label}</text>}</g>)}
    </svg></div>
-   {dashboardSelectedTrendPoint&&<div className="sm-chart-selected-value"><span>فروش روز {num(dashboardSelectedTrendPoint.label)}</span><b>{money(dashboardSelectedTrendPoint.total)}</b></div>}
+   {dashboardSelectedTrendPoint&&<div className="sm-chart-selected-value"><span><small>تاریخ شمسی: {(()=>{const p=jalaliParts(dashboardSelectedTrendPoint.iso);return [p.year,p.month,p.day].map(v=>new Intl.NumberFormat('fa-IR',{useGrouping:false}).format(v)).join('/')})()}</small><strong>مبلغ فروش این روز</strong></span><b>{money(dashboardSelectedTrendPoint.total)}</b></div>}
    <div className="sm-chart-total"><span>مجموع فروش {num(dashboardTrendRange)} روز</span><b>{money(dashboardTrendTotal)}</b></div>
   </section>
   <nav className="sm-bottom-nav" aria-label="ناوبری اصلی">
