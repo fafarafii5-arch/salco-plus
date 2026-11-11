@@ -13,6 +13,7 @@ permissions:
 concurrency:
   group: "pages"
   cancel-in-progress: true
+# Queue recovery: keep only the newest pending Pages deployment.
 
 jobs:
   build:
