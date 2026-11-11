@@ -1569,6 +1569,8 @@
 .sales-manager-dashboard .sm-section-title{margin-bottom:20px}
 .sales-manager-dashboard .sm-section-title h2{font-size:22px}
 .sales-manager-dashboard .sm-chart-filter{display:flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid #765b2d;border-radius:22px;background:#17130d;color:#d9bd7c;font-size:14px}
+.sales-manager-dashboard .sm-chart-filter select{appearance:none;-webkit-appearance:none;min-width:76px;padding:0;border:0;outline:0;background:transparent;color:inherit;font:inherit;font-weight:800;cursor:pointer}
+.sales-manager-dashboard .sm-chart-filter select option{background:#17130d;color:#f4e9d6}
 .sales-manager-dashboard .sm-line-chart{height:270px}
 .sales-manager-dashboard .sm-chart-total{display:none}
 @media(max-width:700px){
