@@ -647,7 +647,7 @@ function App(){
  {page==='ثبت فروش'&&<section className="panel sales-entry-page" dir="rtl">
  <div className="sales-hero"><div className="sales-hero-icon"><ShoppingCart size={27}/></div><div><h2>ثبت فروش</h2><p>ثبت اطلاعات فروش کالا به مشتری</p></div></div>
  <form className="sales-entry-form" onSubmit={addSale}>
-  <section className="sales-entry-card sales-customer-card"><h3><UserRound size={21}/> اطلاعات مشتری</h3>
+  <section className="sales-entry-card sales-customer-card"><h3><UsersRound size={21}/> اطلاعات مشتری</h3>
    <div className="sales-entry-grid">
     <label className="sales-entry-field">تاریخ فروش<JalaliDatePicker label="تاریخ فروش" value={saleDate} onChange={setSaleDate}/></label>
     <label className="sales-entry-field">فروشنده<select value={saleForm.seller} onChange={e=>setSaleForm(v=>({...v,seller:e.target.value}))} required><option value="فائزه رفیع‌زاده">فائزه رفیع‌زاده</option></select></label>
