@@ -8,7 +8,7 @@ import { Capacitor } from '@capacitor/core';
 import { supabase, isSupabaseConfigured } from './lib/supabase';
 import { getCurrentBranch, listProducts, createProduct, updateProductPrices, updateProductImage, listCustomers, createCustomer, listSales, listCashTransactions, createCashTransaction, deactivateProduct, listProductPriceHistory, registerSaleExchange } from './lib/salcoData';
 import { createRoot } from 'react-dom/client';
-import { LayoutDashboard, ShoppingCart, Package, Users, Wallet, BarChart3, Search, Plus, Bell, Shirt, ArrowUpLeft, ArrowDownRight, Menu, X, Trash2, Download, Database, ShieldCheck, Pencil, Tags, RefreshCw, ArrowLeftRight, Image as ImageIcon, ReceiptText, TrendingUp, CalendarDays, Trophy, Zap, Boxes, UsersRound } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, Package, Users, Wallet, BarChart3, Search, Plus, Bell, Shirt, ArrowUpLeft, ArrowDownRight, Menu, X, Trash2, Download, Database, ShieldCheck, Pencil, Tags, RefreshCw, ArrowLeftRight, Image as ImageIcon, ReceiptText, TrendingUp, CalendarDays, Trophy, Zap, Boxes, UsersRound, ChevronDown, ChevronLeft, Grid2X2, Home, FileText } from 'lucide-react';
 import './styles.css';
 
 const jalaliParts = (iso) => {
