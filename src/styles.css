@@ -1307,3 +1307,81 @@
     white-space: nowrap !important;
   }
 }
+
+
+/* SALCO+ sales-manager dashboard — mobile-first black & gold */
+.sales-manager-dashboard{display:grid;gap:16px;max-width:1180px;margin:0 auto;padding-bottom:20px}
+.sales-manager-hero{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:22px 24px;border:1px solid #594522;border-radius:20px;background:radial-gradient(ellipse at 90% 0%,#342613 0%,#171512 42%,#0e0e0d 100%);box-shadow:0 12px 34px #0008,inset 0 1px #ffffff0c}
+.sales-manager-kicker{display:block;color:#cda95f;font-size:10px;font-weight:800;letter-spacing:2px;margin-bottom:7px}
+.sales-manager-brand h2{margin:0;color:#f7e7c1;font-size:22px;font-weight:900}
+.sales-manager-brand p{margin:6px 0 0;color:#aaa08d;font-size:12px}
+.sales-manager-date{display:flex;align-items:center;gap:8px;flex:0 0 auto;padding:10px 13px;border:1px solid #594522;border-radius:12px;color:#e5c77f;background:#0b0b0b;font-size:12px}
+.sales-manager-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.sales-manager-kpi{min-width:0;padding:17px 16px;border:1px solid #3e3525;border-radius:17px;background:linear-gradient(145deg,#1b1a17,#10100f 75%);box-shadow:inset 0 1px #ffffff09}
+.sales-manager-kpi-featured{border-color:#a27b35;background:radial-gradient(ellipse at 100% 0%,#4a3515 0%,#1a1711 48%,#10100f 100%);box-shadow:0 0 22px #d4a63a12,inset 0 1px #ffffff13}
+.sales-manager-kpi-head{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#d9b86d;font-size:12px}
+.sales-manager-kpi-head svg{flex:0 0 auto}
+.sales-manager-kpi strong{display:block;margin-top:13px;color:#fff;font-size:clamp(17px,2vw,25px);font-weight:900;line-height:1.5;overflow-wrap:anywhere}
+.sales-manager-kpi small{display:block;margin-top:5px;color:#a89d88;font-size:11px}
+.sales-manager-secondary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.sales-manager-summary-card{display:flex;align-items:center;gap:12px;min-width:0;padding:15px;border:1px solid #463923;border-radius:16px;background:#151411;color:#f4e7cb;text-align:right;cursor:pointer}
+.sales-manager-summary-card>span:nth-child(2){display:grid;gap:5px;flex:1;min-width:0}
+.sales-manager-summary-card small{color:#a99d85;font-size:11px}
+.sales-manager-summary-card b{font-size:16px;overflow-wrap:anywhere}
+.sales-manager-summary-card>svg{color:#b99145;flex:0 0 auto}
+.sales-manager-summary-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;color:#e7bd62;background:#302516;flex:0 0 auto}
+.sales-manager-chart-panel,.sales-manager-sellers,.sales-manager-actions{padding:18px;border-color:#3e3525;background:linear-gradient(145deg,#171614,#0e0e0d)}
+.sales-manager-chart-panel .panel-head h2,.sales-manager-sellers .panel-head h2,.sales-manager-actions .panel-head h2{display:flex;align-items:center;gap:9px}
+.sales-manager-chart-panel .panel-head h2 svg,.sales-manager-sellers .panel-head h2 svg,.sales-manager-actions .panel-head h2 svg{color:#dcb45d}
+.sales-manager-chart{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;align-items:end;min-height:190px;padding:14px 4px 8px;border-bottom:1px solid #4a4030}
+.sales-manager-chart-column{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:8px;min-width:0;height:170px}
+.sales-manager-chart-column strong{min-height:17px;color:#c7b58e;font-size:10px;font-weight:600;white-space:nowrap}
+.sales-manager-bar-track{display:flex;align-items:flex-end;justify-content:center;width:min(100%,38px);height:118px;border-radius:9px 9px 3px 3px;background:#24211b;overflow:hidden}
+.sales-manager-bar-track span{display:block;width:100%;min-height:2px;border-radius:8px 8px 2px 2px;background:linear-gradient(180deg,#f3d27d,#b17c25);box-shadow:0 0 14px #d9a83c35;transition:height .25s ease}
+.sales-manager-chart-column small{color:#a99d87;font-size:10px;white-space:nowrap}
+.sales-manager-chart-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:13px;color:#b4a88f;font-size:12px}
+.sales-manager-chart-foot b{color:#f1cf7b;font-size:14px}
+.sales-manager-seller-row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid #302b22}
+.sales-manager-seller-row:last-child{border-bottom:0;padding-bottom:0}
+.sales-manager-rank{display:grid;place-items:center;width:34px;height:34px;flex:0 0 auto;border:1px solid #65502d;border-radius:11px;color:#e7c16c;background:#211b11;font-weight:900}
+.sales-manager-rank.rank-1{color:#171109;background:linear-gradient(145deg,#ffe39a,#bd872d);border-color:#e5bf66}
+.sales-manager-seller-main{flex:1;min-width:0}
+.sales-manager-seller-main>b{display:block;color:#f2e7d0;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sales-manager-seller-main small{display:block;margin-top:5px;color:#a99d87;font-size:10px}
+.sales-manager-seller-progress{height:5px;margin-top:8px;border-radius:10px;background:#2b2821;overflow:hidden}
+.sales-manager-seller-progress span{display:block;height:100%;border-radius:10px;background:linear-gradient(90deg,#a97927,#f1d17d)}
+.sales-manager-seller-row>strong{max-width:35%;color:#f0d28b;font-size:12px;text-align:left;overflow-wrap:anywhere}
+.sales-manager-action-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.sales-manager-action-grid button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;min-width:0;min-height:94px;padding:12px 7px;border:1px solid #393329;border-radius:15px;background:linear-gradient(145deg,#201d17,#111110);color:#e9d6ad;font:inherit;font-size:11px;cursor:pointer;transition:border-color .2s,transform .2s}
+.sales-manager-action-grid button:hover{border-color:#b68a3b;transform:translateY(-2px)}
+.sales-manager-action-grid button svg{width:23px;height:23px;color:#e3b955}
+@media(max-width:850px){
+ .sales-manager-dashboard{gap:12px}
+ .sales-manager-hero{align-items:flex-start;flex-direction:column;padding:17px}
+ .sales-manager-brand h2{font-size:20px}
+ .sales-manager-date{max-width:100%;font-size:11px}
+ .sales-manager-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .sales-manager-kpi{padding:14px}
+ .sales-manager-kpi strong{font-size:18px}
+ .sales-manager-secondary{gap:9px}
+ .sales-manager-summary-card{padding:12px;gap:8px}
+ .sales-manager-summary-card b{font-size:13px}
+ .sales-manager-chart-panel,.sales-manager-sellers,.sales-manager-actions{padding:14px}
+ .sales-manager-chart{gap:5px;min-height:165px}
+ .sales-manager-chart-column{height:150px}
+ .sales-manager-bar-track{height:100px;width:min(100%,30px)}
+ .sales-manager-chart-column small{font-size:9px}
+ .sales-manager-action-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+ .sales-manager-action-grid button{min-height:78px;padding:9px 3px;font-size:10px}
+}
+@media(max-width:420px){
+ .sales-manager-kpi strong{font-size:16px}
+ .sales-manager-kpi-head{font-size:11px}
+ .sales-manager-seller-row{gap:8px}
+ .sales-manager-seller-row>strong{font-size:10px}
+ .sales-manager-rank{width:29px;height:29px}
+ .sales-manager-chart-foot{font-size:10px}
+ .sales-manager-chart-foot b{font-size:11px}
+ .sales-manager-action-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .sales-manager-action-grid button{min-height:74px}
+}
