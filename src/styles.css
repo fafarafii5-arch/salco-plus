@@ -2496,3 +2496,8 @@
     font-size:clamp(13px,3.8vw,16px)!important;
   }
 }
+
+.sm-chart-date-tooltip rect{fill:#f1c76b;stroke:#fff0bd;stroke-width:1.5;filter:drop-shadow(0 3px 7px rgba(0,0,0,.65))}
+.sm-chart-date-tooltip text{fill:#171108;font-size:14px;font-weight:900;direction:ltr}
+.sm-chart-selected-value{justify-content:center;gap:12px}
+.sm-chart-selected-value strong{color:#f4e7c8;font-size:15px;font-weight:900}
