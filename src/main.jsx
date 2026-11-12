@@ -748,7 +748,7 @@ function App(){
   <section className="salco-reference-chart">
    <div className="salco-reference-chart-title"><BarChart3 size={30}/><h3>روند فروش روزانه</h3></div>
    <div className="salco-reference-chart-body">
-    <div className="salco-reference-axis"><span>{num(Math.ceil(reportTrendMax/1000000)*1)}M</span><span>{num(Math.ceil(reportTrendMax*.8/1000000))}M</span><span>{num(Math.ceil(reportTrendMax*.6/1000000))}M</span><span>{num(Math.ceil(reportTrendMax*.4/1000000))}M</span><span>۰</span></div>
+    <div className="salco-reference-axis"><span>{num(Math.ceil(reportTrendMax/1000000)*1)}M</span><span>{num(Math.ceil(reportTrendMax*.8/1000000))}M</span><span>{num(Math.ceil(reportTrendMax*.6/1000000))}M</span><span>{num(Math.ceil(reportTrendMax*.4/1000000))}M</span><span>{num(Math.ceil(reportTrendMax*.2/1000000))}M</span><span>۰</span></div>
     <div className="salco-reference-bars">{reportTrendDays.map(day=><div className="salco-reference-bar" key={day.iso} title={money(day.total)}><div className="salco-reference-bar-space"><i style={{height:Math.max(day.total?3:0,(day.total/reportTrendMax)*100)+'%'}}/></div><small>{day.label} {new Intl.DateTimeFormat('fa-IR',{month:'long'}).format(new Date(day.iso+'T12:00:00'))}</small></div>)}</div>
    </div>
    <div className="salco-reference-chart-total"><span>جمع فروش هفت روز</span><b>{money(reportTrendTotal)}</b></div>
