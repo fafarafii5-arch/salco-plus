@@ -372,6 +372,7 @@ function App(){
 
 
  const isViewer=branch?.role==='viewer';
+ useEffect(()=>{if(isViewer&&!['گزارش‌ها','فاکتورها','موجودی کالا','مشتریان','اقساط','صندوق'].includes(page))setPage('گزارش‌ها');},[isViewer,page]);
  const nav=isViewer?[['گزارش‌ها',BarChart3],['فاکتورها',FileText],['موجودی کالا',Package],['مشتریان',Users],['اقساط',Wallet],['صندوق',Wallet]]:[['داشبورد',LayoutDashboard],['ثبت فروش',ShoppingCart],['تعویض کالا',ArrowLeftRight],['موجودی کالا',Package],['انتقال کالا',ArrowLeftRight],['قیمت‌گذاری کالاها',Tags],['گالری تصاویر کالاها',ImageIcon],['مشتریان',Users],['اقساط',Wallet],['صندوق',Wallet],['گزارش‌ها',BarChart3]];
  const normalizeInventorySearch=value=>String(value??'').toLocaleLowerCase('fa').replace(/[\u064B-\u065F\u0670\u0640]/g,'').replace(/[ي]/g,'ی').replace(/[ك]/g,'ک').replace(/[\u200c\s]+/g,' ').trim();
  const searchTerms=[query,categoryQuery,inventorySizeSearch,inventoryColorSearch].map(normalizeInventorySearch).filter(Boolean);
