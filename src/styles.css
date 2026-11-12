@@ -3182,11 +3182,11 @@
 
 /* Daily report mobile header: compact logo at upper-left, report date directly below */
 @media(max-width:600px){
- .daily-report-print.salco-signature-report .salco-report-hero{
+ .daily-report-print.salco-signature-report .salco-report-head{
   display:block!important;position:relative!important;min-height:172px!important;
   padding:16px 12px!important;overflow:hidden!important;background:#080808!important;
  }
- .daily-report-print.salco-signature-report .salco-report-hero:after{display:none!important}
+ .daily-report-print.salco-signature-report .salco-report-head:after{display:none!important}
  .daily-report-print.salco-signature-report .salco-report-heading{
   display:block!important;width:calc(100% - 112px)!important;max-width:none!important;
   margin:0 0 0 auto!important;padding:0!important;text-align:right!important;
