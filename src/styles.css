@@ -2912,3 +2912,11 @@
 .salco-reference-discount-detail th{color:#d8bd7c;background:rgba(255,255,255,.035)}
 .salco-reference-discount-detail td:last-child{color:#ffcf73;font-weight:850}
 @media(max-width:560px){.salco-reference-discount-detail th,.salco-reference-discount-detail td{padding:9px 7px;font-size:10px}}
+
+/* Reports reference is a focused full-screen workspace, without the standard shell chrome */
+.main:has(.salco-reports-reference){margin-right:0}
+.main:has(.salco-reports-reference)>.topbar{display:none!important}
+.main:has(.salco-reports-reference)>.content{max-width:1180px;padding:8px 18px 24px}
+.main:has(.salco-reports-reference)>.content>.page-heading{display:none!important}
+.app-shell:has(.salco-reports-reference)>.sidebar{display:none!important}
+@media(max-width:850px){.main:has(.salco-reports-reference)>.content{padding:7px 10px 22px}}
