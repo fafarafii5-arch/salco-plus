@@ -634,8 +634,8 @@ function App(){
    // The report screen has already loaded the shared font and logo; avoid blocking export on redundant waits.
    await new Promise(resolve=>requestAnimationFrame(resolve));
    canvas=await html2canvas(root,{scale:1,width:1404,windowWidth:1404,useCORS:true,backgroundColor:"#050505",scrollX:0,scrollY:0,logging:false,imageTimeout:250,removeContainer:true});
-   const filename="SALCO-گزارش-روزانه-"+reportFileDateName+"-صفحه-"+(pageIndex+1)+"-از-"+pageCount+".png";
-   const imageBlob=await new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error("ساخت تصویر صفحه "+(pageIndex+1)+" ناموفق بود")),"image/png"));
+   const filename="SALCO-گزارش-روزانه-"+reportFileDateName+"-صفحه-"+(pageIndex+1)+"-از-"+pageCount+".jpg";
+   const imageBlob=await new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error("ساخت تصویر صفحه "+(pageIndex+1)+" ناموفق بود")),"image/jpeg",0.94));
    imageEntries.push({name:filename,blob:imageBlob});canvas.width=0;canvas.height=0;canvas=null;
    if(staging?.parentNode)staging.parentNode.removeChild(staging);staging=null;
   }
