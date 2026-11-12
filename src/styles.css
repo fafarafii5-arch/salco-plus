@@ -2784,3 +2784,122 @@
  .salco-report-base-date{align-items:flex-start;flex-direction:column}
  .salco-report-base-date .jalali-date-field{width:100%}
 }
+
+
+/* SALCO reports — visual implementation of the approved reference */
+.salco-reports-overview.salco-reports-reference{
+ --ref-gold:#f5c85e;--ref-edge:rgba(224,177,75,.42);
+ display:grid;gap:20px;width:100%;max-width:1120px;margin:0 auto 22px;padding:18px;
+ border:1px solid rgba(222,175,79,.5);border-radius:30px;
+ color:#fff;background:
+ radial-gradient(ellipse at 6% 0%,rgba(180,125,34,.15),transparent 24%),
+ radial-gradient(ellipse at 100% 100%,rgba(180,125,34,.12),transparent 22%),
+ linear-gradient(145deg,#080808 0%,#111 48%,#050505 100%);
+ box-shadow:0 18px 50px rgba(0,0,0,.42),inset 0 0 35px rgba(225,178,77,.035);
+}
+.salco-reference-header{position:relative;display:flex;direction:ltr;align-items:center;justify-content:space-between;min-height:78px;padding:0 4px 14px;border-bottom:1px solid var(--ref-edge)}
+.salco-reference-back{display:grid;place-items:center;width:58px;height:58px;flex:none;border:1px solid rgba(246,204,111,.75);border-radius:23px;color:#ffe39a;background:linear-gradient(145deg,#29251c,#090909);box-shadow:0 5px 18px #000;cursor:pointer}
+.salco-reference-brand{position:absolute;left:50%;top:0;transform:translateX(-50%);display:grid;justify-items:center;gap:0;white-space:nowrap}
+.salco-reference-brand strong{color:#efbd50;font-family:Arial,sans-serif;font-size:clamp(27px,4vw,43px);font-weight:950;letter-spacing:1px;line-height:1.05;text-shadow:0 2px 12px rgba(243,190,72,.22)}
+.salco-reference-brand sup{font-size:.58em}
+.salco-reference-brand span{color:#d8d2c5;font-size:clamp(10px,1.5vw,15px);margin-top:5px}
+.salco-reference-title{display:flex;direction:rtl;align-items:center;gap:10px;color:#f8f4e9}
+.salco-reference-title svg{color:#e9b744;stroke-width:2.8}
+.salco-reference-title b{font-size:clamp(20px,3vw,29px);font-weight:950}
+.salco-reference-filter{display:grid;gap:17px;padding:0 2px}
+.salco-reference-date{display:flex;align-items:center;gap:14px;width:min(100%,460px);min-height:68px;padding:10px 18px;border:1px solid rgba(226,183,99,.62);border-radius:22px;background:linear-gradient(110deg,#252525,#090909 80%);box-shadow:inset 0 1px rgba(255,255,255,.12),0 5px 18px rgba(0,0,0,.24)}
+.salco-reference-date>svg:first-child{color:#eebd51;flex:none}
+.salco-reference-date>svg:last-child{color:#efbd50;flex:none}
+.salco-reference-date .jalali-date-field{flex:1;min-width:0}
+.salco-reference-date .jalali-date-trigger{width:100%;padding:5px 0;border:0;color:#fff;background:transparent;text-align:right;font-size:clamp(15px,2.3vw,23px);font-weight:850}
+.salco-reference-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));min-height:68px;overflow:hidden;border:1px solid rgba(232,190,105,.45);border-radius:22px;background:linear-gradient(180deg,#181818,#080808);box-shadow:0 5px 17px rgba(0,0,0,.3)}
+.salco-reference-tabs button{display:flex;align-items:center;justify-content:center;gap:9px;min-width:0;padding:10px 6px;border:0;border-left:1px solid rgba(255,255,255,.11);color:#f4f0e8;background:transparent;font:inherit;font-size:clamp(13px,2.2vw,22px);font-weight:850;cursor:pointer}
+.salco-reference-tabs button:last-child{border-left:0}
+.salco-reference-tabs button.active{margin:2px;border:1px solid #ffe08b;border-radius:18px;color:#160f03;background:linear-gradient(180deg,#ffe38b 0%,#efb62e 58%,#c7830d 100%);box-shadow:inset 0 1px rgba(255,255,255,.55),0 3px 12px rgba(225,163,36,.3)}
+.salco-reference-tabs button:not(.active):active{background:rgba(255,255,255,.08)}
+.salco-reference-custom{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.salco-reference-custom label{display:grid;gap:7px;color:#e9d9b4;font-size:12px;font-weight:800}
+.salco-reference-custom .jalali-date-field,.salco-reference-custom .jalali-date-trigger{width:100%}
+.salco-reference-custom .jalali-date-trigger{min-height:43px;border:1px solid var(--ref-edge);border-radius:12px;color:#fff;background:#111}
+.salco-reference-kpis{display:grid;direction:ltr;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.salco-reference-kpi{position:relative;display:flex;direction:rtl;align-items:center;gap:12px;min-width:0;min-height:132px;padding:15px 14px;overflow:hidden;border:1.5px solid var(--kpi-edge);border-radius:24px;background:linear-gradient(135deg,var(--kpi-light),transparent 53%),linear-gradient(145deg,var(--kpi-bg1),var(--kpi-bg2) 70%,#080808);box-shadow:inset 0 1px rgba(255,255,255,.14),0 8px 18px rgba(0,0,0,.28)}
+.salco-reference-kpi:before{position:absolute;content:"";inset:0;background:linear-gradient(145deg,transparent 43%,rgba(255,255,255,.055) 44%,transparent 67%);pointer-events:none}
+.salco-reference-kpi .kpi-icon{position:relative;display:grid;place-items:center;width:72px;height:72px;flex:none;border:1px solid var(--kpi-edge);border-radius:50%;color:var(--kpi-icon);background:rgba(0,0,0,.2);box-shadow:inset 0 0 18px rgba(255,255,255,.06)}
+.salco-reference-kpi>div{position:relative;display:grid;justify-items:end;gap:3px;min-width:0;flex:1}
+.salco-reference-kpi b{color:#fff;font-size:clamp(15px,2.4vw,23px);font-weight:900;white-space:nowrap}
+.salco-reference-kpi strong{max-width:100%;overflow-wrap:anywhere;color:#fff;font-size:clamp(19px,3.6vw,33px);font-weight:950;line-height:1.3;font-variant-numeric:tabular-nums;text-shadow:0 2px 8px rgba(0,0,0,.25)}
+.salco-reference-kpi small{color:#fff;font-size:clamp(11px,1.8vw,17px);font-weight:700}
+.kpi-sales{--kpi-bg1:#063b25;--kpi-bg2:#00170e;--kpi-light:rgba(46,230,139,.22);--kpi-edge:#36bd78;--kpi-icon:#61f5a8}
+.kpi-invoices{--kpi-bg1:#092d4e;--kpi-bg2:#061322;--kpi-light:rgba(74,177,255,.24);--kpi-edge:#368bd1;--kpi-icon:#8bd4ff}
+.kpi-installments{--kpi-bg1:#4b1855;--kpi-bg2:#1a0c22;--kpi-light:rgba(222,93,245,.2);--kpi-edge:#a54bc0;--kpi-icon:#e4a0f5}
+.kpi-discounts{--kpi-bg1:#541a25;--kpi-bg2:#210b12;--kpi-light:rgba(255,91,111,.2);--kpi-edge:#bd4c5d;--kpi-icon:#ff9aa8}
+.kpi-items{--kpi-bg1:#49320b;--kpi-bg2:#1b1307;--kpi-light:rgba(255,190,49,.23);--kpi-edge:#b98b35;--kpi-icon:#ffdc83}
+.kpi-cash{--kpi-bg1:#06413d;--kpi-bg2:#041a1a;--kpi-light:rgba(37,220,201,.2);--kpi-edge:#22a99f;--kpi-icon:#76f5e8}
+.salco-reference-chart{padding:17px 15px 13px;border:1px solid rgba(221,177,87,.4);border-radius:24px;background:linear-gradient(145deg,#171717,#090909 70%);box-shadow:inset 0 1px rgba(255,255,255,.06),0 8px 22px rgba(0,0,0,.28)}
+.salco-reference-chart-title{display:flex;align-items:center;gap:10px;margin-bottom:15px}
+.salco-reference-chart-title svg{color:#eebd50;stroke-width:2.7}
+.salco-reference-chart-title h3{margin:0;color:#f7f0df;font-size:clamp(16px,2.4vw,23px);font-weight:900}
+.salco-reference-chart-body{display:grid;grid-template-columns:48px minmax(0,1fr);gap:8px;min-height:210px}
+.salco-reference-axis{display:flex;flex-direction:column;justify-content:space-between;padding:0 0 25px;color:#c7c0b4;font-size:11px;text-align:left}
+.salco-reference-bars{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:9px;align-items:stretch;border-bottom:1px solid #c9c9c9;background:repeating-linear-gradient(to bottom,transparent 0,transparent calc(25% - 1px),rgba(255,255,255,.18) calc(25% - 1px),rgba(255,255,255,.18) 25%)}
+.salco-reference-bar{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:8px;min-width:0}
+.salco-reference-bar-space{display:flex;align-items:flex-end;justify-content:center;width:100%;height:178px}
+.salco-reference-bar-space i{display:block;width:min(100%,48px);min-height:0;border:1px solid rgba(255,226,149,.8);border-bottom:0;border-radius:11px 11px 0 0;background:linear-gradient(180deg,#ffe48b 0%,#e4a82e 45%,#875312 100%);box-shadow:0 0 14px rgba(231,174,53,.14)}
+.salco-reference-bar small{min-height:25px;color:#f2eee6;font-size:clamp(9px,1.6vw,13px);font-weight:750;white-space:nowrap;text-align:center}
+.salco-reference-chart-total{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;padding-top:11px;border-top:1px solid rgba(255,255,255,.1);color:#c6bda9;font-size:12px}
+.salco-reference-chart-total b{color:#f7d47e;font-size:15px;font-weight:900}
+.salco-reference-shortcuts{display:grid;direction:ltr;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.salco-reference-shortcuts button{display:flex;direction:rtl;flex-direction:column;align-items:center;justify-content:center;gap:11px;min-width:0;min-height:174px;padding:13px 5px;border:1px solid rgba(234,193,108,.58);border-radius:22px;color:#fff;background:linear-gradient(145deg,#29251d,#0a0a0a 72%);box-shadow:inset 0 1px rgba(255,255,255,.1),0 7px 17px rgba(0,0,0,.26);font:inherit;font-size:clamp(12px,2vw,19px);font-weight:850;line-height:1.6;cursor:pointer}
+.salco-reference-shortcuts button svg{color:#edbd4d;stroke-width:1.9;filter:drop-shadow(0 0 7px rgba(239,185,63,.2))}
+.salco-reference-shortcuts button:active{transform:translateY(1px);background:#302617}
+.salco-reference-export{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.salco-reference-export button{display:flex;align-items:center;justify-content:center;gap:12px;min-height:78px;padding:12px;border:2px solid #eab744;border-radius:23px;color:#f8e4ae;background:linear-gradient(145deg,#29251b,#080808);font:inherit;font-size:clamp(16px,2.7vw,25px);font-weight:950;cursor:pointer;box-shadow:inset 0 1px rgba(255,255,255,.18),0 6px 18px rgba(0,0,0,.28)}
+.salco-reference-export button svg{color:#f4cf73}
+.salco-reference-export .reference-export-image{color:#170e02;background:linear-gradient(180deg,#ffe083,#e8a51e 62%,#c17b08)}
+.salco-reference-export .reference-export-image svg{color:#171006}
+.salco-reference-export button:active{transform:translateY(1px)}
+.daily-report-export-panel>.panel-head,.daily-report-export-panel>.form-grid>.jalali-date-field,.daily-report-export-panel>.form-grid>.form-total,.daily-report-export-panel>.form-grid>.form-footer{display:none!important}
+.daily-report-export-panel{margin-top:14px}
+@media(min-width:700px){
+ .salco-reports-overview.salco-reports-reference{gap:22px;padding:22px 24px}
+ .salco-reference-kpis{gap:16px}
+ .salco-reference-kpi{min-height:156px;padding:18px 22px}
+ .salco-reference-kpi .kpi-icon{width:82px;height:82px}
+ .salco-reference-chart-body{min-height:260px}
+ .salco-reference-bar-space{height:225px}
+ .salco-reference-shortcuts{gap:14px}
+ .salco-reference-shortcuts button{min-height:190px}
+}
+@media(max-width:560px){
+ .salco-reports-overview.salco-reports-reference{gap:14px;padding:12px;border-radius:22px}
+ .salco-reference-header{min-height:64px}
+ .salco-reference-back{width:45px;height:45px;border-radius:17px}
+ .salco-reference-title{gap:5px}
+ .salco-reference-title svg{width:25px}
+ .salco-reference-brand{top:2px}
+ .salco-reference-brand strong{font-size:24px}
+ .salco-reference-brand span{font-size:9px}
+ .salco-reference-date{min-height:54px;padding:8px 12px;border-radius:16px}
+ .salco-reference-tabs{min-height:55px;border-radius:16px}
+ .salco-reference-tabs button{font-size:12px;gap:4px}
+ .salco-reference-kpis{gap:9px}
+ .salco-reference-kpi{gap:8px;min-height:108px;padding:10px 8px;border-radius:17px}
+ .salco-reference-kpi .kpi-icon{width:49px;height:49px}
+ .salco-reference-kpi .kpi-icon svg{width:29px;height:29px}
+ .salco-reference-kpi b{font-size:13px}
+ .salco-reference-kpi strong{font-size:clamp(14px,3.8vw,20px)}
+ .salco-reference-kpi small{font-size:10px}
+ .salco-reference-chart{padding:12px 9px}
+ .salco-reference-chart-body{grid-template-columns:35px minmax(0,1fr);gap:5px;min-height:170px}
+ .salco-reference-axis{font-size:9px;padding-bottom:23px}
+ .salco-reference-bars{gap:4px}
+ .salco-reference-bar-space{height:143px}
+ .salco-reference-bar small{font-size:8px;white-space:normal;line-height:1.25}
+ .salco-reference-shortcuts{gap:5px}
+ .salco-reference-shortcuts button{min-height:116px;padding:8px 2px;gap:5px;border-radius:14px;font-size:10px}
+ .salco-reference-shortcuts button svg{width:30px;height:30px}
+ .salco-reference-export{gap:8px}
+ .salco-reference-export button{min-height:58px;gap:6px;padding:8px;border-radius:16px;font-size:13px}
+ .salco-reference-export button svg{width:25px;height:25px}
+ .salco-reference-custom{grid-template-columns:1fr}
+}
