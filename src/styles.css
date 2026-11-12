@@ -2903,3 +2903,12 @@
  .salco-reference-export button svg{width:25px;height:25px}
  .salco-reference-custom{grid-template-columns:1fr}
 }
+
+.salco-reference-discount-detail{overflow:hidden;border:1px solid rgba(231,185,89,.45);border-radius:17px;background:#101010}
+.salco-reference-discount-detail>div{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;color:#f4dfac}
+.salco-reference-discount-detail>div button{display:grid;place-items:center;width:34px;height:34px;border:1px solid rgba(255,255,255,.15);border-radius:10px;color:#fff;background:#1a1a1a}
+.salco-reference-discount-detail table{width:100%;border-collapse:collapse;text-align:right}
+.salco-reference-discount-detail th,.salco-reference-discount-detail td{padding:11px 12px;border-top:1px solid rgba(255,255,255,.08);font-size:12px}
+.salco-reference-discount-detail th{color:#d8bd7c;background:rgba(255,255,255,.035)}
+.salco-reference-discount-detail td:last-child{color:#ffcf73;font-weight:850}
+@media(max-width:560px){.salco-reference-discount-detail th,.salco-reference-discount-detail td{padding:9px 7px;font-size:10px}}
