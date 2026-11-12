@@ -544,7 +544,7 @@ function App(){
   toast("در حال ساخت خروجی با قالب رسمی سالکو…");
   const sourceTable=report.querySelector(".salco-report-details .salco-signature-table");if(!sourceTable)throw new Error("جدول اقلام فروش پیدا نشد");
   const sourceRows=[...sourceTable.querySelectorAll("tbody tr")].filter(row=>row.querySelectorAll("td").length>1);
-  const pageSize=5,pageCount=Math.max(1,Math.ceil(sourceRows.length/pageSize));
+  const pageSize=15,pageCount=Math.max(1,Math.ceil(sourceRows.length/pageSize));
   const reportFileDate=jalaliParts(reportDate),reportFileDateName=[reportFileDate.year,reportFileDate.month,reportFileDate.day].map(v=>String(v).padStart(2,"0")).join("-");
   const reportDateText=new Intl.DateTimeFormat("fa-IR-u-ca-persian",{year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(reportDate+"T12:00:00"));
   const logoSource=report.querySelector(".salco-report-mark img")?.src||import.meta.env.BASE_URL+"images/salco-logo.webp";
@@ -582,7 +582,7 @@ function App(){
     <footer class="export-footer"><div class="footer-brand"><strong>SALCO<sup>+</sup></strong><span>MEN’S SUITS</span></div><div class="footer-slogan"><b>استایل مردانه، فراتر از یک انتخاب</b><small>MORE THAN A CHOICE, A LIFESTYLE</small></div><div class="footer-address"><span class="pin">●</span><span>خرم‌آباد، خیابان انقلاب<br>مجتمع رفاهی اکسومال</span></div></footer>`;
    const style=document.createElement("style");style.textContent=`
     #salco-export-artifact,#salco-export-artifact *{box-sizing:border-box!important;text-shadow:none!important}
-    #salco-export-artifact{direction:rtl;width:1404px;min-height:1536px;margin:0;padding:0;background:#050505;color:#fff;border:2px solid #b98a2d;font-family:Vazirmatn,Tahoma,sans-serif;overflow:hidden}
+    #salco-export-artifact{direction:rtl;width:1404px;min-height:2550px;margin:0;padding:0;background:#050505;color:#fff;border:2px solid #b98a2d;font-family:Vazirmatn,Tahoma,sans-serif;overflow:hidden}
     #salco-export-artifact .export-hero{height:286px;position:relative;display:grid;grid-template-columns:1fr 1fr;direction:ltr;align-items:center;padding:22px 44px;border-bottom:2px solid #8c6928;background:radial-gradient(ellipse at 78% 5%,#211a0d 0%,#080808 60%)}
     #salco-export-artifact .export-hero:after{content:"";position:absolute;left:55%;top:0;height:100%;width:105px;background:linear-gradient(100deg,#9c6c17,#ffe27b 48%,#b27b19);clip-path:polygon(48% 0,100% 0,52% 100%,0 100%)}
     #salco-export-artifact .hero-title{direction:rtl;text-align:right;position:relative;z-index:1;padding-right:8px}
