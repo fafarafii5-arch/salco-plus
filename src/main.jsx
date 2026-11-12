@@ -541,7 +541,7 @@ function App(){
 
  const exportDailyReportImage=async()=>{if(exportDailyReportImage.busy)return;exportDailyReportImage.busy=true;let staging=null,canvas=null;try{
   const report=document.querySelector(".daily-report-print");if(!report)throw new Error("گزارش برای خروجی تصویر پیدا نشد");
-  toast("در حال ساخت خروجی با قالب رسمی سالکو…");if(document.fonts?.ready)await document.fonts.ready;
+  toast("در حال ساخت خروجی با قالب رسمی سالکو…");
   const sourceTable=report.querySelector(".salco-report-details .salco-signature-table");if(!sourceTable)throw new Error("جدول اقلام فروش پیدا نشد");
   const sourceRows=[...sourceTable.querySelectorAll("tbody tr")].filter(row=>row.querySelectorAll("td").length>1);
   const pageSize=5,pageCount=Math.max(1,Math.ceil(sourceRows.length/pageSize));
@@ -554,7 +554,7 @@ function App(){
   const totalNet=cleanMoney(money(reportTotals.net)),totalDiscount=cleanMoney(money(reportTotals.discount));
   const imageEntries=[];
   for(let pageIndex=0;pageIndex<pageCount;pageIndex++){
-   await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,30)));
+
    const rows=sourceRows.slice(pageIndex*pageSize,(pageIndex+1)*pageSize);
    const tableRows=rows.map((row,index)=>{
     const cells=[...row.querySelectorAll("td")].map(cell=>cell.textContent.trim());
@@ -631,9 +631,9 @@ function App(){
     #salco-export-artifact .footer-address{direction:rtl;display:flex;align-items:center;justify-content:center;gap:18px;border-right:2px solid #d2a33b;height:120px;padding-right:20px;font-size:23px;line-height:1.8;color:#ddd;text-align:right}
     #salco-export-artifact .footer-address .pin{font-size:34px;color:#edc04d}
    `;root.prepend(style);staging.appendChild(root);document.body.appendChild(staging);
-   const logo=root.querySelector(".hero-logo img");if(logo&&(!logo.complete||!logo.naturalWidth))await new Promise(resolve=>{logo.onload=resolve;logo.onerror=resolve;});
-   await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,40)));
-   canvas=await html2canvas(root,{scale:1,width:1404,windowWidth:1404,useCORS:true,backgroundColor:"#050505",scrollX:0,scrollY:0,logging:false,imageTimeout:1000,removeContainer:true});
+   // The report screen has already loaded the shared font and logo; avoid blocking export on redundant waits.
+   await new Promise(resolve=>requestAnimationFrame(resolve));
+   canvas=await html2canvas(root,{scale:1,width:1404,windowWidth:1404,useCORS:true,backgroundColor:"#050505",scrollX:0,scrollY:0,logging:false,imageTimeout:250,removeContainer:true});
    const filename="SALCO-گزارش-روزانه-"+reportFileDateName+"-صفحه-"+(pageIndex+1)+"-از-"+pageCount+".png";
    const imageBlob=await new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error("ساخت تصویر صفحه "+(pageIndex+1)+" ناموفق بود")),"image/png"));
    imageEntries.push({name:filename,blob:imageBlob});canvas.width=0;canvas.height=0;canvas=null;
