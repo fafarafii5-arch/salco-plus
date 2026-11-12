@@ -888,15 +888,22 @@
     padding: 10px 0 12px !important;
   }
   .salco-signature-report .salco-signature-table tbody td:nth-child(1)::before { content: "نام کالا"; display: block !important; margin-bottom: 5px !important; }
-  .salco-signature-report .salco-signature-table tbody td:nth-child(2)::before { content: "فروشنده"; }
-  .salco-signature-report .salco-signature-table tbody td:nth-child(3)::before { content: "رنگ"; }
-  .salco-signature-report .salco-signature-table tbody td:nth-child(4)::before { content: "سایز"; }
-  .salco-signature-report .salco-signature-table tbody td:nth-child(5)::before { content: "تعداد"; }
-  .salco-signature-report .salco-signature-table tbody td:nth-child(6)::before { content: "مبلغ نهایی"; }
+  .salco-signature-report .salco-signature-table tbody td:nth-child(2)::before { content: "رنگ"; }
+  .salco-signature-report .salco-signature-table tbody td:nth-child(3)::before { content: "سایز"; }
+  .salco-signature-report .salco-signature-table tbody td:nth-child(4)::before { content: "تعداد"; }
+  .salco-signature-report .salco-signature-table tbody td:nth-child(5)::before { content: "تخفیف (تومان)"; }
+  .salco-signature-report .salco-signature-table tbody td:nth-child(6)::before { content: "مبلغ نهایی (تومان)"; }
+  .salco-signature-report .salco-signature-table tbody td:nth-child(4),
+  .salco-signature-report .salco-signature-table tbody td:nth-child(5),
+  .salco-signature-report .salco-signature-table tbody td:nth-child(6) {
+    color: #ffe09a !important;
+    font-weight: 950 !important;
+  }
   .salco-signature-report .salco-signature-table tbody td:nth-child(6) {
     grid-column: 1 / -1 !important;
-    color: #f1c86f !important;
-    font-weight: 800 !important;
+    color: #fff !important;
+    font-size: 16px !important;
+    font-weight: 950 !important;
     border-bottom: 0 !important;
     padding-top: 12px !important;
   }
