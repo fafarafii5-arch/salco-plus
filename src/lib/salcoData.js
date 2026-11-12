@@ -72,7 +72,7 @@ export async function listSales(branchId) {
     customers = customersResult.data || [];
     const productIds = [...new Set([...items.map(i => i.product_id), ...exchangeRows.flatMap(x => [x.new_product_id]).filter(Boolean)].filter(Boolean))];
     if (productIds.length) {
-      const productResult = await supabase.from('products').select('id, size, color').in('id', productIds);
+      const productResult = await supabase.from('products').select('id, name, size, color').in('id', productIds);
       if (productResult.error) throw new Error('دریافت سایز و رنگ اقلام فروش: ' + productResult.error.message);
       productDetails = productResult.data || [];
     }
