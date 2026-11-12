@@ -526,9 +526,6 @@ function App(){
   const reportPeriodSales=sales.filter(x=>{const d=new Date(x.date);if(Number.isNaN(d.getTime()))return false;const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;return key>=reportPeriodBounds.start&&key<=reportPeriodBounds.end;});
   const reportPeriodSaleIds=new Set(reportPeriodSales.map(x=>String(x.id)));
   const reportPeriodTotals=reportPeriodSales.reduce((a,x)=>({net:a.net+Number(x.total||0),discount:a.discount+Number(x.discount||0),qty:a.qty+Number(x.qty||0)}),{net:0,discount:0,qty:0});
-  // Preserve the two documented accounting corrections already applied in the daily report when a selected range contains those dates.
-  const reportPeriodNov1Raw=sales.filter(x=>{const d=new Date(x.date);return !Number.isNaN(d.getTime())&&`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`==='2026-11-01';}).reduce((sum,x)=>sum+Number(x.total||0),0);
-  reportPeriodTotals.net+=(reportPeriodBounds.start<='2026-10-25'&&reportPeriodBounds.end>='2026-10-25'?5000000:0)+(reportPeriodBounds.start<='2026-11-01'&&reportPeriodBounds.end>='2026-11-01'?20500000-reportPeriodNov1Raw:0);
   const reportPeriodInstallments=installments.filter(x=>reportPeriodSaleIds.has(String(x.sale_id))).reduce((sum,x)=>sum+Math.max(0,Number(x.amount||0)-Number(x.amount_paid||0)),0);
   const reportPeriodCash=cash.filter(x=>{const d=new Date(x.date);if(Number.isNaN(d.getTime()))return false;const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;return key>=reportPeriodBounds.start&&key<=reportPeriodBounds.end;});
   const reportPeriodReceived=reportPeriodCash.filter(x=>x.type==='دریافت').reduce((sum,x)=>sum+Number(x.amount||0),0);
