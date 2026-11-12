@@ -2594,3 +2594,16 @@
  .sales-entry-page .btn-gold{font-size:15px}
  .sales-entry-submit .btn{min-height:62px;font-size:20px}
 }
+
+
+/* Keep focused sales inputs clear of the Android soft keyboard */
+.sales-entry-page{scroll-padding-bottom:42vh}
+.sales-entry-page .sales-entry-field input:focus,
+.sales-entry-page .sales-entry-field select:focus{scroll-margin-top:24px;scroll-margin-bottom:42vh}
+.sales-entry-page .sales-entry-submit{position:static!important;transform:none!important}
+@media(max-width:700px){
+ .sales-entry-page{padding-bottom:30vh}
+ .sales-entry-page .sales-entry-form{padding-bottom:12vh}
+ .sales-entry-page input[type="number"],
+ .sales-entry-page input[inputmode="numeric"]{font-size:18px;min-height:58px}
+}
