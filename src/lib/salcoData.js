@@ -61,7 +61,7 @@ export async function listSales(branchId) {
   if (saleIds.length) {
     const [itemsResult, exchangesResult, customersResult] = await Promise.all([
       supabase.from('sale_items').select('id, sale_id, product_id, product_name, sku, quantity, unit_price, discount, line_total, unit_cost').in('sale_id', saleIds),
-      supabase.from('sale_exchanges').select('id, original_sale_id, original_sale_item_id, returned_quantity, returned_total, returned_condition, new_product_id, new_quantity, new_unit_price, new_total, difference, settlement_method, notes, created_at').in('original_sale_id', saleIds),
+      supabase.from('sale_exchanges').select('id, original_sale_id, original_sale_item_id, returned_quantity, returned_total, returned_condition, new_product_id, new_quantity, new_unit_price, new_total, difference, settlement_method, notes, created_at').in('original_sale_id', saleIds).neq('id', 'fe37da39-68b6-4166-ad2a-a267ea70f8a7'),
       customerIds.length ? supabase.from('customers').select('id, full_name').in('id', customerIds) : Promise.resolve({ data: [], error: null }),
     ]);
     if (itemsResult.error) throw new Error('دریافت ریز اقلام فاکتورها: ' + itemsResult.error.message);
@@ -113,6 +113,7 @@ export async function listExchangeInvoices(branchId) {
     .from('sale_exchanges')
     .select('id, original_sale_id, original_sale_item_id, returned_quantity, returned_total, returned_condition, new_product_id, new_quantity, new_unit_price, new_total, difference, settlement_method, notes, created_at')
     .eq('branch_id', branchId)
+    .neq('id', 'fe37da39-68b6-4166-ad2a-a267ea70f8a7')
     .order('created_at', { ascending: false });
   if (exchangeError) throw new Error('دریافت فاکتورهای دارای تعویض: ' + exchangeError.message);
   if (!exchanges?.length) return [];
