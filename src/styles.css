@@ -1264,6 +1264,7 @@
   .daily-report-print .salco-report-details .daily-report-table tbody td:nth-child(4)::before { content: "سایز" !important; }
   .daily-report-print .salco-report-details .daily-report-table tbody td:nth-child(5)::before { content: "تعداد" !important; }
   .daily-report-print .salco-report-details .daily-report-table tbody td:nth-child(6)::before { content: "مبلغ نهایی" !important; }
+  .daily-report-print .salco-report-details .daily-report-table tbody td:nth-child(4),
   .daily-report-print .salco-report-details .daily-report-table tbody td:nth-child(5),
   .daily-report-print .salco-report-details .daily-report-table tbody td:nth-child(6) {
     font-weight: 800 !important;
@@ -2606,4 +2607,21 @@
  .sales-entry-page .sales-entry-form{padding-bottom:12vh}
  .sales-entry-page input[type="number"],
  .sales-entry-page input[inputmode="numeric"]{font-size:18px;min-height:58px}
+}
+
+
+/* Daily report: no seller column; clear discount and bold numeric figures */
+.salco-signature-report .salco-signature-table th,
+.salco-signature-report .salco-signature-table td{font-variant-numeric:tabular-nums}
+.salco-signature-report .salco-signature-table tbody td.report-number{
+ color:#ffe09a!important;font-size:16px!important;font-weight:900!important;
+ letter-spacing:.1px;text-shadow:0 0 1px rgba(255,214,120,.3)
+}
+.salco-signature-report .salco-signature-table tbody td.report-discount{color:#ffcc72!important}
+.salco-signature-report .salco-signature-table tbody td.report-net{color:#fff!important;font-size:17px!important;font-weight:950!important}
+.salco-signature-report .salco-signature-table tfoot th{font-weight:950!important;font-size:clamp(13px,1.5vw,18px)!important}
+@media(max-width:600px){
+ .daily-report-print .salco-report-details .daily-report-table tbody td:nth-child(4),
+ .daily-report-print .salco-report-details .daily-report-table tbody td:nth-child(5),
+ .daily-report-print .salco-report-details .daily-report-table tbody td:nth-child(6){font-size:14px!important;font-weight:950!important}
 }
