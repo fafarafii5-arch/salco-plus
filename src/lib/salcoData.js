@@ -61,7 +61,7 @@ export async function listSales(branchId) {
   if (saleIds.length) {
     const [itemsResult, exchangesResult, customersResult] = await Promise.all([
       supabase.from('sale_items').select('id, sale_id, product_id, product_name, sku, quantity, unit_price, discount, line_total, unit_cost').in('sale_id', saleIds),
-      supabase.from('sale_exchanges').select('original_sale_item_id, returned_quantity').in('original_sale_id', saleIds),
+      supabase.from('sale_exchanges').select('id, original_sale_id, original_sale_item_id, returned_quantity, returned_total, returned_condition, new_product_id, new_quantity, new_unit_price, new_total, difference, settlement_method, notes, created_at').in('original_sale_id', saleIds),
       customerIds.length ? supabase.from('customers').select('id, full_name').in('id', customerIds) : Promise.resolve({ data: [], error: null }),
     ]);
     if (itemsResult.error) throw new Error('دریافت ریز اقلام فاکتورها: ' + itemsResult.error.message);
@@ -70,7 +70,7 @@ export async function listSales(branchId) {
     items = itemsResult.data || [];
     exchangeRows = exchangesResult.data || [];
     customers = customersResult.data || [];
-    const productIds = [...new Set(items.map(i => i.product_id).filter(Boolean))];
+    const productIds = [...new Set([...items.map(i => i.product_id), ...exchangeRows.flatMap(x => [x.new_product_id]).filter(Boolean)].filter(Boolean))];
     if (productIds.length) {
       const productResult = await supabase.from('products').select('id, size, color').in('id', productIds);
       if (productResult.error) throw new Error('دریافت سایز و رنگ اقلام فروش: ' + productResult.error.message);
@@ -79,13 +79,15 @@ export async function listSales(branchId) {
   }
   const customerById = Object.fromEntries(customers.map(c => [c.id, c.full_name]));
   const productById = Object.fromEntries(productDetails.map(p => [p.id, p]));
+  const exchangesBySale = {};
+  exchangeRows.forEach(x => { (exchangesBySale[x.original_sale_id] ||= []).push({ id: x.id, returnedQuantity: Number(x.returned_quantity || 0), returnedTotal: Number(x.returned_total || 0), newProductName: productById[x.new_product_id]?.name || 'کالای جایگزین', newColor: productById[x.new_product_id]?.color || '', newSize: productById[x.new_product_id]?.size || '', newQuantity: Number(x.new_quantity || 0), newUnitPrice: Number(x.new_unit_price || 0), newTotal: Number(x.new_total || 0), difference: Number(x.difference || 0), settlementMethod: x.settlement_method || '', notes: x.notes || '', createdAt: x.created_at }); });
   const itemsBySale = {};
   items.forEach(i => { (itemsBySale[i.sale_id] ||= []).push(i); });
   const returnedByItem = {};
   exchangeRows.forEach(x => { returnedByItem[x.original_sale_item_id] = (returnedByItem[x.original_sale_item_id] || 0) + Number(x.returned_quantity || 0); });
   return (sales || []).map(s => {
     const saleItems = itemsBySale[s.id] || [];
-    return { id: s.id, invoiceNo: s.invoice_no, date: s.sold_at, customerId: s.customer_id, seller: s.seller_name || '', product: saleItems.map(i => i.product_name).join('، '), items: saleItems.map(i => ({ id: i.id, productId: i.product_id, productName: i.product_name, sku: i.sku, size: productById[i.product_id]?.size || '', color: productById[i.product_id]?.color || '', quantity: Number(i.quantity), unitPrice: Number(i.unit_price), discount: Number(i.discount), lineTotal: Number(i.line_total), returnedQuantity: returnedByItem[i.id] || 0, unitCost: Number(i.unit_cost) })), qty: saleItems.reduce((n, i) => n + Number(i.quantity), 0), customer: customerById[s.customer_id] || 'مشتری حضوری', total: Number(s.total), cost: saleItems.reduce((n, i) => n + Number(i.unit_cost) * Number(i.quantity), 0), discount: Number(s.discount), payment: s.payment_method };
+    return { id: s.id, invoiceNo: s.invoice_no, date: s.sold_at, customerId: s.customer_id, seller: s.seller_name || '', exchanges: exchangesBySale[s.id] || [], product: saleItems.map(i => i.product_name).join('، '), items: saleItems.map(i => ({ id: i.id, productId: i.product_id, productName: i.product_name, sku: i.sku, size: productById[i.product_id]?.size || '', color: productById[i.product_id]?.color || '', quantity: Number(i.quantity), unitPrice: Number(i.unit_price), discount: Number(i.discount), lineTotal: Number(i.line_total), returnedQuantity: returnedByItem[i.id] || 0, unitCost: Number(i.unit_cost) })), qty: saleItems.reduce((n, i) => n + Number(i.quantity), 0), customer: customerById[s.customer_id] || 'مشتری حضوری', total: Number(s.total), cost: saleItems.reduce((n, i) => n + Number(i.unit_cost) * Number(i.quantity), 0), discount: Number(s.discount), payment: s.payment_method };
   });
 }
 
