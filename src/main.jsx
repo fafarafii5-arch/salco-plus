@@ -590,7 +590,7 @@ function App(){
 "#salco-png-export .salco-signature-table tbody td:nth-child(2){font-size:21px!important;line-height:1.55!important;white-space:normal!important}",
 "#salco-png-export .salco-signature-table tbody td:nth-child(6){font-size:19px!important;color:#f2ce70!important;font-weight:900!important;white-space:normal!important}",
 "#salco-png-export .salco-signature-table tbody td:nth-child(7),#salco-png-export .salco-signature-table tbody td:nth-child(7) *{background:#0b0b0b!important;color:#fff!important;font-size:25px!important;font-weight:950!important;line-height:1.4!important;white-space:nowrap!important;direction:rtl!important;font-variant-numeric:tabular-nums!important}",
-"#salco-png-export .salco-signature-table tfoot th:last-child,#salco-png-export .salco-signature-table tfoot th:last-child *{background:transparent!important;color:#171109!important;font-size:27px!important;font-weight:950!important;white-space:nowrap!important;font-variant-numeric:tabular-nums!important}",
+"#salco-png-export .salco-signature-table tfoot th:last-child,#salco-png-export .salco-signature-table tfoot th:last-child *{background:linear-gradient(100deg,#d59c31,#ffdc80,#c08a2b)!important;color:#171109!important;font-size:27px!important;font-weight:950!important;white-space:nowrap!important;font-variant-numeric:tabular-nums!important}",
 "#salco-png-export .salco-signature-table tfoot th:first-child{font-size:22px!important;line-height:1.5!important;white-space:normal!important}",
 "#salco-png-export .salco-signature-table tbody td:nth-child(1){font-size:21px!important;white-space:nowrap!important}",
 "#salco-png-export .salco-exchange-report{margin-top:18px!important}"
