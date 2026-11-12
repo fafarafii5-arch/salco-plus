@@ -738,7 +738,7 @@ function App(){
    <article className="salco-report-kpi"><span><ArrowUpLeft size={18}/> پرداخت صندوق</span><strong>{money(reportPeriodPaid)}</strong><small>پرداخت‌های واقعی ثبت‌شده</small></article>
    <article className="salco-report-kpi"><span><Wallet size={18}/> خالص گردش صندوق</span><strong>{money(reportPeriodCashNet)}</strong><small>دریافت منهای پرداخت</small></article>
   </div>
-  <section className="salco-report-trend">lassName="salco-report-trend">
+  <section className="salco-report-trend">
    <div className="salco-report-section-title"><div><h3>روند فروش هفت روز اخیر</h3><p>مقایسه فروش روزانه تا تاریخ انتخاب‌شده</p></div><span>۷ روز</span></div>
    <div className="salco-report-bars" role="img" aria-label="نمودار فروش هفت روز اخیر">
     {dashboardWeekDays.map(day=><div className="salco-report-bar-item" key={day.iso} title={money(day.total)}><strong>{day.total?num(day.total):'—'}</strong><div className="salco-report-bar-track"><i style={{height:Math.max(day.total?7:2,(day.total/dashboardWeekMax)*100)+'%'}}/></div><small>{day.label}</small></div>)}
