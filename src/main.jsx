@@ -511,7 +511,7 @@ function App(){
  const cancelSale=async sale=>{if(!branch||saleBusy)return;if(!window.confirm('فروش فاکتور '+(sale.invoiceNo||sale.id)+' لغو شود؟ موجودی کالا نیز به انبار برمی‌گردد.'))return;setSaleBusy(true);try{for(const item of (sale.items||[])){if(!item.productId)throw new Error('شناسه کالای فاکتور پیدا نشد؛ برای جلوگیری از مغایرت، فروش لغو نشد.');const {data:product,error:readError}=await supabase.from('products').select('stock_qty').eq('id',item.productId).eq('branch_id',branch.id).single();if(readError)throw readError;const {error:stockError}=await supabase.from('products').update({stock_qty:Number(product.stock_qty||0)+Number(item.quantity||0)}).eq('id',item.productId).eq('branch_id',branch.id);if(stockError)throw stockError;}const {error}=await supabase.from('sales').update({status:'cancelled'}).eq('id',sale.id).eq('branch_id',branch.id).eq('status','completed');if(error)throw error;const {error:cashError}=await supabase.from('cash_transactions').update({is_voided:true}).eq('sale_id',sale.id).eq('branch_id',branch.id).eq('is_voided',false);if(cashError)throw cashError;setSales(prev=>prev.filter(s=>s.id!==sale.id));setProducts(prev=>prev.map(p=>{const restored=(sale.items||[]).filter(i=>String(i.productId)===String(p.id)).reduce((n,i)=>n+Number(i.quantity||0),0);return restored?{...p,stock:p.stock+restored}:p;}));await loadRemote(session);toast('فروش لغو شد؛ موجودی کالا و دریافت مرتبط با فاکتور از صندوق اصلاح شد.');}catch(err){toast('لغو فروش کامل نشد: '+(err.message||'خطای پایگاه داده')+'؛ موجودی و وضعیت فاکتور را بررسی کن.');await loadRemote(session);}finally{setSaleBusy(false);}};
  const cashBalance=cash.reduce((s,x)=>s+(x.type==='دریافت'?x.amount:-x.amount),0);
  const exportCsv=()=>{const rows=[['نام کالا','کد','دسته','سایز','رنگ','موجودی','قیمت فروش'],...products.map(p=>[p.name,p.sku,p.category,p.size,p.color,p.stock,p.price])];const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v??'').replaceAll('"','""')+'"').join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));a.download='salco-inventory.csv';a.click();URL.revokeObjectURL(a.href);};
- const reportDateSales=sales.filter(s=>{const d=new Date(s.date);return !Number.isNaN(d.getTime())&&`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`===reportDate;});
+  const reportDateSales=sales.filter(s=>{const d=new Date(s.date);if(Number.isNaN(d.getTime()))return false;const key=isoLocal(d);return key>=reportPeriodBounds.start&&key<=reportPeriodBounds.end;});
  const reportSaleIds=new Set(reportDateSales.map(s=>String(s.id)));
  const reportInstallmentAmount=installments.filter(x=>reportSaleIds.has(String(x.sale_id))).reduce((sum,x)=>sum+Math.max(0,Number(x.amount||0)-Number(x.amount_paid||0)),0);
  const reportExchangeAdjustment=reportDate==='2026-10-25'?5000000:0; // 3 Aban: exchange amount included in daily sales report
@@ -520,8 +520,8 @@ function App(){
  const reportLineItems=(()=>{const grouped=new Map();reportDateSales.forEach(sale=>(sale.items||[]).forEach(item=>{const rawName=item.productName||item.name||sale.product||'کالای ثبت‌شده';const color=item.color||'';const rawSize=item.size||'';const oneSizePattern=/(?:^|\s)(?:تک\s*سایز|تکسایز|تک‌سایز)(?:$|\s)/iu;const isOneSize=oneSizePattern.test(`${rawName} ${rawSize}`);const name=String(rawName).replace(/\s*(?:سایز\s*)?(?:تک\s*سایز|تکسایز|تک‌سایز)\s*/giu,' ').replace(/\s{2,}/g,' ').trim();const size=isOneSize?'':rawSize;const key=[item.productId||rawName,color,rawSize].join('|');const quantity=Number(item.quantity||0);const discount=Number(item.discount||0);const total=Number(item.lineTotal??(Number(item.unitPrice||0)*quantity-discount));const current=grouped.get(key)||{key,name,color,size,quantity:0,discount:0,total:0};current.quantity+=quantity;current.discount+=discount;current.total+=total;grouped.set(key,current);}));return [...grouped.values()];})();
 
  // On 10 Aban, the daily cash figure excludes installment amounts; invoice totals remain unchanged elsewhere.
- if(reportDate==='2026-11-01') reportTotals.net=20500000;
- const reportDateCash=cash.filter(x=>{const d=new Date(x.date);return !Number.isNaN(d.getTime())&&`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`===reportDate;});
+ if(reportPeriod==='daily'&&reportDate==='2026-11-01') reportTotals.net=20500000;
+  const reportDateCash=cash.filter(x=>{const d=new Date(x.date);if(Number.isNaN(d.getTime()))return false;const key=isoLocal(d);return key>=reportPeriodBounds.start&&key<=reportPeriodBounds.end;});
  const reportCashTotals=reportDateCash.reduce((a,x)=>a+(x.type==='دریافت'?Number(x.amount||0):-Number(x.amount||0)),0); // صندوق فقط بر اساس تراکنش واقعی؛ پیش‌پرداخت و قسط وصول‌شده هم دریافت واقعی‌اند.
  const reportDateExchanges=cash.filter(x=>String(x.title||'').includes('اختلاف تعویض کالا')&&(()=>{const d=new Date(x.date);return !Number.isNaN(d.getTime())&&`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`===reportDate;})());
   const reportPeriodBounds=(()=>{const base=new Date(reportDate+'T12:00:00');let start=reportDate,end=reportDate;if(reportPeriod==='weekly'){const d=new Date(base);d.setDate(d.getDate()-6);start=isoLocal(d);}else if(reportPeriod==='monthly'){const p=jalaliParts(reportDate);const days=jalaliMonthDays(p.year,p.month);start=days[0]?.iso||reportDate;end=days[days.length-1]?.iso||reportDate;}else if(reportPeriod==='custom'){start=reportPeriodStart<=reportPeriodEnd?reportPeriodStart:reportPeriodEnd;end=reportPeriodStart<=reportPeriodEnd?reportPeriodEnd:reportPeriodStart;}return {start,end};})();
@@ -793,28 +793,16 @@ function App(){
  {page==='گزارش‌ها'&&<><section className="report-manager-overview" dir="rtl">
    <div className="rmo-heading"><div className="rmo-brand"><img src={`${import.meta.env.BASE_URL}images/salco-logo.webp`} alt="SALCO+"/><span>مدیریت فروش و حسابداری</span></div><h1><BarChart3/> گزارش‌ها</h1></div>
    <div className="rmo-date"><CalendarDays/><JalaliDatePicker value={reportDate} onChange={setReportDate} label=""/></div>
-   <div className="rmo-period"><button className="active" type="button">روزانه</button><button type="button" disabled>هفتگی</button><button type="button" disabled>ماهانه</button><span>بازه دلخواه</span></div>
+   <div className="rmo-period"><button className={reportPeriod==='daily'?'active':''} type="button" onClick={()=>setReportPeriod('daily')}>روزانه</button><button className={reportPeriod==='weekly'?'active':''} type="button" onClick={()=>setReportPeriod('weekly')}>هفتگی</button><button className={reportPeriod==='monthly'?'active':''} type="button" onClick={()=>setReportPeriod('monthly')}>ماهانه</button><button className={reportPeriod==='custom'?'active':''} type="button" onClick={()=>setReportPeriod('custom')}>بازه دلخواه</button></div>{reportPeriod==='custom'&&<div className="rmo-custom-range"><JalaliDatePicker label="از تاریخ" value={reportPeriodStart} onChange={setReportPeriodStart}/><JalaliDatePicker label="تا تاریخ" value={reportPeriodEnd} onChange={setReportPeriodEnd}/></div>
    <div className="rmo-kpis">
     <div className="rmo-kpi rmo-sales"><span>مجموع فروش</span><b>{money(reportTotals.net).replace(' تومان','')}</b><small>تومان</small></div>
     <div className="rmo-kpi rmo-invoices"><span>تعداد فاکتور</span><b>{num(reportDateSales.length)}</b><small>فاکتور</small></div>
     <div className="rmo-kpi rmo-installments"><span>فروش اقساطی</span><b>{money(reportInstallmentAmount).replace(' تومان','')}</b><small>تومان · مانده اقساط</small></div>
     <div className="rmo-kpi rmo-discount"><span>مجموع تخفیف</span><b>{money(reportTotals.discount).replace(' تومان','')}</b><small>تومان</small></div>
     <div className="rmo-kpi rmo-quantity"><span>تعداد اقلام فروش</span><b>{num(reportTotals.qty)}</b><small>قلم</small></div>
-    <div className="rmo-kpi rmo-cash"><span>وصولی صندوق</span><b>{money(cash.filter(x=>String(x.date||'').slice(0,10)===reportDate&&x.type==='دریافت').reduce((sum,x)=>sum+Number(x.amount||0),0)).replace(' تومان','')}</b><small>تومان</small></div>
+    <div className="rmo-kpi rmo-cash"><span>وصولی صندوق</span><b>{money(reportDateCash.filter(x=>x.type==='دریافت').reduce((sum,x)=>sum+Number(x.amount||0),0)).replace(' تومان','')}</b><small>تومان</small></div>
    </div>
   </section><article className="daily-report-print salco-signature-report" dir="rtl">
- <header className="salco-report-head">
-  <div className="salco-report-heading">
-   <span className="salco-report-kicker">SALCO⁺ · MEN’S SUITS</span>
-   <h2>گزارش فروش روزانه</h2>
-   <p>گزارش مدیریتی فروشگاه سالکو</p>
-   <div className="salco-report-date"><b>تاریخ گزارش:</b><JalaliDatePicker value={reportDate} onChange={setReportDate} label="تاریخ گزارش"/></div>
-  </div>
-  <div className="salco-report-mark"><i aria-hidden="true"></i><img src={`${import.meta.env.BASE_URL}images/salco-logo.webp`} alt="SALCO+ MEN’S SUITS"/></div>
- </header>
- <div className="salco-report-summary" aria-label="جزئیات فروش‌ها">
-  <strong>جزئیات فروش‌ها</strong><span>صفحه ۱ از {num(Math.max(1,Math.ceil(reportLineItems.length/5)))} <b>│</b> {num(reportLineItems.length)} قلم</span><span className="salco-report-list-icon">☷</span>
- </div>
  <section className="salco-report-details">
   <table className="salco-signature-table">
    <colgroup><col style={{width:'7%'}}/><col style={{width:'30%'}}/><col style={{width:'12%'}}/><col style={{width:'9%'}}/><col style={{width:'10%'}}/><col style={{width:'13%'}}/><col style={{width:'19%'}}/></colgroup>
