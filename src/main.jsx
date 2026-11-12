@@ -702,12 +702,16 @@ function App(){
    {dashboardSelectedTrendPoint&&<div className="sm-chart-selected-value"><strong>فروش این روز</strong><b>{money(dashboardSelectedTrendPoint.total)}</b></div>}
    <div className="sm-chart-total"><span>مجموع فروش {num(dashboardTrendRange)} روز</span><b>{money(dashboardTrendTotal)}</b></div>
   </section>
-  {!isViewer&&<nav className="sm-bottom-nav" aria-label="ناوبری اصلی">
+  <nav className="sm-bottom-nav" aria-label="ناوبری اصلی">
+   {isViewer?<><button onClick={()=>setPage('داشبورد')}><LayoutDashboard/><span>داشبورد</span></button>
+   <button onClick={()=>setPage('موجودی کالا')}><Package/><span>موجودی</span></button>
+   <button onClick={()=>setPage('فاکتورها')}><FileText/><span>فاکتورها</span></button>
+   <button onClick={()=>setPage('گزارش‌ها')}><BarChart3/><span>گزارش‌ها</span></button></>:<>
    <button onClick={()=>setPage('انتقال کالا')}><ArrowLeftRight/><span>انتقال کالا</span></button>
    <button onClick={()=>setPage('فاکتورها')}><FileText/><span>فاکتورها</span></button>
    <button onClick={()=>setPage('ثبت فروش')}><ShoppingCart/><span>ثبت فروش</span></button>
-   <button onClick={()=>setPage('گزارش‌ها')}><BarChart3/><span>گزارش‌ها</span></button>
-  </nav>}
+   <button onClick={()=>setPage('گزارش‌ها')}><BarChart3/><span>گزارش‌ها</span></button></>}
+  </nav>
  </div>}
  {page==='قیمت‌گذاری کالاها'&&<section className="panel">
    <div className="panel-head"><div><h2>قیمت‌گذاری کالاها</h2><p>برای هر رنگ، قیمت فروش مستقل تعیین کن؛ قیمت برای تمام سایزهای همان رنگ ذخیره می‌شود.</p></div><span className="mini-badge">{num(products.length)} کالا</span></div>
