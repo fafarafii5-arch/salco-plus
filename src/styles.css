@@ -2923,3 +2923,14 @@
 
 .daily-report-export-panel>.form-grid{grid-template-columns:minmax(0,1fr)!important}
 .daily-report-export-panel>.form-grid>.daily-report-print{grid-column:1/-1;width:100%;min-width:0}
+
+/* Match the reference image's left/right reading order for cards, chart, date and exports */
+.salco-reference-date{direction:ltr}
+.salco-reference-date .jalali-date-field{direction:rtl}
+.salco-reference-date .jalali-date-trigger{text-align:center}
+.salco-reference-kpi{direction:ltr}
+.salco-reference-kpi>div{direction:rtl}
+.salco-reference-chart-body{direction:ltr}
+.salco-reference-axis{text-align:right}
+.salco-reference-export{direction:ltr}
+.salco-reference-export button{direction:rtl}
