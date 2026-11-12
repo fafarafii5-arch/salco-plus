@@ -2671,3 +2671,34 @@
 .daily-report-print.salco-signature-report .salco-report-details .salco-signature-table tbody td.report-net{font-size:15px!important;font-weight:950!important;color:#fff!important;white-space:nowrap!important}
 .daily-report-print.salco-signature-report .salco-report-details .salco-signature-table tfoot tr{display:table-row!important}
 .daily-report-print.salco-signature-report .salco-report-details .salco-signature-table tfoot th{font-weight:950!important;font-size:13px!important}
+
+
+/* Daily report final column and per-item discount: high-contrast accounting layout */
+.daily-report-print.salco-signature-report .salco-report-details .salco-signature-table tbody td.report-net,
+#salco-png-export .salco-signature-table tbody td.report-net{
+ color:#fff!important;
+ background:#101010!important;
+ font-size:19px!important;
+ font-weight:950!important;
+ line-height:1.5!important;
+ white-space:nowrap!important;
+ text-shadow:0 0 1px rgba(255,255,255,.25)!important;
+}
+.daily-report-print.salco-signature-report .salco-report-details .salco-signature-table tbody td.report-net small,
+#salco-png-export .salco-signature-table tbody td.report-net small{
+ color:#fff!important;font-size:11px!important;font-weight:800!important;white-space:nowrap!important;
+}
+.daily-report-print.salco-signature-report .salco-report-details .salco-signature-table tbody td.report-discount,
+#salco-png-export .salco-signature-table tbody td.report-discount{
+ color:#f3c96b!important;font-size:16px!important;font-weight:900!important;white-space:nowrap!important;
+}
+#salco-png-export .salco-signature-table tbody td.report-discount small{
+ color:#f3c96b!important;font-size:10px!important;font-weight:800!important;white-space:nowrap!important;
+}
+#salco-png-export .salco-signature-table th:nth-child(1),#salco-png-export .salco-signature-table td:nth-child(1){width:6%!important}
+#salco-png-export .salco-signature-table th:nth-child(2),#salco-png-export .salco-signature-table td:nth-child(2){width:26%!important}
+#salco-png-export .salco-signature-table th:nth-child(3),#salco-png-export .salco-signature-table td:nth-child(3){width:13%!important}
+#salco-png-export .salco-signature-table th:nth-child(4),#salco-png-export .salco-signature-table td:nth-child(4){width:10%!important}
+#salco-png-export .salco-signature-table th:nth-child(5),#salco-png-export .salco-signature-table td:nth-child(5){width:9%!important}
+#salco-png-export .salco-signature-table th:nth-child(6),#salco-png-export .salco-signature-table td:nth-child(6){width:16%!important}
+#salco-png-export .salco-signature-table th:nth-child(7),#salco-png-export .salco-signature-table td:nth-child(7){width:20%!important}
