@@ -798,7 +798,7 @@ function App(){
     <div className="rmo-kpi rmo-quantity"><span>تعداد اقلام فروش</span><b>{num(reportTotals.qty)}</b><small>قلم</small></div>
     <div className="rmo-kpi rmo-cash"><span>وصولی صندوق</span><b>{money(cash.filter(x=>String(x.date||'').slice(0,10)===reportDate&&x.type==='دریافت').reduce((sum,x)=>sum+Number(x.amount||0),0)).replace(' تومان','')}</b><small>تومان</small></div>
    </div>
-  </section>{page==='گزارش‌ها'&&<><article className="daily-report-print salco-signature-report" dir="rtl">
+  </section><article className="daily-report-print salco-signature-report" dir="rtl">
  <header className="salco-report-head">
   <div className="salco-report-heading">
    <span className="salco-report-kicker">SALCO⁺ · MEN’S SUITS</span>
