@@ -30,14 +30,14 @@ const jalaliMonthDays = (year,month) => {
 };
 const jalaliMonthName = (date) => new Intl.DateTimeFormat('fa-IR-u-ca-persian',{month:'long'}).format(date);
 
-function JalaliDatePicker({value,onChange,label='تاریخ'}) {
+function JalaliDatePicker({value,onChange,label='تاریخ',showWeekday=false}) {
  const [open,setOpen]=useState(false);
  const [month,setMonth]=useState(()=>jalaliParts(value));
  const p=jalaliParts(value);
  const fmt=n=>new Intl.NumberFormat('fa-IR',{useGrouping:false}).format(n);
  const days=jalaliMonthDays(month.year,month.month);
  const blanks=days.length?(days[0].date.getDay()+1)%7:0;
- return <div className="jalali-date-field"><button type="button" className="jalali-date-trigger" aria-label={label||'انتخاب تاریخ شمسی'} aria-expanded={open} onClick={()=>{setMonth(jalaliParts(value));setOpen(v=>!v);}}>{fmt(p.year)+'/'+fmt(p.month).padStart(2,'۰')+'/'+fmt(p.day).padStart(2,'۰')}</button>{open&&<div className="jalali-calendar" dir="rtl"><div className="jalali-calendar-head"><button type="button" className="btn btn-ghost" aria-label="ماه قبل" onClick={()=>setMonth(v=>v.month===1?{year:v.year-1,month:12}:{...v,month:v.month-1})}>‹</button><b>{jalaliMonthName(days[0]?.date||new Date())} {fmt(month.year)}</b><button type="button" className="btn btn-ghost" aria-label="ماه بعد" onClick={()=>setMonth(v=>v.month===12?{year:v.year+1,month:1}:{...v,month:v.month+1})}>›</button></div><div className="jalali-calendar-grid">{['ش','ی','د','س','چ','پ','ج'].map((w,i)=><span className="jalali-weekday" key={i}>{w}</span>)}{Array.from({length:blanks},(_,i)=><span key={'blank'+i}/>)}{days.map(d=><button type="button" key={d.iso} className={d.iso===value?'selected':''} onClick={()=>{onChange(d.iso);setOpen(false);}}>{fmt(d.day)}</button>)}</div><button type="button" className="btn btn-ghost jalali-today" onClick={()=>{const today=isoLocal(new Date());onChange(today);setMonth(jalaliParts(today));setOpen(false);}}>امروز</button></div>}</div>;
+ return <div className="jalali-date-field"><button type="button" className="jalali-date-trigger" aria-label={label||'انتخاب تاریخ شمسی'} aria-expanded={open} onClick={()=>{setMonth(jalaliParts(value));setOpen(v=>!v);}}>{showWeekday?new Intl.DateTimeFormat('fa-IR-u-ca-persian',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(new Date(value+'T12:00:00')):fmt(p.year)+'/'+fmt(p.month).padStart(2,'۰')+'/'+fmt(p.day).padStart(2,'۰')}</button>{open&&<div className="jalali-calendar" dir="rtl"><div className="jalali-calendar-head"><button type="button" className="btn btn-ghost" aria-label="ماه قبل" onClick={()=>setMonth(v=>v.month===1?{year:v.year-1,month:12}:{...v,month:v.month-1})}>‹</button><b>{jalaliMonthName(days[0]?.date||new Date())} {fmt(month.year)}</b><button type="button" className="btn btn-ghost" aria-label="ماه بعد" onClick={()=>setMonth(v=>v.month===12?{year:v.year+1,month:1}:{...v,month:v.month+1})}>›</button></div><div className="jalali-calendar-grid">{['ش','ی','د','س','چ','پ','ج'].map((w,i)=><span className="jalali-weekday" key={i}>{w}</span>)}{Array.from({length:blanks},(_,i)=><span key={'blank'+i}/>)}{days.map(d=><button type="button" key={d.iso} className={d.iso===value?'selected':''} onClick={()=>{onChange(d.iso);setOpen(false);}}>{fmt(d.day)}</button>)}</div><button type="button" className="btn btn-ghost jalali-today" onClick={()=>{const today=isoLocal(new Date());onChange(today);setMonth(jalaliParts(today));setOpen(false);}}>امروز</button></div>}</div>;
 }
 
 const productTaxonomy = {
@@ -728,7 +728,7 @@ function App(){
    <div className="salco-reference-title"><BarChart3 size={35}/><b>گزارش‌ها</b></div>
   </header>
   <section className="salco-reference-filter">
-   <div className="salco-reference-date"><CalendarDays size={25}/><JalaliDatePicker value={reportDate} onChange={setReportDate} label="انتخاب تاریخ گزارش"/><ChevronDown size={23}/></div>
+   <div className="salco-reference-date"><CalendarDays size={25}/><JalaliDatePicker value={reportDate} onChange={setReportDate} label="انتخاب تاریخ گزارش" showWeekday/><ChevronDown size={23}/></div>
    <div className="salco-reference-tabs" role="group" aria-label="بازه گزارش">
     <button type="button" className={reportPeriod==='daily'?'active':''} onClick={()=>setReportPeriod('daily')}>روزانه</button>
     <button type="button" className={reportPeriod==='weekly'?'active':''} onClick={()=>setReportPeriod('weekly')}>هفتگی</button>
