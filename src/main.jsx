@@ -302,7 +302,7 @@ function App(){
    remoteLoadInFlight.current=true;
    setDataLoading(true);
    try {
-     const b = await getCurrentBranch(); setBranch(b); if(b.role==='viewer') setPage('گزارش‌ها');
+     const b = await getCurrentBranch(); setBranch(b);
      const [p,ss,ee,cc,ii] = await Promise.all([listProducts(b.id),listSales(b.id),listExchangeInvoices(b.id),listCashTransactions(b.id),supabase.from('sale_installments').select('id,branch_id,sale_id,installment_no,due_date,amount,amount_paid,status').eq('branch_id',b.id).order('due_date',{ascending:true})]);
      if(ii.error) throw ii.error;
      const soldByProduct={};
@@ -371,8 +371,8 @@ function App(){
 
 
  const isViewer=branch?.role==='viewer';
- useEffect(()=>{if(isViewer&&!['گزارش‌ها','فاکتورها','موجودی کالا','مشتریان','اقساط','صندوق'].includes(page))setPage('گزارش‌ها');},[isViewer,page]);
- const nav=isViewer?[['گزارش‌ها',BarChart3],['فاکتورها',FileText],['موجودی کالا',Package],['مشتریان',Users],['اقساط',Wallet],['صندوق',Wallet]]:[['داشبورد',LayoutDashboard],['ثبت فروش',ShoppingCart],['تعویض کالا',ArrowLeftRight],['موجودی کالا',Package],['انتقال کالا',ArrowLeftRight],['قیمت‌گذاری کالاها',Tags],['گالری تصاویر کالاها',ImageIcon],['مشتریان',Users],['اقساط',Wallet],['صندوق',Wallet],['گزارش‌ها',BarChart3],...(branch?.role==='owner'?[['مدیریت کاربران',UserPlus]]:[])];
+ useEffect(()=>{if(isViewer&&!['داشبورد','گزارش‌ها','فاکتورها','موجودی کالا','مشتریان','اقساط','صندوق'].includes(page))setPage('داشبورد');},[isViewer,page]);
+ const nav=isViewer?[['داشبورد',LayoutDashboard],['گزارش‌ها',BarChart3],['فاکتورها',FileText],['موجودی کالا',Package],['مشتریان',Users],['اقساط',Wallet],['صندوق',Wallet]]:[['داشبورد',LayoutDashboard],['ثبت فروش',ShoppingCart],['تعویض کالا',ArrowLeftRight],['موجودی کالا',Package],['انتقال کالا',ArrowLeftRight],['قیمت‌گذاری کالاها',Tags],['گالری تصاویر کالاها',ImageIcon],['مشتریان',Users],['اقساط',Wallet],['صندوق',Wallet],['گزارش‌ها',BarChart3],...(branch?.role==='owner'?[['مدیریت کاربران',UserPlus]]:[])];
  const normalizeInventorySearch=value=>String(value??'').toLocaleLowerCase('fa').replace(/[\u064B-\u065F\u0670\u0640]/g,'').replace(/[ي]/g,'ی').replace(/[ك]/g,'ک').replace(/[\u200c\s]+/g,' ').trim();
  const searchTerms=[query,categoryQuery,inventorySizeSearch,inventoryColorSearch].map(normalizeInventorySearch).filter(Boolean);
  const filteredProducts=products.filter(p=>{
