@@ -540,61 +540,109 @@ function App(){
   const reportTrendMax=Math.max(1,...reportTrendDays.map(x=>x.total));
   const reportTrendTotal=reportTrendDays.reduce((sum,x)=>sum+x.total,0);
 
- const exportDailyReportImage=async()=>{if(exportDailyReportImage.busy)return;exportDailyReportImage.busy=true;let staging=null,canvas=null;try{const report=document.querySelector(".daily-report-print");if(!report){toast("گزارش برای خروجی تصویر پیدا نشد.");return;}toast("ساخت گزارش شروع شد؛ لطفاً تا آماده‌شدن فایل صفحه را باز نگه دار.");if(document.fonts?.ready)await document.fonts.ready;await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,80)));const sourceClone=report.cloneNode(true);const sourceTable=sourceClone.querySelector(".salco-report-details .salco-signature-table");if(!sourceTable)throw new Error("جدول اقلام فروش پیدا نشد");const sourceRows=[...sourceTable.querySelectorAll("tbody tr")].filter(row=>row.querySelectorAll("td").length>1);const pageSize=5;const pageCount=Math.max(1,Math.ceil(sourceRows.length/pageSize));const reportFileDate=jalaliParts(reportDate);const reportFileDateName=[reportFileDate.year,reportFileDate.month,reportFileDate.day].map(v=>String(v).padStart(2,"0")).join("-");const imageEntries=[];for(let pageIndex=0;pageIndex<pageCount;pageIndex++){await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,20)));const clone=sourceClone.cloneNode(true);const salesSection=clone.querySelector(".salco-report-details");const table=salesSection?.querySelector(".salco-signature-table");if(!table)throw new Error("جدول اقلام صفحه پیدا نشد");const pageRows=[...table.querySelectorAll("tbody tr")].filter(row=>row.querySelectorAll("td").length>1);pageRows.forEach((row,index)=>{if(index<pageIndex*pageSize||index>=(pageIndex+1)*pageSize)row.remove();});const pageFoot=table.querySelector("tfoot");if(pageIndex!==pageCount-1)clone.querySelectorAll(".salco-exchange-report").forEach(section=>section.remove());clone.id="salco-png-export";clone.classList.add("daily-report-png");const itemRows=table.querySelectorAll("tbody tr");let rowNumber=pageIndex*pageSize;itemRows.forEach(row=>{const cells=[...row.querySelectorAll("td")];if(cells.length===1){cells[0].colSpan=7;return;}rowNumber+=1;if(cells.length===6){const numberCell=document.createElement("td");numberCell.textContent=new Intl.NumberFormat("fa-IR").format(rowNumber);row.insertBefore(numberCell,row.firstElementChild);}const updatedCells=[...row.querySelectorAll("td")];if(updatedCells.length>=7){const productCell=updatedCells[1],sizeCell=updatedCells[3];if(productCell)productCell.textContent=productCell.textContent.replace(/\s*(?:سایز\s*)?(?:تک\s*سایز|تکسایز|تک‌سایز)\s*/giu," ").replace(/\s{2,}/g," ").trim();if(sizeCell&&/^(?:تک\s*سایز|تکسایز|تک‌سایز)$/iu.test(sizeCell.textContent.trim()))sizeCell.textContent="";}});{const headRow=table.querySelector("thead tr");if(headRow&&headRow.querySelectorAll("th").length===6){const th=document.createElement("th");th.textContent="ردیف";headRow.insertBefore(th,headRow.firstElementChild);}const foot=table.querySelector("tfoot tr");if(foot)foot.innerHTML='<th>تخفیف کل: '+money(reportTotals.discount)+'</th><th>جمع کل فاکتورها: '+money(reportTotals.net)+'</th>';}table.querySelectorAll("tbody td, tfoot td, tfoot th").forEach(cell=>{const textWalker=document.createTreeWalker(cell,NodeFilter.SHOW_TEXT);let textNode;while((textNode=textWalker.nextNode()))textNode.nodeValue=textNode.nodeValue.replace(/\s*تومان\s*/gu," ").replace(/\s{2,}/g," ").trim();});const summary=clone.querySelector(".salco-report-summary");if(summary){summary.innerHTML='<div class="png-summary-title"><span>▤</span><strong>جزئیات فروش‌ها</strong></div><div class="png-summary-count"><span>▱</span><strong>صفحه '+new Intl.NumberFormat("fa-IR").format(pageIndex+1)+' از '+new Intl.NumberFormat("fa-IR").format(pageCount)+' · اقلام '+new Intl.NumberFormat("fa-IR").format(Math.min(pageIndex*pageSize+1,sourceRows.length))+' تا '+new Intl.NumberFormat("fa-IR").format(Math.min((pageIndex+1)*pageSize,sourceRows.length))+'</strong></div>';summary.classList.add("png-summary");}const detailTitle=clone.querySelector(".salco-report-details h3");if(detailTitle)detailTitle.remove();staging=document.createElement("div");staging.style.cssText="position:fixed;left:-12000px;top:0;width:1024px;max-width:1024px;overflow:visible;background:#070707;z-index:-1;";clone.style.cssText="display:block;width:1024px;max-width:1024px;min-width:1024px;height:auto;min-height:0;max-height:none;margin:0;padding:0;box-sizing:border-box;overflow:visible;border:1px solid #bd8b2c;border-radius:0;background:#070707;";const exportStyle=document.createElement("style");const css=[
-"#salco-png-export,#salco-png-export *{box-sizing:border-box!important;text-shadow:none!important}",
-"#salco-png-export{direction:rtl!important;color:#f8f1df!important;font-family:\"Vazirmatn\",Tahoma,sans-serif!important;background:#070707!important;border:2px solid #d3a63e!important;border-radius:22px!important;overflow:visible!important}",
-"#salco-png-export .salco-report-hero{display:grid!important;direction:ltr!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;grid-template-areas:'title logo'!important;align-items:center!important;gap:24px!important;width:100%!important;min-height:220px!important;padding:24px 42px!important;border-bottom:1px solid #8f6929!important;background:radial-gradient(ellipse at 70% 0%,#20190c 0%,#080808 65%)!important}",
-"#salco-png-export .salco-report-title{grid-area:title!important;direction:rtl!important;text-align:right!important;width:100%!important;min-width:0!important}",
-"#salco-png-export .salco-report-logo{grid-area:logo!important;direction:ltr!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;width:100%!important;min-width:0!important}",
-"#salco-png-export .salco-report-logo img{display:block!important;width:190px!important;height:155px!important;max-width:190px!important;object-fit:contain!important}",
-"#salco-png-export .salco-report-logo span{font-size:15px!important;letter-spacing:4px!important;color:#f1cf73!important;font-weight:800!important}",
-"#salco-png-export .salco-report-kicker{display:block!important;color:#f2c85d!important;font-size:18px!important;font-weight:900!important;letter-spacing:2px!important;margin-bottom:10px!important}",
-"#salco-png-export .salco-report-title h2{font-size:36px!important;line-height:1.35!important;font-weight:900!important;color:#fff!important;margin:0 0 8px!important}",
-"#salco-png-export .salco-report-title p{font-size:21px!important;color:#eee5d1!important;margin:0 0 12px!important}",
-"#salco-png-export .salco-report-date{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:18px!important;max-width:420px!important;padding:12px 18px!important;border:1px solid #b58a35!important;border-radius:14px!important;background:#080808!important}",
-"#salco-png-export .salco-report-date small{font-size:17px!important;color:#f0dfb8!important}",
-"#salco-png-export .salco-report-date b{font-size:22px!important;color:#fff!important;white-space:nowrap!important}",
-"#salco-png-export .salco-report-summary.png-summary{display:flex!important;direction:rtl!important;align-items:center!important;justify-content:space-between!important;gap:20px!important;width:100%!important;min-height:62px!important;margin:0!important;padding:10px 30px!important;border:1px solid #a47b30!important;border-radius:0!important;background:#080808!important;color:#f5d57d!important;box-shadow:inset 0 0 0 1px #a47b30!important}",
-"#salco-png-export .png-summary-title,#salco-png-export .png-summary-count{display:flex!important;align-items:center!important;gap:14px!important;color:#f2ce70!important;font-size:25px!important;font-weight:900!important}",
-"#salco-png-export .png-summary-count{font-size:21px!important;color:#fff!important}",
-"#salco-png-export .png-summary-title span,#salco-png-export .png-summary-count span{font-size:30px!important;color:#e9bd55!important}",
-"#salco-png-export .salco-report-details{display:block!important;width:100%!important;max-width:100%!important;margin:0!important;padding:16px 18px 20px!important;background:#080808!important}",
-"#salco-png-export .salco-signature-table{display:table!important;width:100%!important;max-width:100%!important;min-width:0!important;table-layout:fixed!important;direction:rtl!important;border-collapse:separate!important;border-spacing:0 8px!important;background:transparent!important}",
-"#salco-png-export .salco-signature-table thead th{height:54px!important;padding:12px 8px!important;background:#0b0b0b!important;color:#f2ce70!important;border-top:1px solid #b28a3a!important;border-bottom:1px solid #b28a3a!important;border-left:1px solid #4b4436!important;font-size:19px!important;line-height:1.4!important;font-weight:900!important;text-align:center!important;white-space:normal!important}",
-"#salco-png-export .salco-signature-table thead th:first-child{border-right:1px solid #b28a3a!important;border-radius:0 14px 14px 0!important}",
-"#salco-png-export .salco-signature-table thead th:last-child{border-left:1px solid #b28a3a!important;border-radius:14px 0 0 14px!important}",
-"#salco-png-export .salco-signature-table th:nth-child(1),#salco-png-export .salco-signature-table td:nth-child(1){width:7%!important}",
-"#salco-png-export .salco-signature-table th:nth-child(2),#salco-png-export .salco-signature-table td:nth-child(2){width:30%!important}",
-"#salco-png-export .salco-signature-table th:nth-child(3),#salco-png-export .salco-signature-table td:nth-child(3){width:13%!important}",
-"#salco-png-export .salco-signature-table th:nth-child(4),#salco-png-export .salco-signature-table td:nth-child(4){width:11%!important}",
-"#salco-png-export .salco-signature-table th:nth-child(5),#salco-png-export .salco-signature-table td:nth-child(5){width:9%!important}",
-"#salco-png-export .salco-signature-table th:nth-child(6),#salco-png-export .salco-signature-table td:nth-child(6){width:12%!important}",
-"#salco-png-export .salco-signature-table th:nth-child(7),#salco-png-export .salco-signature-table td:nth-child(7){width:18%!important}",
-"#salco-png-export .salco-signature-table tbody td{height:72px!important;padding:10px 8px!important;background:#0b0b0b!important;color:#fff!important;border-top:1px solid #b18a3b!important;border-bottom:1px solid #b18a3b!important;border-left:1px solid #4b4436!important;font-size:20px!important;line-height:1.45!important;font-weight:800!important;text-align:center!important;vertical-align:middle!important;overflow-wrap:anywhere!important;word-break:normal!important}",
-"#salco-png-export .salco-signature-table tbody td:first-child{border-right:1px solid #b18a3b!important;color:#fff!important;background:#0b0b0b!important;font-size:28px!important;font-weight:900!important;border-right:1px solid #b18a3b!important;border-radius:0 14px 14px 0!important}",
-"#salco-png-export .salco-signature-table tbody td:last-child{border-left:1px solid #b18a3b!important;color:#fff!important;background:#0b0b0b!important;font-size:22px!important;font-weight:900!important;border-left:1px solid #b18a3b!important;border-radius:14px 0 0 14px!important;white-space:normal!important}",
-"#salco-png-export .salco-signature-table tfoot th{padding:18px 16px!important;background:linear-gradient(100deg,#d59c31,#ffdc80,#c08a2b)!important;color:#171109!important;font-size:27px!important;font-weight:900!important;line-height:1.5!important;border:0!important}",
-"#salco-png-export .salco-signature-table tfoot th:first-child{border-radius:0 16px 16px 0!important;text-align:center!important;background:#0b0b0b!important;color:#fff!important;font-size:23px!important}",
-"#salco-png-export .salco-signature-table tfoot th:last-child{border-radius:16px 0 0 16px!important;text-align:center!important;white-space:nowrap!important;background:linear-gradient(100deg,#d59c31,#ffdc80,#c08a2b)!important;color:#171109!important;font-size:25px!important}",
-"#salco-png-export .salco-report-footer{display:flex!important;direction:rtl!important;align-items:center!important;justify-content:space-between!important;gap:30px!important;width:100%!important;max-width:100%!important;margin:0!important;padding:26px 44px!important;border-top:1px solid #9a7028!important;background:#080808!important}",
-"#salco-png-export .salco-footer-brand{display:flex!important;flex-direction:column!important;align-items:center!important;min-width:270px!important;border-left:1px solid #9a7028!important;padding-left:28px!important}",
-"#salco-png-export .salco-footer-brand strong{font-family:Georgia,serif!important;font-size:52px!important;line-height:1.1!important;color:#e9bd55!important}",
-"#salco-png-export .salco-footer-brand span{font-size:15px!important;letter-spacing:4px!important;color:#e9bd55!important}",
-"#salco-png-export .salco-footer-copy{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:8px!important;text-align:right!important;color:#f5ead0!important}",
-"#salco-png-export .salco-footer-copy b{font-size:22px!important;color:#fff!important}",
-"#salco-png-export .salco-footer-copy small{font-size:17px!important;letter-spacing:2px!important;color:#e8c35f!important}",
-"#salco-png-export .salco-footer-copy p,#salco-png-export .salco-footer-copy em{font-size:15px!important;line-height:1.6!important;color:#d4c6a7!important;margin:0!important}",
-"#salco-png-export .salco-signature-table{width:100%!important;table-layout:fixed!important;border-spacing:0 7px!important}",
-"#salco-png-export .salco-signature-table tbody tr{break-inside:avoid!important;page-break-inside:avoid!important}",
-"#salco-png-export .salco-signature-table tbody td{height:auto!important;min-height:66px!important;padding:13px 9px!important;line-height:1.55!important;overflow-wrap:break-word!important;word-break:normal!important}",
-"#salco-png-export .salco-signature-table tbody td:nth-child(2){font-size:21px!important;line-height:1.55!important;white-space:normal!important}",
-"#salco-png-export .salco-signature-table tbody td:nth-child(6){font-size:19px!important;color:#f2ce70!important;font-weight:900!important;white-space:normal!important}",
-"#salco-png-export .salco-signature-table tbody td:nth-child(7),#salco-png-export .salco-signature-table tbody td:nth-child(7) *{background:#0b0b0b!important;color:#fff!important;font-size:25px!important;font-weight:950!important;line-height:1.4!important;white-space:nowrap!important;direction:rtl!important;font-variant-numeric:tabular-nums!important}",
-"#salco-png-export .salco-signature-table tfoot th:last-child,#salco-png-export .salco-signature-table tfoot th:last-child *{background:linear-gradient(100deg,#d59c31,#ffdc80,#c08a2b)!important;color:#171109!important;font-size:27px!important;font-weight:950!important;white-space:nowrap!important;font-variant-numeric:tabular-nums!important}",
-"#salco-png-export .salco-signature-table tfoot th:first-child{font-size:22px!important;line-height:1.5!important;white-space:normal!important}",
-"#salco-png-export .salco-signature-table tbody td:nth-child(1){font-size:21px!important;white-space:nowrap!important}",
-"#salco-png-export .salco-exchange-report{margin-top:18px!important}"
-].join(String.fromCharCode(10));exportStyle.textContent=css;clone.prepend(exportStyle);staging.appendChild(clone);document.body.appendChild(staging);const logo=clone.querySelector(".salco-report-logo img");if(logo){logo.src=import.meta.env.BASE_URL+"images/salco-logo.webp";if(!logo.complete||!logo.naturalWidth)await new Promise(resolve=>{logo.onload=resolve;logo.onerror=resolve;});}canvas=await html2canvas(clone,{scale:1.15,width:1024,windowWidth:1024,useCORS:true,backgroundColor:"#070707",scrollX:0,scrollY:0,logging:false,imageTimeout:500,removeContainer:true});const filename="SALCO-گزارش-روزانه-"+reportFileDateName+"-صفحه-"+(pageIndex+1)+"-از-"+pageCount+".png";const imageBlob=await new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error("ساخت تصویر صفحه "+(pageIndex+1)+" ناموفق بود")),"image/png"));imageEntries.push({name:filename,blob:imageBlob});canvas.width=0;canvas.height=0;canvas=null;}for(let index=0;index<imageEntries.length;index++){const entry=imageEntries[index];if(Capacitor.isNativePlatform()){const reader=new FileReader();const base64=await new Promise((resolve,reject)=>{reader.onload=()=>resolve(String(reader.result).split(",")[1]);reader.onerror=reject;reader.readAsDataURL(entry.blob);});await Filesystem.writeFile({path:entry.name,data:base64,directory:Directory.Documents,recursive:true});}else{const url=URL.createObjectURL(entry.blob);const a=document.createElement("a");a.href=url;a.download=entry.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);if(index<imageEntries.length-1)await new Promise(resolve=>setTimeout(resolve,300));}}toast(Capacitor.isNativePlatform()?"همه تصاویر جداگانه در پوشه Documents ذخیره شدند.":"دانلود تصاویر گزارش به‌صورت فایل‌های PNG جداگانه آغاز شد.");}catch(err){console.error("Daily report image export failed",err);toast("ساخت تصویر ناموفق بود: "+(err?.message||"دوباره تلاش کن."));}finally{if(canvas){canvas.width=0;canvas.height=0;}if(staging?.parentNode)staging.parentNode.removeChild(staging);exportDailyReportImage.busy=false;}};
+ const exportDailyReportImage=async()=>{if(exportDailyReportImage.busy)return;exportDailyReportImage.busy=true;let staging=null,canvas=null;try{
+  const report=document.querySelector(".daily-report-print");if(!report)throw new Error("گزارش برای خروجی تصویر پیدا نشد");
+  toast("در حال ساخت خروجی با قالب رسمی سالکو…");if(document.fonts?.ready)await document.fonts.ready;
+  const sourceTable=report.querySelector(".salco-report-details .salco-signature-table");if(!sourceTable)throw new Error("جدول اقلام فروش پیدا نشد");
+  const sourceRows=[...sourceTable.querySelectorAll("tbody tr")].filter(row=>row.querySelectorAll("td").length>1);
+  const pageSize=5,pageCount=Math.max(1,Math.ceil(sourceRows.length/pageSize));
+  const reportFileDate=jalaliParts(reportDate),reportFileDateName=[reportFileDate.year,reportFileDate.month,reportFileDate.day].map(v=>String(v).padStart(2,"0")).join("-");
+  const reportDateText=new Intl.DateTimeFormat("fa-IR-u-ca-persian",{year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(reportDate+"T12:00:00"));
+  const logoSource=report.querySelector(".salco-report-mark img")?.src||import.meta.env.BASE_URL+"images/salco-logo.webp";
+  const fa=n=>new Intl.NumberFormat("fa-IR").format(n);
+  const esc=value=>String(value??"").replace(/[&<>"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
+  const cleanMoney=value=>String(value??"").replace(/\s*تومان\s*/gu,"").trim();
+  const totalNet=cleanMoney(money(reportTotals.net)),totalDiscount=cleanMoney(money(reportTotals.discount));
+  const imageEntries=[];
+  for(let pageIndex=0;pageIndex<pageCount;pageIndex++){
+   await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,30)));
+   const rows=sourceRows.slice(pageIndex*pageSize,(pageIndex+1)*pageSize);
+   const tableRows=rows.map((row,index)=>{
+    const cells=[...row.querySelectorAll("td")].map(cell=>cell.textContent.trim());
+    if(cells.length<6)return "";
+    const number=cells.length>=7?cells[0]:fa(pageIndex*pageSize+index+1);
+    const offset=cells.length>=7?1:0;
+    let name=cells[offset]||"—",color=cells[offset+1]||"—",size=cells[offset+2]||"—";
+    const quantity=cells[offset+3]||"۰",discount=cleanMoney(cells[offset+4]||"۰"),amount=cleanMoney(cells[offset+5]||"۰");
+    name=name.replace(/\s*(?:سایز\s*)?(?:تک\s*سایز|تکسایز|تک‌سایز)\s*/giu," ").replace(/\s{2,}/g," ").trim();
+    if(/^(?:تک\s*سایز|تکسایز|تک‌سایز)$/iu.test(size))size="";
+    return "<tr><td class='row-number'>"+esc(number)+"</td><td class='product-name'>"+esc(name)+"</td><td>"+esc(color)+"</td><td>"+esc(size||"—")+"</td><td>"+esc(quantity)+"</td><td class='discount-cell'>"+esc(discount)+"</td><td class='amount-cell'>"+esc(amount)+"</td></tr>";
+   }).join("");
+   const emptyRow=rows.length?"":"<tr><td colspan='7' class='empty-cell'>برای این تاریخ فروش ثبت نشده است.</td></tr>";
+   staging=document.createElement("div");
+   staging.style.cssText="position:fixed;left:-16000px;top:0;width:1404px;max-width:1404px;overflow:visible;background:#050505;z-index:-1;";
+   const root=document.createElement("div");root.id="salco-export-artifact";
+   root.innerHTML=`
+    <header class="export-hero">
+     <div class="hero-title"><span class="kicker">SALCO⁺ · MEN’S SUITS</span><h1>گزارش فروش روزانه</h1><p>گزارش مدیریتی فروشگاه سالکو</p><div class="date-pill"><span class="calendar-icon">▦</span><b>تاریخ گزارش:</b><strong>${esc(reportDateText)}</strong></div></div>
+     <div class="hero-logo"><img src="${esc(logoSource)}" alt="SALCO+"></div>
+    </header>
+    <div class="export-toolbar"><div class="toolbar-count"><span class="document-icon">▤</span><strong>صفحه ${fa(pageIndex+1)} از ${fa(pageCount)} &nbsp; | &nbsp; اقلام ${fa(Math.min(pageIndex*pageSize+1,sourceRows.length))} تا ${fa(Math.min((pageIndex+1)*pageSize,sourceRows.length))}</strong></div><div class="toolbar-title"><strong>جزئیات فروش‌ها</strong><span class="list-icon">☷</span></div></div>
+    <section class="export-table-frame"><table class="export-table" dir="rtl"><colgroup><col style="width:7%"><col style="width:30%"><col style="width:12%"><col style="width:9%"><col style="width:10%"><col style="width:13%"><col style="width:19%"></colgroup><thead><tr><th>ردیف</th><th>نام کالا</th><th>رنگ</th><th>سایز</th><th>تعداد</th><th>تخفیف</th><th>مبلغ نهایی</th></tr></thead><tbody>${tableRows}${emptyRow}</tbody></table></section>
+    <section class="export-totals"><div class="grand-total"><b>جمع کل فاکتورها:</b><strong>${esc(totalNet)}</strong></div><div class="discount-total"><b>تخفیف کل:</b><strong>${esc(totalDiscount)}</strong></div></section>
+    <footer class="export-footer"><div class="footer-brand"><strong>SALCO<sup>+</sup></strong><span>MEN’S SUITS</span></div><div class="footer-slogan"><b>استایل مردانه، فراتر از یک انتخاب</b><small>MORE THAN A CHOICE, A LIFESTYLE</small></div><div class="footer-address"><span class="pin">●</span><span>خرم‌آباد، خیابان انقلاب<br>مجتمع رفاهی اکسومال</span></div></footer>`;
+   const style=document.createElement("style");style.textContent=`
+    #salco-export-artifact,#salco-export-artifact *{box-sizing:border-box!important;text-shadow:none!important}
+    #salco-export-artifact{direction:rtl;width:1404px;min-height:1536px;margin:0;padding:0;background:#050505;color:#fff;border:2px solid #b98a2d;font-family:Vazirmatn,Tahoma,sans-serif;overflow:hidden}
+    #salco-export-artifact .export-hero{height:286px;position:relative;display:grid;grid-template-columns:1fr 1fr;direction:ltr;align-items:center;padding:22px 44px;border-bottom:2px solid #8c6928;background:radial-gradient(ellipse at 78% 5%,#211a0d 0%,#080808 60%)}
+    #salco-export-artifact .export-hero:after{content:"";position:absolute;left:55%;top:0;height:100%;width:105px;background:linear-gradient(100deg,#9c6c17,#ffe27b 48%,#b27b19);clip-path:polygon(48% 0,100% 0,52% 100%,0 100%)}
+    #salco-export-artifact .hero-title{direction:rtl;text-align:right;position:relative;z-index:1;padding-right:8px}
+    #salco-export-artifact .kicker{display:block;color:#f0c653;font-size:20px;font-weight:900;letter-spacing:3px;margin-bottom:12px}
+    #salco-export-artifact h1{font-size:48px;line-height:1.4;margin:0 0 6px;font-weight:950;color:#fff}
+    #salco-export-artifact .hero-title p{font-size:25px;color:#e6ddca;margin:0 0 22px}
+    #salco-export-artifact .date-pill{display:flex;align-items:center;gap:14px;width:max-content;min-width:530px;padding:12px 22px;border:2px solid #e6c45d;border-radius:38px;color:#f7e9c4;font-size:22px}
+    #salco-export-artifact .date-pill strong{font-size:25px;color:#fff;letter-spacing:1px}
+    #salco-export-artifact .calendar-icon{font-size:32px;color:#fff}
+    #salco-export-artifact .hero-logo{display:flex;align-items:center;justify-content:center;position:relative;z-index:1;height:100%}
+    #salco-export-artifact .hero-logo img{width:300px;height:250px;object-fit:contain}
+    #salco-export-artifact .export-toolbar{height:86px;margin:12px 20px 18px;padding:0 28px;border:2px solid #d4a63d;border-radius:25px;display:flex;align-items:center;justify-content:space-between;direction:rtl;background:#080808}
+    #salco-export-artifact .toolbar-title,#salco-export-artifact .toolbar-count{display:flex;align-items:center;gap:18px;color:#fff}
+    #salco-export-artifact .toolbar-title strong{font-size:32px;font-weight:900}
+    #salco-export-artifact .toolbar-count strong{font-size:25px;font-weight:800}
+    #salco-export-artifact .list-icon{font-size:38px;color:#eac35c}
+    #salco-export-artifact .document-icon{font-size:34px;color:#fff}
+    #salco-export-artifact .export-table-frame{margin:0 20px 28px;padding:12px 10px 10px;border:2px solid #d1a23b;border-radius:24px;background:#070707}
+    #salco-export-artifact .export-table{width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0 0;direction:rtl}
+    #salco-export-artifact .export-table th{height:88px;padding:12px 8px;background:#090909;color:#f0c64f;font-size:25px;font-weight:950;text-align:center;border-top:2px solid #d5a63d;border-bottom:2px solid #d5a63d;border-left:1px solid #3c3529}
+    #salco-export-artifact .export-table th:first-child{border-right:2px solid #d5a63d;border-radius:18px 0 0 18px}
+    #salco-export-artifact .export-table th:last-child{border-left:2px solid #d5a63d;border-radius:0 18px 18px 0}
+    #salco-export-artifact .export-table td{height:94px;padding:12px 9px;background:#090909;color:#fff;font-size:27px;font-weight:800;line-height:1.45;text-align:center;vertical-align:middle;border-bottom:1px solid #51442a;border-left:1px solid #51442a;overflow-wrap:break-word}
+    #salco-export-artifact .export-table tbody tr:first-child td{border-top:1px solid #51442a}
+    #salco-export-artifact .export-table td:first-child{border-right:1px solid #51442a;border-radius:0 0 0 0}
+    #salco-export-artifact .export-table td:last-child{border-left:1px solid #51442a}
+    #salco-export-artifact .export-table .row-number{font-size:29px;font-weight:900}
+    #salco-export-artifact .export-table .product-name{font-size:27px;font-weight:850}
+    #salco-export-artifact .export-table .discount-cell{color:#f2c653;font-weight:900}
+    #salco-export-artifact .export-table .amount-cell{font-size:29px;font-weight:950;white-space:nowrap;font-variant-numeric:tabular-nums}
+    #salco-export-artifact .export-table .empty-cell{height:140px;font-size:24px}
+    #salco-export-artifact .export-totals{height:210px;margin:0 20px 42px;border:3px solid #d6a63d;border-radius:26px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;direction:ltr}
+    #salco-export-artifact .export-totals>div{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:12px;text-align:center;direction:rtl}
+    #salco-export-artifact .grand-total{background:linear-gradient(105deg,#bd861c,#ffe07a 52%,#d6a135);color:#100d07}
+    #salco-export-artifact .discount-total{background:#080808;color:#fff;border-left:3px solid #f0c653}
+    #salco-export-artifact .export-totals b{font-size:30px;font-weight:900}
+    #salco-export-artifact .export-totals strong{font-size:62px;line-height:1.25;font-weight:950;white-space:nowrap;letter-spacing:1px}
+    #salco-export-artifact .export-footer{height:190px;border-top:2px solid #9f792e;display:grid;grid-template-columns:270px 1fr 360px;align-items:center;direction:ltr;padding:20px 38px;gap:28px}
+    #salco-export-artifact .footer-brand{display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:2px solid #d2a33b;height:120px}
+    #salco-export-artifact .footer-brand strong{font-family:Georgia,serif;color:#edc04d;font-size:59px;line-height:1}
+    #salco-export-artifact .footer-brand sup{font-size:25px}
+    #salco-export-artifact .footer-brand span{color:#edc04d;font-size:18px;letter-spacing:4px;margin-top:8px}
+    #salco-export-artifact .footer-slogan{direction:rtl;text-align:center;display:flex;flex-direction:column;gap:12px}
+    #salco-export-artifact .footer-slogan b{font-size:29px;color:#fff}
+    #salco-export-artifact .footer-slogan small{font-size:21px;color:#e9bd4d;letter-spacing:2px}
+    #salco-export-artifact .footer-address{direction:rtl;display:flex;align-items:center;justify-content:center;gap:18px;border-right:2px solid #d2a33b;height:120px;padding-right:20px;font-size:23px;line-height:1.8;color:#ddd;text-align:right}
+    #salco-export-artifact .footer-address .pin{font-size:34px;color:#edc04d}
+   `;root.prepend(style);staging.appendChild(root);document.body.appendChild(staging);
+   const logo=root.querySelector(".hero-logo img");if(logo&&(!logo.complete||!logo.naturalWidth))await new Promise(resolve=>{logo.onload=resolve;logo.onerror=resolve;});
+   await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,40)));
+   canvas=await html2canvas(root,{scale:1,width:1404,windowWidth:1404,useCORS:true,backgroundColor:"#050505",scrollX:0,scrollY:0,logging:false,imageTimeout:1000,removeContainer:true});
+   const filename="SALCO-گزارش-روزانه-"+reportFileDateName+"-صفحه-"+(pageIndex+1)+"-از-"+pageCount+".png";
+   const imageBlob=await new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error("ساخت تصویر صفحه "+(pageIndex+1)+" ناموفق بود")),"image/png"));
+   imageEntries.push({name:filename,blob:imageBlob});canvas.width=0;canvas.height=0;canvas=null;
+   if(staging?.parentNode)staging.parentNode.removeChild(staging);staging=null;
+  }
+  for(let index=0;index<imageEntries.length;index++){const entry=imageEntries[index];if(Capacitor.isNativePlatform()){const reader=new FileReader();const base64=await new Promise((resolve,reject)=>{reader.onload=()=>resolve(String(reader.result).split(",")[1]);reader.onerror=reject;reader.readAsDataURL(entry.blob);});await Filesystem.writeFile({path:entry.name,data:base64,directory:Directory.Documents,recursive:true});}else{const url=URL.createObjectURL(entry.blob);const a=document.createElement("a");a.href=url;a.download=entry.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);if(index<imageEntries.length-1)await new Promise(resolve=>setTimeout(resolve,300));}}
+  toast(Capacitor.isNativePlatform()?"تصویر گزارش در پوشه Documents ذخیره شد.":"دانلود تصویر گزارش با قالب جدید آغاز شد.");
+ }catch(err){console.error("Daily report image export failed",err);toast("ساخت تصویر ناموفق بود: "+(err?.message||"دوباره تلاش کن."));}finally{if(canvas){canvas.width=0;canvas.height=0;}if(staging?.parentNode)staging.parentNode.removeChild(staging);exportDailyReportImage.busy=false;}};
  const resetDemo=()=>{if(confirm('اطلاعات آزمایشی و ثبت‌های همین مرورگر به حالت اولیه برگردند؟')){['products','sales','customers','cash'].forEach(k=>localStorage.removeItem('salco_'+k));location.reload();}};
  if (authLoading) return <div className="salco-startup" dir="rtl"><img src={`${import.meta.env.BASE_URL}images/salco-logo.webp`} alt="SALCO+" /><div className="salco-startup-spinner" aria-label="در حال بارگذاری"></div><p>در حال آماده‌سازی سالکو…</p><style>{`.salco-startup{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;background:radial-gradient(ellipse at center,#211b10 0%,#0b0b0b 62%);color:#e7d4a7;font-family:Vazirmatn,Tahoma,sans-serif}.salco-startup img{width:min(58vw,230px);max-height:150px;object-fit:contain}.salco-startup p{margin:0;font-size:13px;letter-spacing:.2px;color:#c6b58e}.salco-startup-spinner{width:27px;height:27px;border:3px solid #51452c;border-top-color:#e0bd70;border-radius:50%;animation:salcoStartupSpin .8s linear infinite}@keyframes salcoStartupSpin{to{transform:rotate(360deg)}}`}</style></div>;
  if (!isSupabaseConfigured) return <div className="auth-screen" dir="rtl"><div className="auth-card"><h1>SALCO⁺</h1><h2>تنظیم اتصال پایگاه داده</h2><p>برای فعال‌شدن برنامه، متغیرهای VITE_SUPABASE_URL و VITE_SUPABASE_ANON_KEY را در تنظیمات محیطی میزبان سایت ثبت کنید.</p><p>کلید service_role را هرگز در فرانت‌اند قرار ندهید.</p></div></div>;
