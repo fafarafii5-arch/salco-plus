@@ -2934,3 +2934,11 @@
 .salco-reference-axis{text-align:right}
 .salco-reference-export{direction:ltr}
 .salco-reference-export button{direction:rtl}
+
+/* Dedicated read-only viewer mode */
+.viewer-access-chip{display:inline-flex;align-items:center;justify-content:center;padding:7px 12px;border:1px solid rgba(214,169,77,.45);border-radius:999px;color:#e7ca86;background:rgba(214,169,77,.09);font-size:12px;font-weight:800;white-space:nowrap}
+.viewer-readonly-note{display:flex;align-items:center;gap:9px;margin:0 0 16px;padding:11px 14px;border:1px solid rgba(214,169,77,.28);border-radius:13px;background:rgba(214,169,77,.07);color:#e9d5a6;font-size:13px;font-weight:700}
+.viewer-mode .sidebar .nav-label{font-size:0}
+.viewer-mode .sidebar .nav-label:after{content:'دسترسی مشاهده‌گر';font-size:11px}
+.viewer-mode .sidebar .secure-icon{color:#9fd7ba}
+@media(max-width:760px){.viewer-access-chip{font-size:10px;padding:6px 9px}.viewer-readonly-note{font-size:12px;line-height:1.8}}
