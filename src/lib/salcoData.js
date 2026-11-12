@@ -108,6 +108,57 @@ export async function registerSaleExchange(branchId, payload) {
   return data;
 }
 
+export async function listExchangeInvoices(branchId) {
+  const { data: exchanges, error: exchangeError } = await supabase
+    .from('sale_exchanges')
+    .select('id, original_sale_id, original_sale_item_id, returned_quantity, returned_total, returned_condition, new_product_id, new_quantity, new_unit_price, new_total, difference, settlement_method, notes, created_at')
+    .eq('branch_id', branchId)
+    .order('created_at', { ascending: false });
+  if (exchangeError) throw new Error('دریافت فاکتورهای دارای تعویض: ' + exchangeError.message);
+  if (!exchanges?.length) return [];
+  const saleIds = [...new Set(exchanges.map(x => x.original_sale_id).filter(Boolean))];
+  const [{ data: sales, error: salesError }, { data: items, error: itemsError }] = await Promise.all([
+    supabase.from('sales').select('id, invoice_no, customer_id, seller_name, discount, total, payment_method, sold_at, status').eq('branch_id', branchId).in('id', saleIds),
+    supabase.from('sale_items').select('id, sale_id, product_id, product_name, sku, quantity, unit_price, discount, line_total, unit_cost').in('sale_id', saleIds),
+  ]);
+  if (salesError) throw salesError;
+  if (itemsError) throw itemsError;
+  const customerIds = [...new Set((sales || []).map(x => x.customer_id).filter(Boolean))];
+  const productIds = [...new Set([...(items || []).map(x => x.product_id), ...exchanges.map(x => x.new_product_id)].filter(Boolean))];
+  const [customersResult, productsResult] = await Promise.all([
+    customerIds.length ? supabase.from('customers').select('id, full_name').in('id', customerIds) : Promise.resolve({ data: [], error: null }),
+    productIds.length ? supabase.from('products').select('id, name, size, color').in('id', productIds) : Promise.resolve({ data: [], error: null }),
+  ]);
+  if (customersResult.error) throw customersResult.error;
+  if (productsResult.error) throw productsResult.error;
+  const customerById = Object.fromEntries((customersResult.data || []).map(x => [x.id, x.full_name]));
+  const productById = Object.fromEntries((productsResult.data || []).map(x => [x.id, x]));
+  const itemsBySale = {};
+  (items || []).forEach(x => { (itemsBySale[x.sale_id] ||= []).push(x); });
+  const exchangesBySale = {};
+  exchanges.forEach(x => { (exchangesBySale[x.original_sale_id] ||= []).push({
+    id: x.id, returnedQuantity: Number(x.returned_quantity || 0), returnedTotal: Number(x.returned_total || 0),
+    newProductName: productById[x.new_product_id]?.name || 'کالای جایگزین', newColor: productById[x.new_product_id]?.color || '',
+    newSize: productById[x.new_product_id]?.size || '', newQuantity: Number(x.new_quantity || 0),
+    newUnitPrice: Number(x.new_unit_price || 0), newTotal: Number(x.new_total || 0), difference: Number(x.difference || 0),
+    settlementMethod: x.settlement_method || '', notes: x.notes || '', createdAt: x.created_at,
+  }); });
+  return (sales || []).map(s => {
+    const saleItems = itemsBySale[s.id] || [];
+    return {
+      id: s.id, invoiceNo: s.invoice_no, date: s.sold_at, customerId: s.customer_id, seller: s.seller_name || '',
+      status: s.status, exchanges: exchangesBySale[s.id] || [], product: saleItems.map(x => x.product_name).join('، '),
+      items: saleItems.map(x => ({ id: x.id, productId: x.product_id, productName: x.product_name, sku: x.sku,
+        size: productById[x.product_id]?.size || '', color: productById[x.product_id]?.color || '',
+        quantity: Number(x.quantity), unitPrice: Number(x.unit_price), discount: Number(x.discount),
+        lineTotal: Number(x.line_total), returnedQuantity: exchanges.filter(e => e.original_sale_item_id === x.id).reduce((n,e) => n + Number(e.returned_quantity || 0), 0),
+        unitCost: Number(x.unit_cost) })),
+      qty: saleItems.reduce((n,x) => n + Number(x.quantity), 0), customer: customerById[s.customer_id] || 'مشتری حضوری',
+      total: Number(s.total), discount: Number(s.discount), payment: s.payment_method,
+    };
+  });
+}
+
 export async function listCashTransactions(branchId) {
   const { data, error } = await supabase.from('cash_transactions').select('*').eq('branch_id', branchId).eq('is_voided', false).order('occurred_at', { ascending: false });
   if (error) throw error;
