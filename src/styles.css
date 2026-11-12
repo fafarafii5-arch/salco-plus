@@ -3221,3 +3221,14 @@
  .daily-report-print.salco-signature-report .salco-report-date b{font-size:9px!important;line-height:1.3!important}
  .daily-report-print.salco-signature-report .salco-report-date .jalali-date-trigger{font-size:11px!important;padding:0!important;min-height:0!important}
 }
+
+
+/* Employer account management */
+.viewer-admin-panel .viewer-create-note{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid #44391f;border-radius:9px;background:#1b1913;color:#d9c58e;font-size:11px;line-height:1.9}
+.viewer-admin-panel .viewer-create-note svg{flex-shrink:0;color:var(--gold)}
+.viewer-info-list{display:grid;gap:0}
+.viewer-info-list>div{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:13px 4px;border-bottom:1px solid #292824}
+.viewer-info-list>div:last-child{border-bottom:0}
+.viewer-info-list b{font-size:11px;color:#e6dfcf;white-space:nowrap}
+.viewer-info-list span{font-size:11px;color:#a9a397;text-align:left;line-height:1.9}
+@media(max-width:480px){.viewer-info-list>div{flex-direction:column;gap:5px}.viewer-info-list span{text-align:right}}
