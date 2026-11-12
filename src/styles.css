@@ -3232,3 +3232,22 @@
 .viewer-info-list b{font-size:11px;color:#e6dfcf;white-space:nowrap}
 .viewer-info-list span{font-size:11px;color:#a9a397;text-align:left;line-height:1.9}
 @media(max-width:480px){.viewer-info-list>div{flex-direction:column;gap:5px}.viewer-info-list span{text-align:right}}
+
+
+/* Improve readability of final item amounts on the daily report */
+.daily-report-print.salco-signature-report .salco-report-details .salco-signature-table td.salco-report-amount{
+ font-size:clamp(12px,1.05vw,16px)!important;
+ font-weight:950!important;
+ color:#fff!important;
+ white-space:nowrap!important;
+ font-variant-numeric:tabular-nums!important;
+ letter-spacing:.1px!important;
+}
+@media(max-width:600px){
+ .daily-report-print.salco-signature-report .salco-report-details .salco-signature-table td.salco-report-amount{
+  font-size:12px!important;
+  font-weight:950!important;
+  line-height:1.35!important;
+  white-space:nowrap!important;
+ }
+}
