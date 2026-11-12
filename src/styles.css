@@ -2920,3 +2920,6 @@
 .main:has(.salco-reports-reference)>.content>.page-heading{display:none!important}
 .app-shell:has(.salco-reports-reference)>.sidebar{display:none!important}
 @media(max-width:850px){.main:has(.salco-reports-reference)>.content{padding:7px 10px 22px}}
+
+.daily-report-export-panel>.form-grid{grid-template-columns:minmax(0,1fr)!important}
+.daily-report-export-panel>.form-grid>.daily-report-print{grid-column:1/-1;width:100%;min-width:0}
