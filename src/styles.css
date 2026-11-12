@@ -3251,3 +3251,37 @@
   white-space:nowrap!important;
  }
 }
+
+
+/* SALCO+ reference-style report overview */
+.report-manager-overview{margin:0 0 18px;padding:22px 24px 24px;border:1px solid #70552c;border-radius:28px;background:radial-gradient(ellipse at 50% 100%,#30230f 0%,#17130c 42%,#080808 100%);box-shadow:0 12px 32px #0009,inset 0 1px #fff2;overflow:hidden}
+.rmo-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}
+.rmo-brand{display:flex;flex-direction:column;align-items:center;gap:2px}
+.rmo-brand img{width:150px;height:52px;object-fit:contain}
+.rmo-brand span{font-size:11px;color:#c9c3b7}
+.rmo-heading h1{display:flex;align-items:center;gap:12px;margin:0;color:#f6f0e5;font-size:25px}
+.rmo-heading h1 svg{width:38px;height:38px;color:#d9a52e;stroke-width:2.5}
+.rmo-date{display:flex;align-items:center;gap:12px;width:min(470px,100%);min-height:58px;padding:9px 18px;margin-bottom:16px;border:1px solid #806333;border-radius:18px;background:linear-gradient(120deg,#28231a,#101010);color:#e6b94e}
+.rmo-date .jalali-date-field{flex:1}
+.rmo-date .jalali-date-trigger{width:100%;text-align:right;border:0;background:transparent;color:#f5f0e7;font-size:17px;font-weight:700;padding:6px}
+.rmo-period{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:20px;border:1px solid #62502e;border-radius:17px;overflow:hidden;background:#121212}
+.rmo-period button,.rmo-period span{min-width:0;padding:14px 8px;border:0;border-left:1px solid #292722;background:transparent;color:#e8e2d7;text-align:center;font-size:14px;font-weight:700}
+.rmo-period button.active{background:linear-gradient(180deg,#ffdb80,#d99a12);color:#17120a;box-shadow:inset 0 1px #fff8}
+.rmo-period button:disabled{opacity:1;cursor:default}
+.rmo-period span{display:grid;place-items:center;color:#c5bba7}
+.rmo-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.rmo-kpi{min-height:126px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:4px;padding:17px 19px;border:1px solid #57452a;border-radius:22px;background:linear-gradient(145deg,#1b1a17,#0b0b0b);box-shadow:0 8px 22px #0008,inset 0 -2px #d7b56d55;position:relative;overflow:hidden}
+.rmo-kpi:before{content:"";position:absolute;inset:0 auto 0 0;width:38%;opacity:.32;transform:skewX(-28deg) translateX(-20%);background:linear-gradient(110deg,transparent,#ffffff28,transparent);pointer-events:none}
+.rmo-kpi span{font-size:15px;font-weight:700;color:#f4ecdf}
+.rmo-kpi b{font-size:clamp(20px,3vw,31px);font-weight:900;line-height:1.4;color:#fff;max-width:100%;overflow-wrap:anywhere}
+.rmo-kpi small{font-size:12px;color:#d7cdbb}
+.rmo-sales{background:linear-gradient(145deg,#075b37,#06251d 78%,#090b0a);border-color:#238c56}
+.rmo-invoices{background:linear-gradient(145deg,#103c60,#091b2b 78%,#080a0d);border-color:#3283b6}
+.rmo-installments{background:linear-gradient(145deg,#52235b,#211329 78%,#0a080d);border-color:#9855a7}
+.rmo-discount{background:linear-gradient(145deg,#64202c,#2a1018 78%,#0c090b);border-color:#a43a4b}
+.rmo-quantity{background:linear-gradient(145deg,#624314,#251b0b 78%,#0b0907);border-color:#a47a2a}
+.rmo-cash{background:linear-gradient(145deg,#075b57,#082624 78%,#080b0b);border-color:#1b9990}
+.daily-report-print .salco-report-head{display:none}
+@media(min-width:900px){.rmo-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.rmo-kpi{min-height:150px;padding:20px 24px}.rmo-kpi span{font-size:17px}.rmo-kpi b{font-size:30px}}
+@media(max-width:560px){.report-manager-overview{padding:16px 13px 17px;border-radius:22px}.rmo-heading{gap:8px;margin-bottom:15px}.rmo-brand img{width:112px;height:42px}.rmo-brand span{font-size:9px}.rmo-heading h1{font-size:20px;gap:6px}.rmo-heading h1 svg{width:29px;height:29px}.rmo-date{min-height:52px;padding:7px 12px;border-radius:14px}.rmo-date .jalali-date-trigger{font-size:14px}.rmo-period{grid-template-columns:repeat(4,minmax(0,1fr));border-radius:13px;margin-bottom:13px}.rmo-period button,.rmo-period span{font-size:11px;padding:12px 3px}.rmo-kpis{gap:9px}.rmo-kpi{min-height:110px;padding:12px 13px;border-radius:17px}.rmo-kpi span{font-size:12px}.rmo-kpi b{font-size:clamp(16px,4.3vw,22px)}.rmo-kpi small{font-size:10px}}
+@media print{.report-manager-overview{display:none!important}.daily-report-print .salco-report-head{display:flex!important}}
