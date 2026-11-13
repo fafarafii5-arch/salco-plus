@@ -497,8 +497,7 @@ function App(){
  const exchangeSale=sales.find(x=>String(x.id)===String(exchangeForm.saleId))||null;
  const exchangeSaleItem=exchangeSale?.items?.find(x=>String(x.id)===String(exchangeForm.saleItemId))||null;
  const exchangeNewProduct=products.find(x=>String(x.id)===String(exchangeForm.newProductId))||null;
- const exchangeReturnUnit=exchangeSaleItem&&exchangeSaleItem.quantity>0?Number((exchangeSaleItem.lineTotal/exchangeSaleItem.quantity).toFixed(2)):0;
- const exchangeReturnTotal=exchangeReturnUnit*Math.max(0,Number(exchangeForm.returnQuantity)||0);
+ const exchangeReturnUnit=exchangeSaleItem&&exchangeSaleItem.quantity>0?Number((exchangeSaleItem.lineTotal/exchangeSaleItem.quantity).toFixed(2)):0; const exchangeReturnTotal=exchangeReturnUnit*Math.max(0,Number(exchangeForm.returnQuantity)||0);
  const exchangeNewTotal=(Number(exchangeNewProduct?.price)||0)*Math.max(0,Number(exchangeForm.newQuantity)||0);
  const exchangeDifference=exchangeNewTotal-exchangeReturnTotal;
  const submitExchange=async e=>{e.preventDefault();if(!branch||!session){toast('ابتدا وارد حساب کاربری شوید.');return;}if(!exchangeSale||!exchangeSaleItem||!exchangeNewProduct){toast('فاکتور، کالای برگشتی و کالای جایگزین را انتخاب کنید.');return;}if(!exchangeDate){toast('تاریخ انجام تعویض را انتخاب کنید.');return;}if(Number(exchangeForm.returnQuantity)<1||Number(exchangeForm.returnQuantity)>(exchangeSaleItem.quantity-exchangeSaleItem.returnedQuantity)){toast('تعداد برگشتی از مقدار باقی‌مانده فاکتور بیشتر است.');return;}if(Number(exchangeForm.newQuantity)<1){toast('تعداد کالای جایگزین معتبر نیست.');return;}if(exchangeDifference>0&&!['cash','card','transfer'].includes(exchangeForm.settlementMethod)){toast('برای دریافت اختلاف، روش دریافت وجه را انتخاب کنید.');return;}if(exchangeDifference<0&&!['cash','card','transfer','credit'].includes(exchangeForm.settlementMethod)){toast('روش استرداد یا اعتبار مشتری را انتخاب کنید.');return;}try{setExchangeBusy(true);const result=await registerSaleExchange(branch.id,{saleId:exchangeSale.id,saleItemId:exchangeSaleItem.id,exchangeDate,returnQuantity:exchangeForm.returnQuantity,newProductId:exchangeNewProduct.id,newQuantity:exchangeForm.newQuantity,returnCondition:exchangeForm.returnCondition,settlementMethod:exchangeDifference===0?'none':exchangeForm.settlementMethod,notes:exchangeForm.notes});await loadRemote(session);setExchangeForm({saleId:'',saleItemId:'',returnQuantity:1,newProductId:'',newQuantity:1,returnCondition:'resalable',settlementMethod:'cash',notes:''});toast('تعویض با موفقیت ثبت شد؛ اختلاف: '+money(Math.abs(Number(result?.difference)||0))+(Number(result?.difference)>0?' دریافت از مشتری':Number(result?.difference)<0?' قابل استرداد به مشتری':''));}catch(err){toast(err.message||'ثبت تعویض ناموفق بود.');}finally{setExchangeBusy(false);}};
@@ -554,7 +553,7 @@ function App(){
   const totalNet=cleanMoney(money(reportTotals.net)),totalDiscount=cleanMoney(money(reportTotals.discount));
   const imageEntries=[];
   for(let pageIndex=0;pageIndex<pageCount;pageIndex++){
-   await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,30)));
+   await new Promise(resolve=>requestAnimationFrame(resolve));
    const rows=sourceRows.slice(pageIndex*pageSize,(pageIndex+1)*pageSize);
    const tableRows=rows.map((row,index)=>{
     const cells=[...row.querySelectorAll("td")].map(cell=>cell.textContent.trim());
@@ -633,7 +632,7 @@ function App(){
    `;root.prepend(style);staging.appendChild(root);document.body.appendChild(staging);
    const logo=root.querySelector(".hero-logo img");if(logo&&(!logo.complete||!logo.naturalWidth))await new Promise(resolve=>{logo.onload=resolve;logo.onerror=resolve;});
    await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,40)));
-   canvas=await html2canvas(root,{scale:1,width:1404,windowWidth:1404,useCORS:true,backgroundColor:"#050505",scrollX:0,scrollY:0,logging:false,imageTimeout:1000,removeContainer:true});
+   canvas=await html2canvas(root,{scale:0.85,width:1404,windowWidth:1404,useCORS:true,backgroundColor:"#050505",scrollX:0,scrollY:0,logging:false,imageTimeout:1000,removeContainer:true});
    const filename="SALCO-گزارش-روزانه-"+reportFileDateName+"-صفحه-"+(pageIndex+1)+"-از-"+pageCount+".png";
    const imageBlob=await new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error("ساخت تصویر صفحه "+(pageIndex+1)+" ناموفق بود")),"image/png"));
    imageEntries.push({name:filename,blob:imageBlob});canvas.width=0;canvas.height=0;canvas=null;
