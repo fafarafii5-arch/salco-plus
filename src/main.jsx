@@ -539,9 +539,9 @@ function App(){
   const reportTrendMax=Math.max(1,...reportTrendDays.map(x=>x.total));
   const reportTrendTotal=reportTrendDays.reduce((sum,x)=>sum+x.total,0);
 
- const exportDailyReportImage=async()=>{if(exportDailyReportImage.busy)return;exportDailyReportImage.busy=true;const exportStarted=performance.now();let captureMs=0,encodeMs=0;let staging=null,canvas=null;try{
+ const exportDailyReportImage=async()=>{if(exportDailyReportImage.busy)return;exportDailyReportImage.busy=true;let staging=null,canvas=null;try{
   const report=document.querySelector(".daily-report-print");if(!report)throw new Error("گزارش برای خروجی تصویر پیدا نشد");
-  toast("در حال ساخت خروجی با قالب رسمی سالکو…");
+  toast("در حال ساخت خروجی با قالب رسمی سالکو…");if(document.fonts?.ready)await document.fonts.ready;
   const sourceTable=report.querySelector(".salco-report-details .salco-signature-table");if(!sourceTable)throw new Error("جدول اقلام فروش پیدا نشد");
   const sourceRows=[...sourceTable.querySelectorAll("tbody tr")].filter(row=>row.querySelectorAll("td").length>1);
   const pageSize=15,pageCount=Math.max(1,Math.ceil(sourceRows.length/pageSize));
@@ -554,7 +554,7 @@ function App(){
   const totalNet=cleanMoney(money(reportTotals.net)),totalDiscount=cleanMoney(money(reportTotals.discount));
   const imageEntries=[];
   for(let pageIndex=0;pageIndex<pageCount;pageIndex++){
-
+   await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,30)));
    const rows=sourceRows.slice(pageIndex*pageSize,(pageIndex+1)*pageSize);
    const tableRows=rows.map((row,index)=>{
     const cells=[...row.querySelectorAll("td")].map(cell=>cell.textContent.trim());
@@ -631,16 +631,16 @@ function App(){
     #salco-export-artifact .footer-address{direction:rtl;display:flex;align-items:center;justify-content:center;gap:18px;border-right:2px solid #d2a33b;height:120px;padding-right:20px;font-size:23px;line-height:1.8;color:#ddd;text-align:right}
     #salco-export-artifact .footer-address .pin{font-size:34px;color:#edc04d}
    `;root.prepend(style);staging.appendChild(root);document.body.appendChild(staging);
-   // The report screen has already loaded the shared font and logo; avoid blocking export on redundant waits.
-   await new Promise(resolve=>requestAnimationFrame(resolve));
-   const captureStarted=performance.now();canvas=await html2canvas(root,{scale:0.5,width:1404,windowWidth:1404,useCORS:true,foreignObjectRendering:true,backgroundColor:"#050505",scrollX:0,scrollY:0,logging:false,imageTimeout:100,removeContainer:true});captureMs+=performance.now()-captureStarted;
-   const filename="SALCO-گزارش-روزانه-"+reportFileDateName+"-صفحه-"+(pageIndex+1)+"-از-"+pageCount+".jpg";
-   const encodeStarted=performance.now();const imageBlob=await new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error("ساخت تصویر صفحه "+(pageIndex+1)+" ناموفق بود")),"image/jpeg",0.9));encodeMs+=performance.now()-encodeStarted;
+   const logo=root.querySelector(".hero-logo img");if(logo&&(!logo.complete||!logo.naturalWidth))await new Promise(resolve=>{logo.onload=resolve;logo.onerror=resolve;});
+   await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,40)));
+   canvas=await html2canvas(root,{scale:1,width:1404,windowWidth:1404,useCORS:true,backgroundColor:"#050505",scrollX:0,scrollY:0,logging:false,imageTimeout:1000,removeContainer:true});
+   const filename="SALCO-گزارش-روزانه-"+reportFileDateName+"-صفحه-"+(pageIndex+1)+"-از-"+pageCount+".png";
+   const imageBlob=await new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error("ساخت تصویر صفحه "+(pageIndex+1)+" ناموفق بود")),"image/png"));
    imageEntries.push({name:filename,blob:imageBlob});canvas.width=0;canvas.height=0;canvas=null;
    if(staging?.parentNode)staging.parentNode.removeChild(staging);staging=null;
   }
   for(let index=0;index<imageEntries.length;index++){const entry=imageEntries[index];if(Capacitor.isNativePlatform()){const reader=new FileReader();const base64=await new Promise((resolve,reject)=>{reader.onload=()=>resolve(String(reader.result).split(",")[1]);reader.onerror=reject;reader.readAsDataURL(entry.blob);});await Filesystem.writeFile({path:entry.name,data:base64,directory:Directory.Documents,recursive:true});}else{const url=URL.createObjectURL(entry.blob);const a=document.createElement("a");a.href=url;a.download=entry.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);if(index<imageEntries.length-1)await new Promise(resolve=>setTimeout(resolve,300));}}
-  console.info("SALCO report export timing", {totalMs:Math.round(performance.now()-exportStarted),captureMs:Math.round(captureMs),encodeMs:Math.round(encodeMs),pages:pageCount});toast((Capacitor.isNativePlatform()?"تصویر گزارش ذخیره شد.":"دانلود تصویر گزارش آغاز شد.")+" زمان: "+((performance.now()-exportStarted)/1000).toFixed(1)+" ثانیه (رندر "+(captureMs/1000).toFixed(1)+"، فشرده‌سازی "+(encodeMs/1000).toFixed(1)+").");
+  toast(Capacitor.isNativePlatform()?"تصویر گزارش در پوشه Documents ذخیره شد.":"دانلود تصویر گزارش با قالب جدید آغاز شد.");
  }catch(err){console.error("Daily report image export failed",err);toast("ساخت تصویر ناموفق بود: "+(err?.message||"دوباره تلاش کن."));}finally{if(canvas){canvas.width=0;canvas.height=0;}if(staging?.parentNode)staging.parentNode.removeChild(staging);exportDailyReportImage.busy=false;}};
  const resetDemo=()=>{if(confirm('اطلاعات آزمایشی و ثبت‌های همین مرورگر به حالت اولیه برگردند؟')){['products','sales','customers','cash'].forEach(k=>localStorage.removeItem('salco_'+k));location.reload();}};
  if (authLoading) return <div className="salco-startup" dir="rtl"><img src={`${import.meta.env.BASE_URL}images/salco-logo.webp`} alt="SALCO+" /><div className="salco-startup-spinner" aria-label="در حال بارگذاری"></div><p>در حال آماده‌سازی سالکو…</p><style>{`.salco-startup{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;background:radial-gradient(ellipse at center,#211b10 0%,#0b0b0b 62%);color:#e7d4a7;font-family:Vazirmatn,Tahoma,sans-serif}.salco-startup img{width:min(58vw,230px);max-height:150px;object-fit:contain}.salco-startup p{margin:0;font-size:13px;letter-spacing:.2px;color:#c6b58e}.salco-startup-spinner{width:27px;height:27px;border:3px solid #51452c;border-top-color:#e0bd70;border-radius:50%;animation:salcoStartupSpin .8s linear infinite}@keyframes salcoStartupSpin{to{transform:rotate(360deg)}}`}</style></div>;
