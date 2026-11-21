@@ -52,11 +52,10 @@ begin
   end if;
 
   v_new_total := v_sale.total + v_delta;
-  if v_new_total < v_sale.amount_paid then
-    raise exception 'مبلغ جدید فاکتور از دریافتی ثبت‌شده کمتر می‌شود؛ صندوق تغییر نکرد.';
-  end if;
-
   if v_sale.payment_method='credit' then
+    if v_new_total < v_sale.amount_paid then
+      raise exception 'مبلغ جدید از دریافتی و پیش‌پرداخت ثبت‌شده کمتر می‌شود؛ ابتدا باید اضافه‌دریافت تعیین تکلیف شود.';
+    end if;
     select count(*) into v_pending_count from public.sale_installments
     where sale_id=p_sale_id and amount > amount_paid;
     if v_new_total > v_sale.amount_paid then
