@@ -25,9 +25,9 @@ begin
   end if;
   if v_item.quantity<=0 then raise exception 'تعداد قلم معتبر نیست.'; end if;
 
-  select coalesce(sum(line_total),0)-v_item.line_total+p_new_line_total
-    into v_new_total from public.sale_items where sale_id=p_sale_id;
-  v_delta:=v_new_total-v_sale.total;
+  -- The cash and invoice adjustment must equal the selected item's exact price change.
+  v_delta:=p_new_line_total-v_item.line_total;
+  v_new_total:=v_sale.total+v_delta;
   if v_delta=0 and p_new_line_total=v_item.line_total then
     return jsonb_build_object('sale_id',p_sale_id,'total',v_sale.total,'amount_paid',v_sale.amount_paid,'cash_adjusted',false);
   end if;
