@@ -51,7 +51,11 @@ begin
     return jsonb_build_object('sale_id',p_sale_id,'sale_item_id',p_sale_item_id,'total',v_sale.total,'cash_adjusted',false);
   end if;
 
-  v_new_total := v_sale.total + v_delta;
+  select coalesce(sum(line_total),0) - v_item.line_total + p_new_line_total
+    into v_new_total
+  from public.sale_items
+  where sale_id=p_sale_id;
+  v_delta := v_new_total - v_sale.total;
   if v_sale.payment_method='credit' then
     if v_new_total < v_sale.amount_paid then
       raise exception 'مبلغ جدید از دریافتی و پیش‌پرداخت ثبت‌شده کمتر می‌شود؛ ابتدا باید اضافه‌دریافت تعیین تکلیف شود.';
