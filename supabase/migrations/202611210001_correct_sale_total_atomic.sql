@@ -77,8 +77,8 @@ begin
       set amount=p_new_total
       where sale_id=p_sale_id and branch_id=p_branch_id
         and transaction_type='receipt' and is_voided=false;
-    elsif v_delta > 0 then
-      raise exception 'این فاکتور کامل تسویه نشده است؛ برای افزایش مبلغ باید مانده و روش تسویه مشخص شود.';
+    else
+      raise exception 'این فاکتور کامل تسویه نشده است؛ برای جلوگیری از مغایرت، ابتدا وضعیت تسویه را مشخص کنید.';
     end if;
   end if;
 
