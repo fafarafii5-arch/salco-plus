@@ -351,9 +351,13 @@ function App(){
  const totalRevenue=sales.reduce((s,x)=>s+x.total,0); const totalCost=sales.reduce((s,x)=>s+x.cost,0);
  const lowStock=products.filter(p=>Number(p.sold)>0 && Number(p.initialStock)>0 && Number(p.stock)<=Number(p.initialStock)/2).length;
  const dashboardSelectedDate=reportDate||isoLocal(new Date());
- const dashboardMonth=isoLocal(new Date()).slice(0,7); // فروش ماه جاری همیشه بر اساس تاریخ واقعی امروز است، نه تاریخ انتخاب‌شده گزارش
  const dashboardTodaySales=sales.filter(s=>isoLocal(new Date(s.date))===dashboardSelectedDate);
- const dashboardMonthSales=sales.filter(s=>isoLocal(new Date(s.date)).startsWith(dashboardMonth));
+ // ماه جاری بر اساس تقویم شمسی و تاریخ واقعی امروز؛ نه ماه میلادی و نه تاریخ انتخاب‌شده گزارش
+ const dashboardCurrentMonthParts=jalaliParts(isoLocal(new Date()));
+ const dashboardCurrentMonthDays=jalaliMonthDays(dashboardCurrentMonthParts.year,dashboardCurrentMonthParts.month);
+ const dashboardCurrentMonthStart=dashboardCurrentMonthDays[0]?.iso||isoLocal(new Date());
+ const dashboardCurrentMonthEnd=dashboardCurrentMonthDays[dashboardCurrentMonthDays.length-1]?.iso||dashboardCurrentMonthStart;
+ const dashboardMonthSales=sales.filter(s=>{const key=isoLocal(new Date(s.date));return key>=dashboardCurrentMonthStart&&key<=dashboardCurrentMonthEnd;});
  const dashboardWeekDays=Array.from({length:7},(_,i)=>{const d=new Date(dashboardSelectedDate+'T12:00:00');d.setDate(d.getDate()-(6-i));const iso=isoLocal(d);const daySales=sales.filter(s=>isoLocal(new Date(s.date))===iso);return {iso,label:new Intl.DateTimeFormat('fa-IR',{day:'numeric'}).format(d),total:daySales.reduce((sum,s)=>sum+Number(s.total||0),0),count:daySales.length};});
  const dashboardWeekMax=Math.max(1,...dashboardWeekDays.map(d=>d.total));
  const dashboardWeekPoints=dashboardWeekDays.map((day,i)=>({ ...day,x:28+i*107,y:174-(day.total/dashboardWeekMax)*132 }));
