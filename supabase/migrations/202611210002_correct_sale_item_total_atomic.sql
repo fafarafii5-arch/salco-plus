@@ -20,6 +20,7 @@ declare
   v_receipt_count integer;
   v_receipt_amount numeric;
   v_new_total numeric;
+  v_cash_adjusted boolean := false;
 begin
   if v_user is null then raise exception 'ابتدا وارد حساب کاربری شوید.'; end if;
   if p_new_line_total is null or p_new_line_total < 0 then raise exception 'مبلغ جدید قلم معتبر نیست.'; end if;
@@ -46,23 +47,20 @@ begin
   end if;
   if v_item.quantity <= 0 then raise exception 'تعداد قلم معتبر نیست.'; end if;
 
-  v_delta := p_new_line_total - v_item.line_total;
-  if v_delta = 0 then
-    return jsonb_build_object('sale_id',p_sale_id,'sale_item_id',p_sale_item_id,'total',v_sale.total,'cash_adjusted',false);
-  end if;
-
+  -- Rebuild the invoice total from all item rows, applying the selected line's new value.
   select coalesce(sum(line_total),0) - v_item.line_total + p_new_line_total
     into v_new_total
   from public.sale_items
   where sale_id=p_sale_id;
   v_delta := v_new_total - v_sale.total;
+
   if v_sale.payment_method='credit' then
     if v_new_total < v_sale.amount_paid then
       raise exception 'مبلغ جدید از دریافتی و پیش‌پرداخت ثبت‌شده کمتر می‌شود؛ ابتدا باید اضافه‌دریافت تعیین تکلیف شود.';
     end if;
     select count(*) into v_pending_count from public.sale_installments
     where sale_id=p_sale_id and amount > amount_paid;
-    if v_new_total > v_sale.amount_paid then
+    if v_delta <> 0 and v_new_total > v_sale.amount_paid then
       if v_pending_count=0 then raise exception 'برای مانده جدید، قسط پرداخت‌نشده‌ای وجود ندارد؛ ابتدا برنامه اقساط را اصلاح کنید.'; end if;
       select * into v_pending from public.sale_installments
       where sale_id=p_sale_id and amount > amount_paid
@@ -82,14 +80,19 @@ begin
     from public.cash_transactions
     where sale_id=p_sale_id and branch_id=p_branch_id
       and transaction_type='receipt' and is_voided=false;
-    if v_sale.amount_paid=v_sale.total then
+    -- Accept legacy over-receipt inconsistencies (amount_paid > total) only
+    -- when there is exactly one active receipt matching the recorded amount_paid.
+    if v_sale.amount_paid >= v_sale.total then
       if v_receipt_count <> 1 or v_receipt_amount <> v_sale.amount_paid then
         raise exception 'دریافت‌های مرتبط با فاکتور یک تراکنش واحد و منطبق نیستند؛ صندوق خودکار تغییر نکرد.';
       end if;
-      update public.cash_transactions
-      set amount=amount+v_delta
-      where sale_id=p_sale_id and branch_id=p_branch_id
-        and transaction_type='receipt' and is_voided=false;
+      if v_delta <> 0 or v_receipt_amount <> v_new_total then
+        update public.cash_transactions
+        set amount=v_new_total
+        where sale_id=p_sale_id and branch_id=p_branch_id
+          and transaction_type='receipt' and is_voided=false;
+        v_cash_adjusted := true;
+      end if;
     else
       raise exception 'این فاکتور کامل تسویه نشده است؛ برای جلوگیری از مغایرت، ابتدا وضعیت تسویه را مشخص کنید.';
     end if;
@@ -115,7 +118,8 @@ begin
     'sale_item_id',p_sale_item_id,
     'old_total',v_sale.total,
     'total',v_new_total,
-    'cash_adjusted',v_sale.payment_method<>'credit' and v_sale.payment_method<>'gift' and v_sale.amount_paid=v_sale.total
+    'amount_paid',case when v_sale.payment_method='credit' then v_sale.amount_paid when v_sale.payment_method='gift' then 0 else v_new_total end,
+    'cash_adjusted',v_cash_adjusted
   );
 end;
 $$;
