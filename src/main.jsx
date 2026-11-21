@@ -251,7 +251,7 @@ function App(){
  const [customProductOptions,setCustomProductOptions]=useState(()=>load('customProductOptions',{categories:[],models:{},sizes:[],colors:[]}));
  const [newProductOption,setNewProductOption]=useState({category:'',model:'',size:'',color:''});
  useEffect(()=>{try{localStorage.setItem('salco_customProductOptions',JSON.stringify(customProductOptions));}catch{}},[customProductOptions]);
- const [saleForm,setSaleForm]=useState({productId:'',category:'',variant:'',color:'',qty:1,customer:'',seller:'فائزه رفیع‌زاده',discount:0,payment:'کارت‌خوان',installmentCount:2,downPayment:0,downPaymentMethod:'کارت‌خوان',firstDueDate:new Date().toISOString().slice(0,10)});
+ const [saleForm,setSaleForm]=useState({productId:'',category:'',variant:'',color:'',qty:1,customer:'',seller:'فائزه رفیع‌زاده',discount:0,invoiceTotal:'',payment:'کارت‌خوان',installmentCount:2,downPayment:0,downPaymentMethod:'کارت‌خوان',firstDueDate:new Date().toISOString().slice(0,10)});
  const [saleCart,setSaleCart]=useState([]);
  const [saleSearch,setSaleSearch]=useState('');
  const keepSaleInputVisible=e=>{const field=e.currentTarget;setTimeout(()=>field.scrollIntoView({behavior:'smooth',block:'center',inline:'nearest'}),350);};
@@ -425,7 +425,7 @@ function App(){
   const selectedSaleProduct=products.find(p=>String(p.id)===String(saleForm.productId)&&Number(p.stock)>0)||null;
  const saleSubtotal=saleCart.reduce((sum,item)=>sum+item.unitPrice*item.quantity,0);
  const saleDiscount=Number(saleForm.discount)||0;
- const saleGrandTotal=saleForm.payment==='هدیه'?0:Math.max(0,saleSubtotal-saleDiscount);
+ const saleGrandTotal=saleForm.payment==='هدیه'?0:(saleForm.invoiceTotal===''||saleForm.invoiceTotal==null?Math.max(0,saleSubtotal-saleDiscount):Math.max(0,numericValue(saleForm.invoiceTotal)));
  const saleCartBalance=Math.max(0,saleGrandTotal-(Number(saleForm.downPayment)||0));
  const addSaleCartItem=()=>{
   if(!selectedSaleProduct){toast('ابتدا یک کالای دارای موجودی انتخاب کنید.');return;}
@@ -472,7 +472,7 @@ function App(){
   try{
    setDataLoading(true);
    const soldAt=new Date(saleDate+'T12:00:00').toISOString();
-   const {data,error}=await supabase.rpc('register_sale_multi',{
+   const {data,error}=await supabase.rpc('register_sale_multi_custom_total',{
     p_branch_id:branch.id,
     p_items:saleCart.map(item=>({product_id:item.productId,quantity:item.quantity})),
     p_sold_at:soldAt,
@@ -482,14 +482,15 @@ function App(){
     p_down_payment_method:saleForm.downPaymentMethod||'کارت‌خوان',
     p_installments:installmentRows,
     p_seller_name:saleForm.seller,
-    p_customer_phone:saleForm.customer.trim()||null
+    p_customer_phone:saleForm.customer.trim()||null,
+    p_invoice_total:saleGrandTotal
    });
    if(error)throw error;
    if(!data?.invoice_no)throw new Error('شماره فاکتور برای ذخیره فروش دریافت نشد.');
    await loadRemote(session);
    setSaleCart([]);
    setSaleSearch('');
-   setSaleForm({productId:'',category:'',variant:'',color:'',qty:1,customer:'',seller:'فائزه رفیع‌زاده',discount:0,payment:'کارت‌خوان',installmentCount:2,downPayment:0,downPaymentMethod:'کارت‌خوان',firstDueDate:new Date().toISOString().slice(0,10)});
+   setSaleForm({productId:'',category:'',variant:'',color:'',qty:1,customer:'',seller:'فائزه رفیع‌زاده',discount:0,invoiceTotal:'',payment:'کارت‌خوان',installmentCount:2,downPayment:0,downPaymentMethod:'کارت‌خوان',firstDueDate:new Date().toISOString().slice(0,10)});
    toast('فاکتور '+data.invoice_no+' با موفقیت ثبت شد.');
   }catch(err){toast(err.message||'ثبت فروش انجام نشد.');}
   finally{setDataLoading(false);}
@@ -756,6 +757,7 @@ function App(){
   <section className="sales-entry-card sales-invoice-card"><h3><ShoppingCart size={21}/> اقلام فاکتور <span className="mini-badge">{num(saleCart.length)} قلم</span></h3>
    {saleCart.length===0?<div className="sales-cart-empty">هنوز کالایی به فاکتور اضافه نشده است.</div>:<div className="sales-cart-list">{saleCart.map(item=><article className="sales-cart-row" key={item.productId}><div><b>{item.name}</b><small>{item.color} · سایز {item.size} · {money(item.unitPrice)}</small><div className="sales-cart-qty"><button type="button" onClick={()=>setSaleCart(prev=>prev.map(x=>x.productId===item.productId?{...x,quantity:Math.max(1,x.quantity-1)}:x))}>−</button><b>{num(item.quantity)}</b><button type="button" onClick={()=>setSaleCart(prev=>prev.map(x=>x.productId===item.productId?{...x,quantity:Math.min(x.stock,x.quantity+1)}:x))}>+</button><button type="button" className="sales-cart-remove" onClick={()=>setSaleCart(prev=>prev.filter(x=>x.productId!==item.productId))}><Trash2 size={15}/></button></div></div><strong>{money(item.unitPrice*item.quantity)}</strong></article>)}</div>}
    <label className="sales-entry-field sales-discount-field">تخفیف کل فاکتور (تومان)<input inputMode="numeric" value={formatDigits(saleForm.discount)} onFocus={keepSaleInputVisible} onChange={e=>setSaleForm(v=>({...v,discount:numericValue(e.target.value)}))} placeholder="۰"/></label>
+   <label className="sales-entry-field sales-discount-field">مبلغ نهایی موردنظر فاکتور (تومان)<input inputMode="numeric" value={formatDigits(saleForm.invoiceTotal)} onFocus={keepSaleInputVisible} onChange={e=>setSaleForm(v=>({...v,invoiceTotal:digitsOnly(e.target.value)}))} placeholder={formatDigits(Math.max(0,saleSubtotal-saleDiscount))}/><small>اگر خالی بماند، مبلغ از جمع کالاها و تخفیف محاسبه می‌شود. مبلغی که اینجا ثبت می‌کنی ملاک فاکتور و صندوق است.</small></label>
    <div className="sales-total-row"><span>جمع کالاها</span><b>{money(saleSubtotal)}</b></div><div className="sales-total-row sales-grand-total"><span>مبلغ نهایی</span><b>{money(saleGrandTotal)}</b></div>
   </section>
   {saleForm.payment==='اعتباری'&&<section className="sales-entry-card"><h3>پیش‌پرداخت و اقساط</h3>
