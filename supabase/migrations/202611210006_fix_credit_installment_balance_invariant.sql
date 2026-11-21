@@ -24,7 +24,7 @@ begin
    raise exception 'مغایرت اقساط فاکتور %: مانده اقساط با مانده فاکتور برابر نیست. عملیات لغو شد.',v_sale.invoice_no;
   end if;
   if v_bad_installments>0 then
-   raise exception 'مغایرت پرداخت اقساط فاکتور %: دریافتی اقساط با سوابق پرداخت برابر نیست. عملیات لغو شد.';
+   raise exception 'مغایرت پرداخت اقساط فاکتور %: دریافتی اقساط با سوابق پرداخت برابر نیست. عملیات لغو شد.',v_sale.invoice_no;
   end if;
  end if;
 end;
