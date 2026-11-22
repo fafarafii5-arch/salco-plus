@@ -564,7 +564,7 @@ function App(){
   const fa=n=>new Intl.NumberFormat("fa-IR").format(n);
   const esc=value=>String(value??"").replace(/[&<>"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
   const cleanMoney=value=>String(value??"").replace(/\s*تومان\s*/gu,"").trim();
-  const totalNet=cleanMoney(money(reportTotals.net)),totalDiscount=cleanMoney(money(reportTotals.discount)),totalCash=cleanMoney(money(reportCashReceived));
+  const totalNet=cleanMoney(money(reportTotals.net)),totalDiscount=cleanMoney(money(reportTotals.discount));
   const imageEntries=[];
   for(let pageIndex=0;pageIndex<pageCount;pageIndex++){
    await new Promise(resolve=>requestAnimationFrame(resolve));
@@ -592,7 +592,7 @@ function App(){
     </header>
     <div class="export-toolbar"><div class="toolbar-title"><strong>جزئیات فروش‌ها</strong><span class="list-icon">☷</span></div><div class="toolbar-count"><span class="document-icon">▤</span><strong>صفحه ${fa(pageIndex+1)} از ${fa(pageCount)} &nbsp; | &nbsp; اقلام ${fa(Math.min(pageIndex*pageSize+1,sourceRows.length))} تا ${fa(Math.min((pageIndex+1)*pageSize,sourceRows.length))}</strong></div></div>
     <section class="export-table-frame"><table class="export-table" dir="rtl"><colgroup><col style="width:7%"><col style="width:30%"><col style="width:12%"><col style="width:9%"><col style="width:10%"><col style="width:13%"><col style="width:19%"></colgroup><thead><tr><th>ردیف</th><th>نام کالا</th><th>رنگ</th><th>سایز</th><th>تعداد</th><th>تخفیف</th><th>مبلغ نهایی</th></tr></thead><tbody>${tableRows}${emptyRow}${installmentRows}</tbody></table></section>
-    <section class="export-totals"><div class="grand-total"><b>جمع کل دریافتی امروز:</b><strong>${esc(totalCash)}</strong></div><div class="invoice-total"><b>جمع فروش فاکتورها:</b><strong>${esc(totalNet)}</strong></div><div class="discount-total"><b>تخفیف کل:</b><strong>${esc(totalDiscount)}</strong></div></section>
+    <section class="export-totals"><div class="grand-total"><b>جمع کل فاکتورها:</b><strong>${esc(totalNet)}</strong></div><div class="discount-total"><b>تخفیف کل:</b><strong>${esc(totalDiscount)}</strong></div></section>
     <footer class="export-footer"><div class="footer-brand"><strong>SALCO<sup>+</sup></strong><span>MEN’S SUITS</span></div><div class="footer-slogan"><b>استایل مردانه، فراتر از یک انتخاب</b><small>MORE THAN A CHOICE, A LIFESTYLE</small></div><div class="footer-address"><span class="pin">●</span><span>خرم‌آباد، خیابان انقلاب<br>مجتمع رفاهی اکسومال</span></div></footer>`;
    const style=document.createElement("style");style.textContent=`
     #salco-export-artifact,#salco-export-artifact *{box-sizing:border-box!important;text-shadow:none!important}
@@ -832,8 +832,7 @@ function App(){
   </table>
  </section>
  <section className="salco-report-totals">
-  <div className="salco-report-grand"><b>جمع کل دریافتی امروز:</b><strong>{money(reportCashReceived).replace(' تومان','')}</strong><small>تومان</small></div>
-  <div className="salco-report-invoice-total"><b>جمع فروش فاکتورها:</b><strong>{money(reportTotals.net).replace(' تومان','')}</strong><small>تومان</small></div>
+  <div className="salco-report-grand"><b>جمع کل فاکتورها:</b><strong>{money(reportTotals.net).replace(' تومان','')}</strong><small>تومان</small></div>
   <div className="salco-report-discount-total"><b>تخفیف کل:</b><strong>{money(reportTotals.discount).replace(' تومان','')}</strong><small>تومان</small></div>
  </section>
  <div className="salco-report-actions no-print"><button type="button" className="btn btn-gold" onClick={()=>window.print()}>چاپ / ذخیره PDF</button><button type="button" className="btn btn-ghost" onClick={exportDailyReportImage}>خروجی تصویر</button></div>
