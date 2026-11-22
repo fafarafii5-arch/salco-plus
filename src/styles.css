@@ -3347,8 +3347,3 @@
 .daily-report-print.salco-signature-report .salco-report-installment-row td{border-top:1px solid #c69a38!important;border-bottom:1px solid #c69a38!important}
 .daily-report-print.salco-signature-report .salco-report-installment-row td:first-child{color:#e8bd4c!important;font-weight:900!important}
 .daily-report-print.salco-signature-report .salco-report-installment-row td:nth-child(2) small{display:block!important;margin-top:5px!important;color:#e7d5a5!important;font-size:12px!important;white-space:normal!important}
-.daily-report-print.salco-signature-report .salco-report-totals{grid-template-columns:1.15fr 1fr 1fr!important}
-.daily-report-print.salco-signature-report .salco-report-invoice-total{background:#090909!important;color:#fff!important;border-right:2px solid #d5a638!important;border-left:2px solid #d5a638!important}
-.daily-report-print.salco-signature-report .salco-report-invoice-total b{font-size:19px!important;font-weight:900!important}
-.daily-report-print.salco-signature-report .salco-report-invoice-total strong{font-size:clamp(22px,3.4vw,38px)!important;font-weight:950!important;white-space:nowrap!important;color:#fff!important}
-@media(max-width:600px){.daily-report-print.salco-signature-report .salco-report-totals{grid-template-columns:1fr!important}}
