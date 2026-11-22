@@ -3285,3 +3285,20 @@
 @media(min-width:900px){.rmo-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.rmo-kpi{min-height:150px;padding:20px 24px}.rmo-kpi span{font-size:17px}.rmo-kpi b{font-size:30px}}
 @media(max-width:560px){.report-manager-overview{padding:16px 13px 17px;border-radius:22px}.rmo-heading{gap:8px;margin-bottom:15px}.rmo-brand img{width:112px;height:42px}.rmo-brand span{font-size:9px}.rmo-heading h1{font-size:20px;gap:6px}.rmo-heading h1 svg{width:29px;height:29px}.rmo-date{min-height:52px;padding:7px 12px;border-radius:14px}.rmo-date .jalali-date-trigger{font-size:14px}.rmo-period{grid-template-columns:repeat(4,minmax(0,1fr));border-radius:13px;margin-bottom:13px}.rmo-period button,.rmo-period span{font-size:11px;padding:12px 3px}.rmo-kpis{gap:9px}.rmo-kpi{min-height:110px;padding:12px 13px;border-radius:17px}.rmo-kpi span{font-size:12px}.rmo-kpi b{font-size:clamp(16px,4.3vw,22px)}.rmo-kpi small{font-size:10px}}
 @media print{.report-manager-overview{display:none!important}.daily-report-print .salco-report-head{display:flex!important}}
+
+
+/* Single dashboard sales summary with selectable date range */
+.sales-manager-dashboard .sm-summary-row-single{grid-template-columns:minmax(0,1fr)}
+.sales-manager-dashboard .sm-summary-row-single .sm-sales-range-card{display:flex;flex-direction:column;align-items:stretch;gap:12px;min-height:unset;padding:16px 18px;background:linear-gradient(145deg,#172737 0%,#10151e 72%,#08090c);border-color:#425d76;box-shadow:0 8px 24px #0009,inset 0 -2px #d6a94b}
+.sm-sales-range-top{display:flex;align-items:center;gap:10px;min-width:0}
+.sm-sales-range-top>small{flex:1;color:#fff0d6;font-size:clamp(12px,3vw,15px);font-weight:700}
+.sm-sales-range-select{display:flex;align-items:center;gap:4px;padding:5px 9px;border:1px solid #80683d;border-radius:14px;color:#e6c77e}
+.sm-sales-range-select select{max-width:90px;background:transparent;border:0;outline:0;color:inherit;font:inherit;font-size:12px;appearance:none}
+.sm-sales-range-select option{background:#17130d;color:#fff}
+.sm-sales-range-dates{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:#d9c18e;font-size:12px}
+.sm-sales-range-dates .jalali-date-field{flex:1;min-width:110px}
+.sm-sales-range-dates .jalali-date-trigger{width:100%;padding:8px 10px;border:1px solid #655638;border-radius:12px;background:#111;color:#f5e7c8;font-size:12px}
+.sm-sales-range-value{display:flex;align-items:center;gap:9px;width:100%;padding:0;border:0;background:transparent;color:#fff;text-align:right;cursor:pointer}
+.sm-sales-range-value b{flex:1;font-size:clamp(18px,4.5vw,24px);letter-spacing:.2px;overflow-wrap:anywhere}
+.sm-sales-range-value em{font-style:normal;color:#f0d69e;font-size:13px}
+.sm-sales-range-value>svg{color:#d4a449;flex:0 0 auto}
