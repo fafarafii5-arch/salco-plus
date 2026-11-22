@@ -3302,3 +3302,21 @@
 .sm-sales-range-value b{flex:1;font-size:clamp(18px,4.5vw,24px);letter-spacing:.2px;overflow-wrap:anywhere}
 .sm-sales-range-value em{font-style:normal;color:#f0d69e;font-size:13px}
 .sm-sales-range-value>svg{color:#d4a449;flex:0 0 auto}
+
+
+/* Invoice list: compact mobile-first cards; internal IDs are never displayed */
+.invoice-manager-panel .invoice-list{display:grid;gap:12px}
+.invoice-list-card{display:flex;flex-direction:column;gap:12px;padding:15px;border:1px solid #51452f;border-radius:18px;background:linear-gradient(145deg,#191711,#0c0c0c 78%);color:#f3ead9}
+.invoice-list-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.invoice-list-card-head>div{display:flex;flex-direction:column;gap:5px;min-width:0}
+.invoice-list-card-head>div>b{font-size:15px;color:#fff}
+.invoice-list-card-head small{font-size:11px;color:#b9ad98}
+.invoice-list-card-head>strong{font-size:15px;color:#e7c16f;white-space:nowrap}
+.invoice-list-products{display:flex;flex-direction:column;gap:7px;padding:10px 0;border-top:1px solid #ffffff16;border-bottom:1px solid #ffffff16}
+.invoice-list-products>span{font-size:12px;line-height:1.8;color:#ddd2bf}
+.invoice-list-products b{color:#f0d18a;white-space:nowrap}
+.invoice-list-card-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.invoice-payment-chip{padding:5px 9px;border:1px solid #80683d;border-radius:20px;color:#e8cf98;font-size:11px}
+.invoice-list-qty{margin-inline-start:auto;color:#bdb19d;font-size:11px}
+.invoice-list-card-foot .btn{padding:8px 12px;font-size:11px}
+@media(max-width:520px){.invoice-list-card{padding:13px;border-radius:16px}.invoice-list-card-head>div>b{font-size:14px}.invoice-list-card-head>strong{font-size:13px}.invoice-list-card-foot .btn{padding:7px 10px}}
