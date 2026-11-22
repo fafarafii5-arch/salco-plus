@@ -3083,8 +3083,8 @@
  .daily-report-print.salco-signature-report .salco-signature-table td{font-size:11px!important;padding:10px 3px!important;line-height:1.65!important}
  .daily-report-print.salco-signature-report .salco-report-totals{margin:12px 8px 18px!important}
  .daily-report-print.salco-signature-report .salco-report-totals>div{padding:12px 5px!important}
- .daily-report-print.salco-signature-report .salco-report-total-main b,.daily-report-print.salco-signature-report .salco-report-total-discount b{font-size:12px!important}
- .daily-report-print.salco-signature-report .salco-report-total-main strong,.daily-report-print.salco-signature-report .salco-report-total-discount strong{font-size:19px!important}
+ .daily-report-print.salco-signature-report .salco-report-total-main b,.daily-report-print.salco-signature-report .salco-report-total-discount b,.daily-report-print.salco-signature-report .salco-report-total-invoices b{font-size:12px!important}
+ .daily-report-print.salco-signature-report .salco-report-total-main strong,.daily-report-print.salco-signature-report .salco-report-total-discount strong,.daily-report-print.salco-signature-report .salco-report-total-invoices strong{font-size:19px!important}
  .daily-report-print.salco-signature-report .salco-report-footer{grid-template-columns:100px 1fr!important;padding:16px 10px!important;gap:8px!important}
  .daily-report-print.salco-signature-report .salco-footer-brand strong{font-size:25px!important}
  .daily-report-print.salco-signature-report .salco-footer-brand span{font-size:7px!important;letter-spacing:1px!important}
