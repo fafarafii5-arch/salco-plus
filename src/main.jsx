@@ -534,6 +534,8 @@ function App(){
  if(reportPeriod==='daily'&&reportDate==='2026-11-01') reportTotals.net=20500000;
   const reportDateCash=cash.filter(x=>{const d=new Date(x.date);if(Number.isNaN(d.getTime()))return false;const key=isoLocal(d);return key>=reportPeriodBounds.start&&key<=reportPeriodBounds.end;});
  const reportCashTotals=reportDateCash.reduce((a,x)=>a+(x.type==='دریافت'?Number(x.amount||0):-Number(x.amount||0)),0); // صندوق فقط بر اساس تراکنش واقعی؛ پیش‌پرداخت و قسط وصول‌شده هم دریافت واقعی‌اند.
+ const reportInstallmentReceipts=reportDateCash.filter(x=>x.type==='دریافت'&&String(x.title||'').includes('قسط')&&x.saleId);
+ const reportInstallmentRows=reportInstallmentReceipts.map((receipt,index)=>{const sale=sales.find(item=>String(item.id)===String(receipt.saleId));const products=[...new Set((sale?.items||[]).map(item=>String(item.productName||item.name||'').trim()).filter(Boolean))];return {key:String(receipt.id||index),amount:Number(receipt.amount||0),description:products.length?`بابت خرید: ${products.join('، ')}`:'بابت خرید کالا'};});
  const reportDateExchanges=cash.filter(x=>String(x.title||'').includes('اختلاف تعویض کالا')&&(()=>{const d=new Date(x.date);return !Number.isNaN(d.getTime())&&`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`===reportDate;})());
   const reportPeriodSales=sales.filter(x=>{const d=new Date(x.date);if(Number.isNaN(d.getTime()))return false;const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;return key>=reportPeriodBounds.start&&key<=reportPeriodBounds.end;});
   const reportPeriodSaleIds=new Set(reportPeriodSales.map(x=>String(x.id)));
@@ -553,7 +555,7 @@ function App(){
   const report=document.querySelector(".daily-report-print");if(!report)throw new Error("گزارش برای خروجی تصویر پیدا نشد");
   toast("در حال ساخت خروجی با قالب رسمی سالکو…");if(document.fonts?.ready)await document.fonts.ready;
   const sourceTable=report.querySelector(".salco-report-details .salco-signature-table");if(!sourceTable)throw new Error("جدول اقلام فروش پیدا نشد");
-  const sourceRows=[...sourceTable.querySelectorAll("tbody tr")].filter(row=>row.querySelectorAll("td").length>1);
+  const sourceRows=[...sourceTable.querySelectorAll("tbody tr")].filter(row=>!row.classList.contains("salco-report-installment-row")&&row.querySelectorAll("td").length>1);
   const pageSize=15,pageCount=Math.max(1,Math.ceil(sourceRows.length/pageSize));
   const reportFileDate=jalaliParts(reportDate),reportFileDateName=[reportFileDate.year,reportFileDate.month,reportFileDate.day].map(v=>String(v).padStart(2,"0")).join("-");
   const reportDateText=new Intl.DateTimeFormat("fa-IR-u-ca-persian",{year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(reportDate+"T12:00:00"));
@@ -561,7 +563,7 @@ function App(){
   const fa=n=>new Intl.NumberFormat("fa-IR").format(n);
   const esc=value=>String(value??"").replace(/[&<>"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
   const cleanMoney=value=>String(value??"").replace(/\s*تومان\s*/gu,"").trim();
-  const totalNet=cleanMoney(money(reportTotals.net)),totalDiscount=cleanMoney(money(reportTotals.discount));
+  const totalNet=cleanMoney(money(reportTotals.net)),totalDiscount=cleanMoney(money(reportTotals.discount)),totalCash=cleanMoney(money(reportCashTotals));
   const imageEntries=[];
   for(let pageIndex=0;pageIndex<pageCount;pageIndex++){
    await new Promise(resolve=>requestAnimationFrame(resolve));
@@ -577,6 +579,7 @@ function App(){
     if(/^(?:تک\s*سایز|تکسایز|تک‌سایز)$/iu.test(size))size="";
     return "<tr><td class='row-number'>"+esc(number)+"</td><td class='product-name'>"+esc(name)+"</td><td>"+esc(color)+"</td><td>"+esc(size||"—")+"</td><td>"+esc(quantity)+"</td><td class='discount-cell'>"+esc(discount)+"</td><td class='amount-cell'>"+esc(amount)+"</td></tr>";
    }).join("");
+   const installmentRows=pageIndex===pageCount-1?reportInstallmentRows.map((item,index)=>`<tr class='installment-report-row'><td class='row-number'>${fa(sourceRows.length+index+1)}</td><td class='product-name'><strong>وصول اقساط</strong><small>${esc(item.description)}</small></td><td>—</td><td>—</td><td>—</td><td class='discount-cell'>—</td><td class='amount-cell'>${esc(cleanMoney(money(item.amount)))}</td></tr>`).join(""):"";
    const emptyRow=rows.length?"":"<tr><td colspan='7' class='empty-cell'>برای این تاریخ فروش ثبت نشده است.</td></tr>";
    staging=document.createElement("div");
    staging.style.cssText="position:fixed;left:-16000px;top:0;width:1404px;max-width:1404px;overflow:visible;background:#050505;z-index:-1;";
@@ -587,8 +590,8 @@ function App(){
      <div class="hero-logo"><img src="${esc(logoSource)}" alt="SALCO+"></div>
     </header>
     <div class="export-toolbar"><div class="toolbar-title"><strong>جزئیات فروش‌ها</strong><span class="list-icon">☷</span></div><div class="toolbar-count"><span class="document-icon">▤</span><strong>صفحه ${fa(pageIndex+1)} از ${fa(pageCount)} &nbsp; | &nbsp; اقلام ${fa(Math.min(pageIndex*pageSize+1,sourceRows.length))} تا ${fa(Math.min((pageIndex+1)*pageSize,sourceRows.length))}</strong></div></div>
-    <section class="export-table-frame"><table class="export-table" dir="rtl"><colgroup><col style="width:7%"><col style="width:30%"><col style="width:12%"><col style="width:9%"><col style="width:10%"><col style="width:13%"><col style="width:19%"></colgroup><thead><tr><th>ردیف</th><th>نام کالا</th><th>رنگ</th><th>سایز</th><th>تعداد</th><th>تخفیف</th><th>مبلغ نهایی</th></tr></thead><tbody>${tableRows}${emptyRow}</tbody></table></section>
-    <section class="export-totals"><div class="grand-total"><b>جمع کل فاکتورها:</b><strong>${esc(totalNet)}</strong></div><div class="discount-total"><b>تخفیف کل:</b><strong>${esc(totalDiscount)}</strong></div></section>
+    <section class="export-table-frame"><table class="export-table" dir="rtl"><colgroup><col style="width:7%"><col style="width:30%"><col style="width:12%"><col style="width:9%"><col style="width:10%"><col style="width:13%"><col style="width:19%"></colgroup><thead><tr><th>ردیف</th><th>نام کالا</th><th>رنگ</th><th>سایز</th><th>تعداد</th><th>تخفیف</th><th>مبلغ نهایی</th></tr></thead><tbody>${tableRows}${emptyRow}${installmentRows}</tbody></table></section>
+    <section class="export-totals"><div class="grand-total"><b>جمع کل دریافتی امروز:</b><strong>${esc(totalCash)}</strong></div><div class="invoice-total"><b>جمع فروش فاکتورها:</b><strong>${esc(totalNet)}</strong></div><div class="discount-total"><b>تخفیف کل:</b><strong>${esc(totalDiscount)}</strong></div></section>
     <footer class="export-footer"><div class="footer-brand"><strong>SALCO<sup>+</sup></strong><span>MEN’S SUITS</span></div><div class="footer-slogan"><b>استایل مردانه، فراتر از یک انتخاب</b><small>MORE THAN A CHOICE, A LIFESTYLE</small></div><div class="footer-address"><span class="pin">●</span><span>خرم‌آباد، خیابان انقلاب<br>مجتمع رفاهی اکسومال</span></div></footer>`;
    const style=document.createElement("style");style.textContent=`
     #salco-export-artifact,#salco-export-artifact *{box-sizing:border-box!important;text-shadow:none!important}
@@ -823,11 +826,13 @@ function App(){
    <tbody>
     {reportLineItems.map((item,index)=><tr key={item.key}><td>{num(index+1)}</td><td className="salco-report-product">{item.name}</td><td>{item.color||'—'}</td><td>{item.size||'—'}</td><td>{num(item.quantity)}</td><td className={item.discount>0?'salco-report-discount':'salco-report-zero'}>{money(item.discount).replace(' تومان','')}</td><td className="salco-report-amount">{money(item.total).replace(' تومان','')}</td></tr>)}
     {reportLineItems.length===0&&<tr><td colSpan="7" className="salco-report-empty">برای این تاریخ فروش ثبت نشده است.</td></tr>}
+    {reportInstallmentRows.map((item,index)=><tr className="salco-report-installment-row" key={item.key}><td>{num(reportLineItems.length+index+1)}</td><td className="salco-report-product"><strong>وصول اقساط</strong><small>{item.description}</small></td><td>—</td><td>—</td><td>—</td><td className="salco-report-zero">—</td><td className="salco-report-amount">{money(item.amount).replace(' تومان','')}</td></tr>)}
    </tbody>
   </table>
  </section>
  <section className="salco-report-totals">
-  <div className="salco-report-grand"><b>جمع کل فاکتورها:</b><strong>{money(reportTotals.net).replace(' تومان','')}</strong><small>تومان</small></div>
+  <div className="salco-report-grand"><b>جمع کل دریافتی امروز:</b><strong>{money(reportCashTotals).replace(' تومان','')}</strong><small>تومان</small></div>
+  <div className="salco-report-invoice-total"><b>جمع فروش فاکتورها:</b><strong>{money(reportTotals.net).replace(' تومان','')}</strong><small>تومان</small></div>
   <div className="salco-report-discount-total"><b>تخفیف کل:</b><strong>{money(reportTotals.discount).replace(' تومان','')}</strong><small>تومان</small></div>
  </section>
  <div className="salco-report-actions no-print"><button type="button" className="btn btn-gold" onClick={()=>window.print()}>چاپ / ذخیره PDF</button><button type="button" className="btn btn-ghost" onClick={exportDailyReportImage}>خروجی تصویر</button></div>
