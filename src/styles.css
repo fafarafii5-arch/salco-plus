@@ -3320,3 +3320,24 @@
 .invoice-list-qty{margin-inline-start:auto;color:#bdb19d;font-size:11px}
 .invoice-list-card-foot .btn{padding:8px 12px;font-size:11px}
 @media(max-width:520px){.invoice-list-card{padding:13px;border-radius:16px}.invoice-list-card-head>div>b{font-size:14px}.invoice-list-card-head>strong{font-size:13px}.invoice-list-card-foot .btn{padding:7px 10px}}
+
+/* Premium, focused installment receipt dialog */
+.modal:has(.installment-receipt-form){width:min(440px,100%);padding:22px;border:1px solid #9b7938;border-radius:20px;background:radial-gradient(ellipse at 100% 0%,#3b2c12 0%,#191713 42%,#111110 100%);box-shadow:0 28px 90px #000c,0 0 0 1px #d5ad4a22;}
+.modal:has(.installment-receipt-form) .modal-head{padding-bottom:14px;margin-bottom:17px;border-bottom:1px solid #5b4828;}
+.modal:has(.installment-receipt-form) .modal-head h2{font-size:17px;color:#f5e7c4;}
+.installment-receipt-form{display:grid;gap:17px;}
+.installment-receipt-summary{display:grid;gap:7px;padding:17px 18px;border:1px solid #8e6c2d;border-radius:14px;background:linear-gradient(125deg,#30230e,#17140e 70%);text-align:center;}
+.installment-receipt-summary span{font-size:12px;color:#d4bd83;}
+.installment-receipt-summary strong{font-size:clamp(23px,6vw,30px);font-weight:850;letter-spacing:.2px;color:#f2cc67;direction:rtl;}
+.installment-receipt-summary small{font-size:10px;color:#a9a092;line-height:1.9;}
+.installment-receipt-field{display:grid;gap:9px;color:#e8dfcc;font-size:12px;font-weight:700;}
+.installment-amount-input{display:flex;align-items:center;gap:10px;padding:4px 13px;border:1px solid #6d572e;border-radius:12px;background:#090909;transition:border-color .18s,box-shadow .18s;}
+.installment-amount-input:focus-within{border-color:#e2b94f;box-shadow:0 0 0 3px #d9ad3a20;}
+.installment-amount-input input{flex:1;min-width:0;width:100%;padding:13px 2px;border:0!important;outline:0;background:transparent!important;color:#fff!important;font-size:21px;font-weight:800;letter-spacing:.5px;direction:ltr;text-align:right;box-shadow:none!important;}
+.installment-amount-input input::placeholder{font-size:13px;font-weight:400;color:#716d64;}
+.installment-amount-input span{flex:none;padding-right:10px;border-right:1px solid #403725;color:#c7ad72;font-size:11px;}
+.installment-receipt-field select{width:100%;padding:13px 14px;border:1px solid #51452e;border-radius:12px;background:#10100f;color:#f5eee0;font-size:13px;outline:none;}
+.installment-receipt-field select:focus{border-color:#d9b14f;}
+.installment-receipt-actions{display:grid;grid-template-columns:1.5fr 1fr;gap:10px;margin-top:3px;}
+.installment-receipt-actions .btn{min-height:46px;justify-content:center;border-radius:11px;font-size:12px;}
+@media(max-width:480px){.modal:has(.installment-receipt-form){padding:18px;border-radius:17px}.installment-receipt-summary{padding:15px}.installment-receipt-actions{grid-template-columns:1fr 1fr}}
