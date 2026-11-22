@@ -534,6 +534,7 @@ function App(){
  if(reportPeriod==='daily'&&reportDate==='2026-11-01') reportTotals.net=20500000;
   const reportDateCash=cash.filter(x=>{const d=new Date(x.date);if(Number.isNaN(d.getTime()))return false;const key=isoLocal(d);return key>=reportPeriodBounds.start&&key<=reportPeriodBounds.end;});
  const reportCashTotals=reportDateCash.reduce((a,x)=>a+(x.type==='دریافت'?Number(x.amount||0):-Number(x.amount||0)),0); // صندوق فقط بر اساس تراکنش واقعی؛ پیش‌پرداخت و قسط وصول‌شده هم دریافت واقعی‌اند.
+ const reportCashReceived=reportDateCash.filter(x=>x.type==='دریافت').reduce((sum,x)=>sum+Number(x.amount||0),0);
  const reportInstallmentReceipts=reportDateCash.filter(x=>x.type==='دریافت'&&String(x.title||'').includes('قسط')&&x.saleId);
  const reportInstallmentRows=reportInstallmentReceipts.map((receipt,index)=>{const sale=sales.find(item=>String(item.id)===String(receipt.saleId));const products=[...new Set((sale?.items||[]).map(item=>String(item.productName||item.name||'').trim()).filter(Boolean))];return {key:String(receipt.id||index),amount:Number(receipt.amount||0),description:products.length?`بابت خرید: ${products.join('، ')}`:'بابت خرید کالا'};});
  const reportDateExchanges=cash.filter(x=>String(x.title||'').includes('اختلاف تعویض کالا')&&(()=>{const d=new Date(x.date);return !Number.isNaN(d.getTime())&&`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`===reportDate;})());
@@ -563,7 +564,7 @@ function App(){
   const fa=n=>new Intl.NumberFormat("fa-IR").format(n);
   const esc=value=>String(value??"").replace(/[&<>"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
   const cleanMoney=value=>String(value??"").replace(/\s*تومان\s*/gu,"").trim();
-  const totalNet=cleanMoney(money(reportTotals.net)),totalDiscount=cleanMoney(money(reportTotals.discount)),totalCash=cleanMoney(money(reportCashTotals));
+  const totalNet=cleanMoney(money(reportTotals.net)),totalDiscount=cleanMoney(money(reportTotals.discount)),totalCash=cleanMoney(money(reportCashReceived));
   const imageEntries=[];
   for(let pageIndex=0;pageIndex<pageCount;pageIndex++){
    await new Promise(resolve=>requestAnimationFrame(resolve));
@@ -831,7 +832,7 @@ function App(){
   </table>
  </section>
  <section className="salco-report-totals">
-  <div className="salco-report-grand"><b>جمع کل دریافتی امروز:</b><strong>{money(reportCashTotals).replace(' تومان','')}</strong><small>تومان</small></div>
+  <div className="salco-report-grand"><b>جمع کل دریافتی امروز:</b><strong>{money(reportCashReceived).replace(' تومان','')}</strong><small>تومان</small></div>
   <div className="salco-report-invoice-total"><b>جمع فروش فاکتورها:</b><strong>{money(reportTotals.net).replace(' تومان','')}</strong><small>تومان</small></div>
   <div className="salco-report-discount-total"><b>تخفیف کل:</b><strong>{money(reportTotals.discount).replace(' تومان','')}</strong><small>تومان</small></div>
  </section>
