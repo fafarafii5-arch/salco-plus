@@ -628,12 +628,13 @@ function App(){
     #salco-export-artifact .export-table .discount-cell{color:#f2c653;font-weight:900}
     #salco-export-artifact .export-table .amount-cell{font-size:29px;font-weight:950;white-space:nowrap;font-variant-numeric:tabular-nums}
     #salco-export-artifact .export-table .empty-cell{height:140px;font-size:24px}
-    #salco-export-artifact .export-totals{height:210px;margin:0 20px 42px;border:3px solid #d6a63d;border-radius:26px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;direction:ltr}
-    #salco-export-artifact .export-totals>div{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:12px;text-align:center;direction:rtl}
+    #salco-export-artifact .export-totals{height:210px;margin:0 20px 42px;border:3px solid #d6a63d;border-radius:26px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr 1fr;direction:ltr}
+    #salco-export-artifact .export-totals>div{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:12px;text-align:center;direction:rtl;padding:12px}
     #salco-export-artifact .grand-total{background:linear-gradient(105deg,#bd861c,#ffe07a 52%,#d6a135);color:#100d07}
     #salco-export-artifact .discount-total{background:#080808;color:#fff;border-left:3px solid #f0c653}
+    #salco-export-artifact .invoice-total{background:#080808;color:#fff;border-left:3px solid #f0c653}
     #salco-export-artifact .export-totals b{font-size:30px;font-weight:900}
-    #salco-export-artifact .export-totals strong{font-size:62px;line-height:1.25;font-weight:950;white-space:nowrap;letter-spacing:1px}
+    #salco-export-artifact .export-totals strong{font-size:52px;line-height:1.25;font-weight:950;white-space:nowrap;letter-spacing:1px}
     #salco-export-artifact .export-footer{height:190px;border-top:2px solid #9f792e;display:grid;grid-template-columns:270px 1fr 360px;align-items:center;direction:ltr;padding:20px 38px;gap:28px}
     #salco-export-artifact .footer-brand{display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:2px solid #d2a33b;height:120px}
     #salco-export-artifact .footer-brand strong{font-family:Georgia,serif;color:#edc04d;font-size:59px;line-height:1}
