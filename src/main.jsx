@@ -253,7 +253,8 @@ function App(){
  const [customProductOptions,setCustomProductOptions]=useState(()=>load('customProductOptions',{categories:[],models:{},sizes:[],colors:[]}));
  const [newProductOption,setNewProductOption]=useState({category:'',model:'',size:'',color:''});
  useEffect(()=>{try{localStorage.setItem('salco_customProductOptions',JSON.stringify(customProductOptions));}catch{}},[customProductOptions]);
- const [saleForm,setSaleForm]=useState({productId:'',category:'',variant:'',color:'',qty:1,customer:'',seller:'فائزه رفیع‌زاده',discount:0,invoiceTotal:'',payment:'کارت‌خوان',installmentCount:2,downPayment:0,downPaymentMethod:'کارت‌خوان',firstDueDate:new Date().toISOString().slice(0,10)});
+ const [saleForm,setSaleForm]=useState({productId:'',category:'',variant:'',color:'',qty:1,customer:'',seller:'',discount:0,invoiceTotal:'',payment:'کارت‌خوان',installmentCount:2,downPayment:0,downPaymentMethod:'کارت‌خوان',firstDueDate:new Date().toISOString().slice(0,10)});
+ useEffect(()=>{if(!salesStaff.length)return;setSaleForm(v=>salesStaff.some(person=>person.name===v.seller)?v:{...v,seller:salesStaff[0].name});},[salesStaff]);
  const [saleCart,setSaleCart]=useState([]);
  const [staffNameDraft,setStaffNameDraft]=useState('');
  const [staffSaving,setStaffSaving]=useState(false);
